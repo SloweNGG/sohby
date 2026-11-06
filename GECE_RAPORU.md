@@ -344,6 +344,7 @@ CLAUDE.md eklendi; 15 güvenlik kuralı migration'larla tek tek karşılaştır�
 | 1 | 3 kararın uygulanması + migration'ların uzak veritabanına uygulanması | ✅ |
 | 2 | CLAUDE.md farkları: renkler, gömülü metinler, EN çeviriler | ✅ |
 | 3 | Profil düzenleme + profil fotoğrafı (gizli bucket, imzalı bağlantı) | ✅ (gerçek yükleme tarayıcıdan denenmedi) |
+| 4 | Gizlilik ayarları | ✅ |
 
 ## İş 1 — Kararlar ve uzak veritabanı ✅
 
@@ -441,3 +442,22 @@ Sayfa: `/profile/edit` (tasarım 10; kendi profilinde "Profili düzenle"). Migra
 - Testi sırasında bulunan hata: günlük yükleme sınırı her yeni yükleme eskisini sildiği için hiç
   dolmuyordu → yüklemeler ayrı bir sayaç tablosunda sayılıyor.
 - Sohbet listesindeki küçük avatarlar şimdilik baş harfli (fotoğraf yalnızca kart ve profilde).
+
+## İş 4 — Gizlilik ayarları ✅
+
+Sayfa: `/settings` (tasarım 11'in çalışan bölümleri). Migration 7 uzağa uygulandı (dry-run → push).
+
+- **Kimler mesaj atabilir** (herkes / önce istek / yalnızca ortak hobi).
+- **Profilde görünenler**: Keşfet'te görün, yaş, semt, cinsiyet, çevrimiçi durumu.
+- **Okundu bilgisi**: karşılıklı — iki taraf da açıksa sohbette son mesajın altında "Okundu" çıkar
+  (20 saniyede bir tazelenir); biri kapatırsa iki taraf da göremez. Ham okuma zamanları Realtime'a
+  hiç verilmiyor (test var).
+- **Anonim mesajları kabul et** (varsayılan açık; iş 6'da kullanılıyor).
+- **Uygulama dili** (Türkçe / English): kaydedilir, hemen uygulanır ve girişte otomatik seçilir.
+- **Engellenen kişiler** listesi ve "Engeli kaldır".
+- **Hesabımı sil**: onay penceresi → hesap hemen kapanır, oturum sonlanır, veriler 90 gün sonra silinir.
+- Testler: okundu bilgisi karşılıklılığı, ayarları yalnızca sahibinin değiştirmesi, dil kısıtı. `npm test` → 80/80.
+
+### Kapsam dışı bırakılanlar (tasarım 11'de var)
+Haritada görün, arkadaş listem, fotoğraf/sesli mesaj izinleri, gelen fotoğrafları gizle, şikâyetlerim,
+verilerimi indir, bildirimler — hepsi 2. aşama özelliklerine bağlı; çalışmayan seçenek göstermedim.

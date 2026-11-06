@@ -42,6 +42,11 @@ export type MyProfileRow = {
   show_gender: boolean;
   show_online: boolean;
   message_policy: MessagePolicy;
+  show_read_receipts: boolean;
+  accept_anonymous: boolean;
+  preferred_locale: "tr" | "en";
+  photo_id: string | null;
+  deleted_at: string | null;
   onboarding_completed_at: string | null;
   created_at: string;
 };
@@ -102,7 +107,11 @@ export type ConversationHeader = {
   id: string;
   other: ProfileCard;
   can_send: boolean;
+  /** Karşı tarafın okuma zamanı — yalnızca iki taraf da okundu bilgisini açtıysa. */
+  other_read_at?: string | null;
 };
+
+export type BlockedUser = { id: string; username: string; display_name: string; blocked_at: string };
 
 export type Message = {
   id: string;

@@ -53,6 +53,7 @@ export function ChatRoom({
   const { refresh: refreshList } = useChats();
   const badges = useBadges();
   const [messages, setMessages] = useState<UiMessage[]>(initialMessages);
+  const [otherReadAt, setOtherReadAt] = useState<string | null>(header.other_read_at ?? null);
   const [hasMore, setHasMore] = useState(initialHasMore);
   const [loadingOlder, setLoadingOlder] = useState(false);
   const [draft, setDraft] = useState("");
@@ -75,6 +76,25 @@ export function ChatRoom({
       /* sessizce geç */
     }
   }, [conversationId, refreshList, badges]);
+
+  // Okundu bilgisi (iki taraf da açtıysa): sohbet açıkken periyodik tazelenir.
+  useEffect(() => {
+    let alive = true;
+    const refreshRead = async () => {
+      if (document.visibilityState !== "visible") return;
+      try {
+        const { data } = await createClient().rpc("get_conversation", { p_conversation: conversationId });
+        if (alive && data) setOtherReadAt((data as ConversationHeader).other_read_at ?? null);
+      } catch {
+        /* sessizce geç */
+      }
+    };
+    const timer = window.setInterval(refreshRead, 20_000);
+    return () => {
+      alive = false;
+      window.clearInterval(timer);
+    };
+  }, [conversationId]);
 
   // Okundu işaretle: açılışta ve sekmeye dönünce.
   useEffect(() => {
@@ -210,6 +230,7 @@ export function ChatRoom({
   }, [draft]);
 
   const place = [other.district, other.city].filter(Boolean).join(", ");
+  const lastMineIndex = messages.findLastIndex((x) => x.sender_id === me && !x.status);
   const tooLong = draft.trim().length > MAX_LENGTH;
 
   return (
@@ -264,6 +285,8 @@ export function ChatRoom({
 
           {messages.map((m, i) => {
             const mine = m.sender_id === me;
+            const showRead =
+              mine && i === lastMineIndex && otherReadAt !== null && new Date(otherReadAt) >= new Date(m.created_at);
             const prev = messages[i - 1];
             const newDay = !prev || dayKey(prev.created_at) !== dayKey(m.created_at);
             return (
@@ -286,6 +309,7 @@ export function ChatRoom({
                     <p className="whitespace-pre-wrap break-words">{m.body}</p>
                   </div>
                 </div>
+                {showRead && <p className="mt-1 text-right text-xs text-muted">{t("read")}</p>}
                 {m.status === "failed" && (
                   <p className="mt-1 flex items-center justify-end gap-2 text-xs text-coral-text">
                     {t(`errors.${m.error ?? "generic"}`)}

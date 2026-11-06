@@ -425,7 +425,8 @@
       "not_allowed": "You can't send messages in this chat. If you haven't verified your email, please do so first.",
       "too_long": "Messages can be at most 2000 characters.",
       "generic": "Couldn't send the message."
-    }
+    },
+    "read": "Read"
   },
   "requests": {
     "metaTitle": "Message requests",
@@ -599,5 +600,53 @@
       "photo_rate_limited": "You've uploaded too many photos today. Try again tomorrow.",
       "photo_failed": "Couldn't upload the photo. Please try again."
     }
+  },
+  "settings": {
+    "metaTitle": "Settings",
+    "title": "Settings",
+    "nav": {
+      "privacy": "Privacy",
+      "blocked": "Blocked",
+      "account": "Account"
+    },
+    "messagesTitle": "Who can message you?",
+    "messagesHint": "Tighten this if unexpected messages bother you.",
+    "visibleTitle": "What should your profile show?",
+    "visibleHint": "Anything you turn off is hidden from others.",
+    "showInDiscover": "Appear in Explore",
+    "showInDiscoverHint": "If off, only people you message can see you.",
+    "showAge": "My age",
+    "showAgeHint": "Shown on your profile like “{name}, {age}”.",
+    "showDistrict": "My neighbourhood",
+    "showDistrictHint": "If off, only your city is shown.",
+    "showGender": "My gender",
+    "showGenderHint": "If off, your gender isn't shown on your profile.",
+    "showOnline": "My online status",
+    "showOnlineHint": "Others can see when you're online.",
+    "showReadReceipts": "Read receipts",
+    "showReadReceiptsHint": "Others see when you've read their message. If off, you can't see theirs either.",
+    "acceptAnonymous": "Accept anonymous messages",
+    "acceptAnonymousHint": "Anonymous messages always arrive as requests; no chat opens until you accept.",
+    "languageTitle": "App language",
+    "languageHint": "Menus, notifications and emails use this language. Messages aren't translated.",
+    "languageTr": "Türkçe",
+    "languageTrHint": "Default",
+    "languageEn": "English",
+    "languageEnHint": "Menus, notifications and emails",
+    "save": "Save changes",
+    "saved": "Your settings were saved.",
+    "saveError": "Couldn't save your settings. Please try again.",
+    "blockedTitle": "Blocked people",
+    "blockedHint": "If you unblock someone, they can message and see you again.",
+    "blockedEmpty": "You haven't blocked anyone.",
+    "unblock": "Unblock",
+    "accountTitle": "Account",
+    "deleteTitle": "Delete my account",
+    "deleteHint": "Your account closes immediately and nobody can see you. Your messages are kept for 90 days for report reviews, then permanently deleted.",
+    "deleteConfirmTitle": "Are you sure you want to delete your account?",
+    "deleteConfirmBody": "This can't be undone. Your account closes immediately and you'll be signed out.",
+    "deleteConfirm": "Yes, delete my account",
+    "cancel": "Cancel",
+    "deleteError": "Couldn't delete the account. Please try again."
   }
 }

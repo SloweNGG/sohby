@@ -161,7 +161,17 @@ export async function signInAction(_prev: AuthFormState, formData: FormData): Pr
     return { status: "error", error: mapAuthError(error), values };
   }
 
-  const locale = await getLocale();
+  // Kullanıcının seçtiği uygulama dili (Ayarlar) giriş sonrası uygulanır.
+  let locale = await getLocale();
+  const { data: claims } = await supabase.auth.getClaims();
+  if (claims?.claims?.sub) {
+    const { data: pref } = await supabase
+      .from("profiles")
+      .select("preferred_locale")
+      .eq("id", claims.claims.sub)
+      .maybeSingle();
+    if (pref?.preferred_locale === "tr" || pref?.preferred_locale === "en") locale = pref.preferred_locale;
+  }
   redirect({ href: next, locale });
   return { status: "success" };
 }

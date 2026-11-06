@@ -425,7 +425,8 @@
       "not_allowed": "Bu sohbete mesaj gönderemezsin. E-postanı doğrulamadıysan önce doğrula.",
       "too_long": "Mesaj en çok 2000 karakter olabilir.",
       "generic": "Mesaj gönderilemedi."
-    }
+    },
+    "read": "Okundu"
   },
   "requests": {
     "metaTitle": "Mesaj istekleri",
@@ -599,5 +600,53 @@
       "photo_rate_limited": "Bugün çok fazla fotoğraf yükledin. Yarın tekrar dene.",
       "photo_failed": "Fotoğraf yüklenemedi. Lütfen tekrar dene."
     }
+  },
+  "settings": {
+    "metaTitle": "Ayarlar",
+    "title": "Ayarlar",
+    "nav": {
+      "privacy": "Gizlilik",
+      "blocked": "Engellenenler",
+      "account": "Hesap"
+    },
+    "messagesTitle": "Kimler sana mesaj atabilir?",
+    "messagesHint": "Beklemediğin mesajlardan rahatsız oluyorsan sıkılaştır.",
+    "visibleTitle": "Profilinde neler görünsün?",
+    "visibleHint": "Kapattığın bilgiler başkalarına gösterilmez.",
+    "showInDiscover": "Keşfet’te görün",
+    "showInDiscoverHint": "Kapatırsan yalnızca senin yazdıkların seni görür.",
+    "showAge": "Yaşım",
+    "showAgeHint": "Profilinde “{name}, {age}” gibi görünür.",
+    "showDistrict": "Semtim",
+    "showDistrictHint": "Kapatırsan yalnızca şehrin görünür.",
+    "showGender": "Cinsiyetim",
+    "showGenderHint": "Kapatırsan profilinde cinsiyetin görünmez.",
+    "showOnline": "Çevrimiçi durumum",
+    "showOnlineHint": "Başkaları ne zaman çevrimiçi olduğunu görür.",
+    "showReadReceipts": "Okundu bilgisi",
+    "showReadReceiptsHint": "Mesajı okuduğunu karşı taraf görür. Kapatırsan sen de başkalarınınkini göremezsin.",
+    "acceptAnonymous": "Anonim mesajları kabul et",
+    "acceptAnonymousHint": "Anonim mesajlar her zaman istek olarak gelir; sen onaylamadan sohbet açılmaz.",
+    "languageTitle": "Uygulama dili",
+    "languageHint": "Menüler, bildirimler ve e-postalar bu dilde gelir. Mesajlar çevrilmez.",
+    "languageTr": "Türkçe",
+    "languageTrHint": "Varsayılan",
+    "languageEn": "English",
+    "languageEnHint": "Menus, notifications and emails",
+    "save": "Değişiklikleri kaydet",
+    "saved": "Ayarların kaydedildi.",
+    "saveError": "Ayarlar kaydedilemedi. Lütfen tekrar dene.",
+    "blockedTitle": "Engellenen kişiler",
+    "blockedHint": "Engelini kaldırdığın kişi sana yeniden yazabilir ve seni görebilir.",
+    "blockedEmpty": "Engellediğin kimse yok.",
+    "unblock": "Engeli kaldır",
+    "accountTitle": "Hesap",
+    "deleteTitle": "Hesabımı sil",
+    "deleteHint": "Hesabın hemen kapanır ve kimse seni göremez. Mesajların şikâyet incelemesi için 90 gün saklanır, sonra kalıcı olarak silinir.",
+    "deleteConfirmTitle": "Hesabını silmek istediğinden emin misin?",
+    "deleteConfirmBody": "Bu işlem geri alınamaz. Hesabın hemen kapanır ve oturumun sonlandırılır.",
+    "deleteConfirm": "Evet, hesabımı sil",
+    "cancel": "Vazgeç",
+    "deleteError": "Hesap silinemedi. Lütfen tekrar dene."
   }
 }
