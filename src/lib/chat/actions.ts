@@ -36,3 +36,27 @@ export async function startConversationAction(input: z.input<typeof startSchema>
   }
   return { ok: true, kind: "request" };
 }
+
+const respondSchema = z.object({ requestId: z.uuid(), accept: z.boolean() });
+
+export type RespondResult =
+  | { ok: true; conversationId: string | null }
+  | { ok: false; error: "not_found" | "not_allowed" | "generic" };
+
+/** Mesaj isteğini kabul et (sohbet açılır) ya da reddet (gönderen öğrenmez). */
+export async function respondToRequestAction(input: z.input<typeof respondSchema>): Promise<RespondResult> {
+  if (!(await getCurrentUserId())) return { ok: false, error: "generic" };
+  const parsed = respondSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "not_found" };
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("respond_message_request", {
+    p_request: parsed.data.requestId,
+    p_accept: parsed.data.accept,
+  });
+  if (error) {
+    const code = toChatError(error.message);
+    return { ok: false, error: code === "not_found" || code === "not_allowed" ? code : "generic" };
+  }
+  return { ok: true, conversationId: (data as string | null) ?? null };
+}

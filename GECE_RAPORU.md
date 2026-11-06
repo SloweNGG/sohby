@@ -12,7 +12,7 @@
 | 4 | Başlangıç soruları akışı | ✅ Bitti |
 | 5 | Keşfet + filtreler + kişi profili | ✅ Bitti |
 | 6 | Birebir mesajlaşma (Realtime) | ✅ Bitti (Realtime gerçek Supabase'le denenemedi) |
-| 7 | Mesaj istekleri | ⏳ |
+| 7 | Mesaj istekleri | ✅ Bitti |
 | 8 | Engelle / şikâyet et | ⏳ |
 | 9 | Tanıtım sayfası | ⏳ |
 
@@ -220,3 +220,20 @@ Sayfalar: `/chats` (liste), `/chats/<id>` (sohbet). Bileşenler: `src/components
 - Sohbeti silme (çöp kutusu ikonu) eklenmedi: veritabanında "benden gizle" desteği yok, sabah konuşalım.
 - "Okundu" bilgisi gösterilmiyor (ayarlar ekranıyla birlikte gelmeli: tasarımda "okundu bilgisi" ayarı var).
 - Saatler next-intl üzerinden **Europe/Istanbul** saat dilimiyle gösteriliyor (sunucu/istemci uyumu için).
+
+## Adım 7 — Mesaj istekleri ✅
+
+Sayfalar: `/chats/requests` (liste), `/chats/requests/<id>` (ayrıntı).
+
+- **İstek listesi** (tasarım 09 sol): açıklama metni, gönderen, "Flört" etiketi (flört isteğiyse),
+  mesaj önizlemesi, göreli zaman (10 dk / 1 sa / Dün). Yeni istekler Realtime ile anında düşer.
+- **Ayrıntı** (tasarım 09 sağ): ad-yaş, semt, "Profili gör", ortak hobiler ("ortak hobileriniz"),
+  "10 dakika önce gönderildi" + mesaj, gizlilik notu, **Kabul et** / **Reddet**.
+- **Kabul et** → sohbet açılır, ilk mesaj sohbete taşınır, doğrudan sohbet ekranına gidilir.
+- **Reddet** → istek kapanır; gönderen bunu **öğrenmez** ve aynı kişiye tekrar istek atamaz.
+- Profil sayfasında, bana istek atmış kişi için "İsteği gör" butonu çıkar. Ona benim yazmam,
+  isteği otomatik kabul eder (veritabanı kuralı).
+
+### Kararlar
+- İstek ayrıntısındaki metin "…okuduğunu bilmez ve **seninle sohbete devam edemez**" oldu (tasarımda
+  "fotoğraf ya da sesli mesaj gönderemez"; bu özellikler olmadığı için metni gerçeğe uydurdum).
