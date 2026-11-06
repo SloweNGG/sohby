@@ -348,6 +348,7 @@ CLAUDE.md eklendi; 15 güvenlik kuralı migration'larla tek tek karşılaştır�
 | 5 | Flört | ✅ |
 | 6 | Anonim sohbet | ✅ |
 | 7 | Sohbet silme, tümünü sil, tümünü okundu işaretle | ✅ |
+| 8 | Hesap durumu ekranları + itiraz | ✅ (yaş belgesi yükleme ileride) |
 
 ## İş 1 — Kararlar ve uzak veritabanı ✅
 
@@ -535,3 +536,21 @@ Migration 10 uzağa uygulandı (dry-run → push).
 ### Kararlar
 - Yalnızca bir taraf sildiyse mesajlar kalıcı silinmiyor (karşı tarafın verisi). Silen kişiye zaten görünmüyor.
 - Anonim sohbetlerde "sil" yok (şimdilik yalnızca "okundu işaretle" kapsıyor).
+
+## İş 8 — Hesap durumları ve itiraz ✅
+
+Migration 11 uzağa uygulandı (dry-run → push).
+
+- Yeni durumlar: **yaş doğrulaması istendi**, **askıya alındı** (süreli olabilir; süre dolunca kendiliğinden
+  kalkar), **kalıcı kapatıldı**. Ayrıca kullanıcının kendi sildiği hesap için "hesabını sildin" ekranı.
+- Bu durumlardaki kullanıcı **uygulamanın hiçbir sayfasına geçemez** (uygulama kabuğu ve başlangıç soruları
+  durum ekranını gösterir) ve **veritabanı da engeller**: "aktif kullanıcı" kontrolü artık durumu denetliyor →
+  Keşfet, mesaj, istek, anonim yazma, fotoğraf görüntüleme kapalı; başkalarının Keşfet'inde de görünmez.
+- **İtiraz formu**: 10–2000 karakter, aynı anda tek açık itiraz, 7 günde en çok 3; kullanıcı yalnızca kendi
+  itirazını görür ve değiştiremez. Ekranda "itirazın inceleniyor / reddedildi" durumu.
+- Kullanıcı kendi durumunu değiştiremez (yalnızca yönetim — iş 9).
+- Testler: 6 yeni test. `npm test` → 111/111.
+
+### İleride
+- **Yaş doğrulama belgesi yükleme** (kural 15: şifreli, ayrı bucket, inceleme sonrası en geç 30 gün içinde
+  silme). Şu an "yaş doğrulaması istendi" ekranı itiraz/açıklama mesajıyla çalışıyor.

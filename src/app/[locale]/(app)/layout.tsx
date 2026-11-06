@@ -3,6 +3,8 @@ import { redirect } from "@/i18n/navigation";
 import { getMyAccount } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
 import { BlockedNotice } from "@/components/blocked-notice";
+import { AccountStatusScreen } from "@/components/account/status-screen";
+import { blockingStatus } from "@/lib/account/status";
 import { BadgeProvider } from "@/components/app/badges";
 import { PresenceHeartbeat } from "@/components/app/presence";
 import { BottomNav, Sidebar } from "@/components/app/nav";
@@ -23,6 +25,17 @@ export default async function AppLayout({ children, params }: LayoutProps<"/[loc
     return null;
   }
   if (account.private.age_check_failed_at) return <BlockedNotice withSignOut />;
+  // Hesap durumu (yaş doğrulaması / askı / kapatma / silinmiş): uygulamanın geri kalanı kapalı.
+  const blocking = blockingStatus(account.profile);
+  if (blocking) {
+    return (
+      <AccountStatusScreen
+        status={blocking}
+        reason={account.profile.status_reason}
+        suspendedUntil={account.profile.suspended_until}
+      />
+    );
+  }
   if (!account.profile.onboarding_completed_at) {
     redirect({ href: "/onboarding", locale });
   }

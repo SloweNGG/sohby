@@ -740,5 +740,40 @@
       "not_found": "Bu kişiye şu anda yazamazsın.",
       "generic": "İşlem tamamlanamadı. Lütfen tekrar dene."
     }
+  },
+  "accountStatus": {
+    "metaTitle": "Hesap durumu",
+    "age_verification_required": {
+      "title": "Yaşını doğrulaman gerekiyor",
+      "body": "Hesabının 18 yaş ve üzerine ait olduğunu doğrulayana kadar Sohby’yi kullanamazsın. Aşağıdan bize yazabilirsin; ekibimiz seninle doğrulama adımları için iletişime geçecek."
+    },
+    "suspended": {
+      "title": "Hesabın askıya alındı",
+      "body": "Topluluk kurallarına aykırı bir durum nedeniyle hesabın geçici olarak askıya alındı.",
+      "until": "Askı {date} tarihinde kalkacak."
+    },
+    "closed": {
+      "title": "Hesabın kalıcı olarak kapatıldı",
+      "body": "Topluluk kurallarının ciddi ihlali nedeniyle hesabın kapatıldı. Bir hata olduğunu düşünüyorsan itiraz edebilirsin."
+    },
+    "deleted": {
+      "title": "Hesabını sildin",
+      "body": "Bu hesap kapatıldı. Verilerin 90 gün sonra kalıcı olarak silinecek."
+    },
+    "reason": "Açıklama: {reason}",
+    "appealTitle": "İtiraz et",
+    "appealHint": "Neden yeniden incelenmesi gerektiğini kısaca anlat (en az 10 karakter).",
+    "appealPlaceholder": "Mesajın…",
+    "appealSubmit": "İtirazı gönder",
+    "appealSent": "İtirazın alındı. İnceleme sonucunu e-postayla bildireceğiz.",
+    "appealOpen": "Açık bir itirazın var; inceleniyor.",
+    "appealRejected": "Son itirazın reddedildi.",
+    "errors": {
+      "invalid_message": "İtiraz 10–2000 karakter olmalı.",
+      "already_open": "Zaten incelenen bir itirazın var.",
+      "rate_limited": "Çok fazla itiraz gönderdin. Lütfen birkaç gün bekle.",
+      "generic": "İtiraz gönderilemedi. Lütfen tekrar dene."
+    },
+    "signOut": "Çıkış yap"
   }
 }

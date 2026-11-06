@@ -740,5 +740,40 @@
       "not_found": "You can't message this person right now.",
       "generic": "Couldn't complete the action. Please try again."
     }
+  },
+  "accountStatus": {
+    "metaTitle": "Account status",
+    "age_verification_required": {
+      "title": "You need to verify your age",
+      "body": "You can't use Sohby until you confirm that this account belongs to someone aged 18 or over. Write to us below and our team will contact you about the verification steps."
+    },
+    "suspended": {
+      "title": "Your account is suspended",
+      "body": "Your account has been temporarily suspended for breaking the community rules.",
+      "until": "The suspension ends on {date}."
+    },
+    "closed": {
+      "title": "Your account has been permanently closed",
+      "body": "Your account was closed for a serious breach of the community rules. If you think this is a mistake, you can appeal."
+    },
+    "deleted": {
+      "title": "You deleted your account",
+      "body": "This account is closed. Your data will be permanently deleted after 90 days."
+    },
+    "reason": "Note: {reason}",
+    "appealTitle": "Appeal",
+    "appealHint": "Briefly explain why this should be reviewed again (at least 10 characters).",
+    "appealPlaceholder": "Your message…",
+    "appealSubmit": "Send appeal",
+    "appealSent": "Your appeal was received. We'll email you the outcome.",
+    "appealOpen": "You have an open appeal; it's being reviewed.",
+    "appealRejected": "Your last appeal was rejected.",
+    "errors": {
+      "invalid_message": "Appeals must be 10–2000 characters.",
+      "already_open": "You already have an appeal under review.",
+      "rate_limited": "You've sent too many appeals. Please wait a few days.",
+      "generic": "Couldn't send the appeal. Please try again."
+    },
+    "signOut": "Sign out"
   }
 }

@@ -6,6 +6,8 @@ import { ageFromBirthDate, getHobbyCatalog, getMyAccount } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
 import { OnboardingWizard, type StepId, type WizardInitial } from "@/components/onboarding/wizard";
 import { BlockedNotice } from "@/components/blocked-notice";
+import { AccountStatusScreen } from "@/components/account/status-screen";
+import { blockingStatus } from "@/lib/account/status";
 
 // Oturuma bağlı: her istekte sunucuda render edilir.
 export const dynamic = "force-dynamic";
@@ -25,6 +27,16 @@ export default async function OnboardingPage({ params }: PageProps<"/[locale]/on
   }
   if (account.private.age_check_failed_at) {
     return <BlockedNotice withSignOut />;
+  }
+  const blocking = blockingStatus(account.profile);
+  if (blocking) {
+    return (
+      <AccountStatusScreen
+        status={blocking}
+        reason={account.profile.status_reason}
+        suspendedUntil={account.profile.suspended_until}
+      />
+    );
   }
   if (account.profile.onboarding_completed_at) {
     redirect({ href: "/discover", locale });

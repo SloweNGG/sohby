@@ -47,6 +47,9 @@ export type MyProfileRow = {
   preferred_locale: "tr" | "en";
   photo_id: string | null;
   deleted_at: string | null;
+  account_status: "active" | "age_verification_required" | "suspended" | "closed";
+  status_reason: string | null;
+  suspended_until: string | null;
   onboarding_completed_at: string | null;
   created_at: string;
 };
