@@ -139,37 +139,16 @@ test("başkası adına hobi eklenemez", async () => {
   );
 });
 
-test("flört, açık rıza ve ilgi tercihi olmadan seçilemez; rıza zamanı sunucuda yazılır", async () => {
+test("flört, açık rıza kaydı olmadan seçilemez", async () => {
   const a = await db.activeUser({ username: "flort_a" });
   await rejects(
-    db.as(a, `update public.profiles set looking_for = '{flirt}', dating_interest = '{male}' where id = auth.uid()`),
+    db.as(a, `update public.profiles set looking_for = '{flirt}' where id = auth.uid()`),
     /dating_consent_required/,
   );
-  await db.as(a, `update public.profile_private set dating_consent_at = '2000-01-01' where id = auth.uid()`);
-  const [pp] = await db.admin(`select dating_consent_at from public.profile_private where id = $1`, [a]);
-  assert.ok(new Date(pp.dating_consent_at).getFullYear() >= 2026, "istemcinin verdiği tarih kullanılmamalı");
-  await rejects(
-    db.as(a, `update public.profiles set looking_for = '{flirt}' where id = auth.uid()`),
-    /dating_interest_required/,
-  );
-  await db.as(a, `update public.profiles set looking_for = '{flirt,friends}', dating_interest = '{male}' where id = auth.uid()`);
-  // Flört kaldırılınca rıza da geri çekilir
-  await db.as(a, `update public.profiles set looking_for = '{friends}' where id = auth.uid()`);
-  const [after] = await db.admin(
-    `select pp.dating_consent_at, p.dating_interest from public.profile_private pp join public.profiles p using (id) where id = $1`,
-    [a],
-  );
-  assert.equal(after.dating_consent_at, null);
-  assert.deepEqual(after.dating_interest, []);
-});
-
-test("rıza geri çekilince flört tercihi kaldırılır", async () => {
-  const a = await db.activeUser({ username: "flort_geri" });
-  await db.as(a, `update public.profile_private set dating_consent_at = now() where id = auth.uid()`);
-  await db.as(a, `update public.profiles set looking_for = '{flirt}', dating_interest = '{female}' where id = auth.uid()`);
-  await db.as(a, `update public.profile_private set dating_consent_at = null where id = auth.uid()`);
-  const [p] = await db.admin(`select looking_for from public.profiles where id = $1`, [a]);
-  assert.deepEqual(p.looking_for, []);
+  await rejects(db.rpc(a, "set_dating_preferences", [[]]), /dating_interest_required/);
+  await rejects(db.rpc(a, "set_dating_preferences", [["robot"]]), /dating_interest_required/);
+  await db.enableFlirt(a, ["male"]);
+  assert.equal(await db.rpc(a, "has_dating_consent"), true);
 });
 
 // ---------------------------------------------------------------------------
@@ -224,8 +203,7 @@ test("keşfet: geçersiz filtre reddedilir", async () => {
 test("flört etiketi yalnızca karşılıklı uyumlu flörtçülere görünür", async () => {
   const mkFlirt = async (username, gender, interest) => {
     const id = await db.activeUser({ username, gender });
-    await db.as(id, `update public.profile_private set dating_consent_at = now() where id = auth.uid()`);
-    await db.as(id, `update public.profiles set looking_for = '{flirt,friends}', dating_interest = $1 where id = auth.uid()`, [interest]);
+    await db.enableFlirt(id, interest);
     return id;
   };
   const f = await mkFlirt("flirt_f", "female", ["male"]);
@@ -494,6 +472,7 @@ test("anon/authenticated'ın beklenmedik fonksiyon yetkisi yok", async () => {
       "start_conversation", "respond_message_request", "get_conversations",
       "get_conversation", "mark_conversation_read", "get_message_requests",
       "get_badge_counts", "block_user", "unblock_user", "get_blocked_users", "report_user",
+      "set_dating_preferences", "withdraw_dating_consent", "has_dating_consent",
     ].map((f) => `public.${f}:authenticated`),
   ]);
   const unexpected = rows.map((r) => `${r.fn}:${r.rolname}`).filter((k) => !allowed.has(k));

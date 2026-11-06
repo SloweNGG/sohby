@@ -169,16 +169,13 @@ export async function saveOnboardingStep(input: OnboardingStepInput): Promise<On
 
     case "dating": {
       if (!data.lookingFor.includes("flirt")) return { ok: false, error: "generic" };
-      // 1) Açık rıza (zaman damgasını veritabanı yazar), 2) tercih + flört.
-      const consent = await supabase
-        .from("profile_private")
-        .update({ dating_consent_at: new Date().toISOString() })
-        .eq("id", userId);
-      if (consent.error) return { ok: false, error: dbError(consent.error.message) };
-      const error = await updateProfile({
-        looking_for: data.lookingFor,
-        dating_interest: data.datingInterest,
+      // 1) Açık rıza + ilgi tercihi ayrı, kimsenin okuyamadığı tabloya yazılır
+      //    (CLAUDE.md kural 11), 2) ardından flört seçimi kaydedilir.
+      const consent = await supabase.rpc("set_dating_preferences", {
+        p_interested_in: data.datingInterest,
       });
+      if (consent.error) return { ok: false, error: dbError(consent.error.message) };
+      const error = await updateProfile({ looking_for: data.lookingFor });
       return error ? { ok: false, error: dbError(error.message) } : { ok: true };
     }
 
@@ -293,13 +290,11 @@ export async function saveOnboardingStep(input: OnboardingStepInput): Promise<On
   }
 }
 
-/** Flört seçimini geri al (rıza adımında "Vazgeç"). */
+/** Flört seçimini geri al: rıza ve ilgi bilgisi veritabanında silinir. */
 export async function removeFlirt(): Promise<OnboardingResult> {
   const userId = await getCurrentUserId();
   if (!userId) return { ok: false, error: "generic" };
   const supabase = await createClient();
-  const { data: current } = await supabase.from("profiles").select("looking_for").eq("id", userId).single();
-  const next = ((current?.looking_for as string[]) ?? []).filter((v) => v !== "flirt");
-  const { error } = await supabase.from("profiles").update({ looking_for: next }).eq("id", userId);
+  const { error } = await supabase.rpc("withdraw_dating_consent");
   return error ? { ok: false, error: "generic" } : { ok: true };
 }

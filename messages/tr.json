@@ -368,7 +368,8 @@
       "invalid_body": "Mesaj 1–1000 karakter olmalı.",
       "flirt_not_allowed": "Bu kişiye flört amacıyla yazamazsın.",
       "onboarding_required": "Önce profilini tamamlamalısın.",
-      "generic": "Mesaj gönderilemedi. Lütfen tekrar dene."
+      "generic": "Mesaj gönderilemedi. Lütfen tekrar dene.",
+      "email_not_verified": "Mesaj göndermeden önce e-posta adresini doğrulamalısın. E-postana gelen bağlantıya tıkla."
     }
   },
   "chats": {
@@ -409,7 +410,7 @@
     "start": "Sohbetin başlangıcı. Saygılı ol, kişisel bilgilerini paylaşmadan önce iki kez düşün.",
     "errors": {
       "rate_limited": "Çok hızlı mesaj gönderiyorsun. Biraz yavaşla.",
-      "not_allowed": "Bu sohbete mesaj gönderemezsin.",
+      "not_allowed": "Bu sohbete mesaj gönderemezsin. E-postanı doğrulamadıysan önce doğrula.",
       "too_long": "Mesaj en çok 2000 karakter olabilir.",
       "generic": "Mesaj gönderilemedi."
     }

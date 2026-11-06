@@ -5,6 +5,7 @@ export type ChatErrorCode =
   | "invalid_body"
   | "flirt_not_allowed"
   | "onboarding_required"
+  | "email_not_verified"
   | "generic";
 
 const KNOWN: ChatErrorCode[] = [
@@ -14,6 +15,7 @@ const KNOWN: ChatErrorCode[] = [
   "invalid_body",
   "flirt_not_allowed",
   "onboarding_required",
+  "email_not_verified",
 ];
 
 /** Veritabanından gelen `raise exception '<kod>'` mesajını koda çevirir. */

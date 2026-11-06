@@ -306,3 +306,27 @@ Sayfa: `/` (ve `/en`). Tasarım 02'ye birebir yakın: üst çubuk (Nasıl çalı
 
 - Alt bilgideki **Gizlilik politikası, KVKK aydınlatma metni, İletişim** yer tutucu sayfalara gidiyor.
 - Örnek profiller (Elif, Mert, Zeynep, Can) tasarımdaki gibi sabit metin; gerçek kullanıcı değil.
+
+## Sonradan: CLAUDE.md uyum kontrolü (7 Kasım, sabah)
+
+CLAUDE.md eklendi; 15 güvenlik kuralı migration'larla tek tek karşılaştırıldı. Düzeltmeler
+`supabase/migrations/20261107000400_claude_md_security.sql` dosyasında, testleri
+`supabase/tests/claude-md.test.mjs` içinde. `npm test` → 47/47.
+
+| # | Kural | Durum |
+| --- | --- | --- |
+| 1 | Her tabloda RLS, istemciye güvenme | ✅ Uyuyordu |
+| 2 | service_role yalnızca Edge Function'da | ✅ Uyuyordu (artık testle denetleniyor) |
+| 3 | Mesajları yalnızca iki katılımcı okur | ✅ Uyuyordu |
+| 4 | Medya gizli bucket + imzalı bağlantı | ⏭ İleride (fotoğraf/ses yok) |
+| 5 | Medya izni sunucuda kontrol | ⏭ İleride |
+| 6 | Engellenen mesaj gönderemez, Keşfet'te görmez | ✅ Uyuyordu (harita ileride) |
+| 7 | Önce istek: kabule kadar tek mesaj | ✅ Uyuyordu (medya ileride) |
+| 8 | Günde 20 yeni kişiye ilk mesaj | 🔧 Düzeltildi: doğrudan sohbetler de sayılıyor (anonim sınırı ileride) |
+| 9 | 18 yaş + e-posta doğrulanmadan mesaj yok | 🔧 Düzeltildi: e-posta doğrulaması veritabanında kontrol ediliyor |
+| 10 | Anonim sohbette kimlik sızmaz | ⏭ İleride (anonim sohbet yok) |
+| 11 | Flört ilgi bilgisi ayrı tablo, kimse okuyamaz | 🔧 Düzeltildi: `private.dating_preferences`, sahibi dahil okunamaz |
+| 12 | Konum yalnızca semt düzeyi | ✅ Uyuyordu (artık testle denetleniyor) |
+| 13 | Sohbet silme yalnızca kendi görünümünden; mesaj saklanır | 🔧 Kısmen: hesap silinince mesajlar artık yok olmuyor; sohbet silme özelliği ileride |
+| 14 | Yönetici işlemleri silinemez kayıtta | ⏭ İleride (yönetim paneli yok) |
+| 15 | Yaş doğrulama belgeleri | ⏭ İleride |

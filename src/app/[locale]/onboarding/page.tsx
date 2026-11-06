@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { resolveLocale } from "@/i18n/locale";
 import { redirect } from "@/i18n/navigation";
 import { ageFromBirthDate, getHobbyCatalog, getMyAccount } from "@/lib/profile";
+import { createClient } from "@/lib/supabase/server";
 import { OnboardingWizard, type StepId, type WizardInitial } from "@/components/onboarding/wizard";
 import { BlockedNotice } from "@/components/blocked-notice";
 
@@ -30,12 +31,15 @@ export default async function OnboardingPage({ params }: PageProps<"/[locale]/on
   }
 
   const { profile, private: priv, hobbyIds } = account;
-  const hobbies = await getHobbyCatalog();
+  const supabase = await createClient();
+  const [hobbies, consent] = await Promise.all([getHobbyCatalog(), supabase.rpc("has_dating_consent")]);
 
   const initial: WizardInitial = {
     lookingFor: profile.looking_for,
-    datingInterest: profile.dating_interest,
-    hasDatingConsent: Boolean(priv.dating_consent_at),
+    // İlgi bilgisi kimseye (sahibine de) geri okunmaz (CLAUDE.md kural 11);
+    // yalnızca rızanın olup olmadığı bilinir.
+    datingInterest: [],
+    hasDatingConsent: consent.data === true,
     displayName: profile.display_name ?? "",
     // Google ile gelenlere üretilmiş "user_..." adı yerine kendi seçeceği ad önerilir.
     username: profile.username,

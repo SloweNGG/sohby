@@ -35,7 +35,6 @@ export type MyProfileRow = {
   occupation: string | null;
   bio: string | null;
   looking_for: LookingFor[];
-  dating_interest: DatingInterest[];
   languages: LanguageCode[];
   show_in_discover: boolean;
   show_age: boolean;
@@ -52,7 +51,6 @@ export type MyPrivateRow = {
   id: string;
   birth_date: string | null;
   age_check_failed_at: string | null;
-  dating_consent_at: string | null;
   terms_accepted_at: string | null;
 };
 

@@ -23,6 +23,7 @@ const SUPABASE_STUB = `
     id uuid primary key default gen_random_uuid(),
     email text,
     raw_user_meta_data jsonb not null default '{}'::jsonb,
+    email_confirmed_at timestamptz,
     created_at timestamptz not null default now()
   );
   create function auth.uid() returns uuid language sql stable as $$
@@ -79,13 +80,23 @@ class TestDb {
   }
 
   /** auth.users'a kayıt ekler (Supabase signUp'ın yaptığı gibi). */
-  async signUp(meta = {}) {
+  async signUp(meta = {}, { emailConfirmed = true } = {}) {
     const id = randomUUID();
     await this.db.query(
-      `insert into auth.users (id, email, raw_user_meta_data) values ($1, $2, $3)`,
-      [id, `${id}@test.local`, JSON.stringify(meta)],
+      `insert into auth.users (id, email, raw_user_meta_data, email_confirmed_at)
+       values ($1, $2, $3, case when $4::boolean then now() end)`,
+      [id, `${id}@test.local`, JSON.stringify(meta), emailConfirmed],
     );
     return id;
+  }
+
+  /** Flört rızası + ilgi tercihi + flört seçimi. */
+  async enableFlirt(userId, interestedIn) {
+    await this.rpc(userId, "set_dating_preferences", [interestedIn]);
+    await this.as(
+      userId,
+      `update public.profiles set looking_for = array_append(array_remove(looking_for, 'flirt'), 'flirt') where id = auth.uid()`,
+    );
   }
 
   /** Başlangıç sorularını tamamlamış aktif bir kullanıcı oluşturur. */
@@ -99,13 +110,12 @@ class TestDb {
     hobbies = [],
     lookingFor = ["friends"],
     settings = {},
+    emailConfirmed = true,
   }) {
-    const id = await this.signUp({
-      username,
-      birth_date: birthDate,
-      gender,
-      terms_accepted: true,
-    });
+    const id = await this.signUp(
+      { username, birth_date: birthDate, gender, terms_accepted: true },
+      { emailConfirmed },
+    );
     await this.as(
       id,
       `update public.profiles set display_name = $1, city = $2, district = $3, looking_for = $4 where id = auth.uid()`,

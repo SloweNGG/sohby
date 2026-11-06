@@ -368,7 +368,8 @@
       "invalid_body": "Messages must be 1–1000 characters.",
       "flirt_not_allowed": "You can't message this person for dating.",
       "onboarding_required": "Please complete your profile first.",
-      "generic": "Couldn't send the message. Please try again."
+      "generic": "Couldn't send the message. Please try again.",
+      "email_not_verified": "Please verify your email before sending messages. Click the link we sent you."
     }
   },
   "chats": {
@@ -409,7 +410,7 @@
     "start": "This is the start of your chat. Be kind, and think twice before sharing personal details.",
     "errors": {
       "rate_limited": "You're sending messages too fast. Slow down a bit.",
-      "not_allowed": "You can't send messages in this chat.",
+      "not_allowed": "You can't send messages in this chat. If you haven't verified your email, please do so first.",
       "too_long": "Messages can be at most 2000 characters.",
       "generic": "Couldn't send the message."
     }
