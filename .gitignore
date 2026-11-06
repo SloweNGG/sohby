@@ -57,3 +57,13 @@ next-env.d.ts
 # supabase cli yerel durumu
 supabase/.temp/
 supabase/.branches/
+
+# yönetim paneli
+/admin/node_modules
+/admin/.next/
+/admin/.open-next
+/admin/.wrangler
+/admin/.env*
+!/admin/.env.example
+/admin/next-env.d.ts
+/admin/*.tsbuildinfo

@@ -349,6 +349,7 @@ CLAUDE.md eklendi; 15 güvenlik kuralı migration'larla tek tek karşılaştır�
 | 6 | Anonim sohbet | ✅ |
 | 7 | Sohbet silme, tümünü sil, tümünü okundu işaretle | ✅ |
 | 8 | Hesap durumu ekranları + itiraz | ✅ (yaş belgesi yükleme ileride) |
+| 9 | Yönetim paneli (ayrı uygulama) | ✅ (henüz yönetici hesabı yok) |
 
 ## İş 1 — Kararlar ve uzak veritabanı ✅
 
@@ -554,3 +555,31 @@ Migration 11 uzağa uygulandı (dry-run → push).
 ### İleride
 - **Yaş doğrulama belgesi yükleme** (kural 15: şifreli, ayrı bucket, inceleme sonrası en geç 30 gün içinde
   silme). Şu an "yaş doğrulaması istendi" ekranı itiraz/açıklama mesajıyla çalışıyor.
+
+## İş 9 — Yönetim paneli ✅
+
+Ayrı uygulama: `admin/` (Next.js, Cloudflare Workers adı `sohby-admin`, admin.sohbyapp.com için).
+Migration 12 uzağa uygulandı (dry-run → push). **Yayına alınmadı.**
+
+- **Yetki**: yöneticiler veritabanında `private.admins` tablosunda (API'ye kapalı). Panel **gizli anahtar
+  kullanmaz**; normal oturumla `admin_*` fonksiyonlarını çağırır ve her fonksiyon yönetici rolünü kendisi
+  denetler. Yönetici olmayan hesap girişte reddedilir/çıkış yaptırılır; API'den çağırsa da "forbidden".
+- **Silinemez işlem kaydı (kural 14)**: her yönetim işlemi (listeleme dahil) ve **her sohbet görüntüleme**
+  aynı işlem içinde `private.admin_audit_log`'a yazılır. Tablo UPDATE/DELETE/TRUNCATE'i tetikleyiciyle
+  reddeder (veritabanı sahibi bile). Panelde "İşlem kaydı" sayfası var.
+- **Şikâyet kuyruğu**: açık/tümü; ayrıntıda şikâyet notu ve ilgili sohbet (normal, anonim — yönetici gerçek
+  kimliği görür —, ya da mesaj isteği); İncelemeye al / Çözüldü / Geçersiz; 7 gün askıya al / hesabı kapat.
+- **Fotoğraf onayı**: otomatik onay anahtarı (**varsayılan açık**), bekleyen fotoğraflar 5 dakikalık imzalı
+  bağlantıyla; onayla / reddet.
+- **Kullanıcılar**: arama (kullanıcı adı, ad, e-posta), durum filtresi, durum değiştirme (gerekçe + askı bitişi).
+- **İtirazlar**: kabul (hesap açılır) / ret.
+- Güvenlik başlıkları: noindex, no-store, çerçeveleme yok, katı çerez (SameSite=Strict).
+- Testler: 6 yönetim testi (yetkisiz erişim, kayıt yazımı, kaydın değiştirilemezliği, etkiler). `npm test` → 117/117.
+
+### Sabah yapman gerekenler (panel için)
+1. **Kendini yönetici yap** (SQL Editor, bir kez):
+   `insert into private.admins (user_id) select id from auth.users where email = 'SENİN-E-POSTAN';`
+2. `admin/.env.local` oluştur: `.env.example`'daki iki değeri ana uygulamadaki gibi doldur (gizli anahtar yok).
+   Yerelde: `cd admin && npm run dev` → http://localhost:3001
+3. Yayında **Cloudflare Access** ile admin.sohbyapp.com'u yalnızca senin e-postana aç (Zero Trust → Access →
+   Applications). Veritabanı zaten korumalı; Access ikinci katman.

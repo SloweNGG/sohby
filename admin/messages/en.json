@@ -1,0 +1,21 @@
+{
+  "title": "Sohby Admin",
+  "nav": { "reports": "Reports", "photos": "Photo review", "users": "Users", "appeals": "Appeals", "audit": "Audit log", "signOut": "Sign out" },
+  "login": { "title": "Admin sign in", "email": "Email", "password": "Password", "submit": "Sign in", "error": "Sign in failed.", "notAdmin": "This account has no admin rights." },
+  "common": { "save": "Save", "none": "No records.", "user": "User", "date": "Date", "status": "Status", "actions": "Actions", "back": "Back", "deleted": "deleted", "error": "Action failed.", "done": "Saved." },
+  "auditNotice": "Every action and every conversation view in this panel is written to an immutable audit log.",
+  "reports": {
+    "title": "Report queue", "open": "Open", "all": "All", "reason": "Reason", "reporter": "Reporter", "reported": "Reported",
+    "openCount": "{count} open reports", "view": "Review", "anonymous": "Anonymous chat", "note": "Note", "messages": "Conversation",
+    "noMessages": "No conversation attached to this report.", "reviewing": "Mark reviewing", "resolve": "Resolved", "dismiss": "Dismiss",
+    "suspend7": "Suspend 7 days", "close": "Close account", "viewLogged": "This conversation view was written to the audit log."
+  },
+  "reasons": { "spam": "Spam", "harassment": "Harassment", "inappropriate_content": "Inappropriate content", "fake_profile": "Fake profile", "underage": "Under 18", "scam": "Scam", "hate_speech": "Hate speech", "other": "Other" },
+  "reportStatus": { "open": "Open", "reviewing": "Reviewing", "resolved": "Resolved", "dismissed": "Dismissed" },
+  "photos": { "title": "Photo review", "autoApprove": "Auto-approve", "autoApproveHint": "When on, uploaded photos go live immediately. When off, they wait in this queue.", "on": "On", "off": "Off", "approve": "Approve", "reject": "Reject", "empty": "No photos waiting for review." },
+  "users": { "title": "Users", "search": "Username, name or email", "filter": "Status", "any": "All", "email": "Email", "reports": "Reports", "setStatus": "Change status", "reason": "Reason (shown to the user)", "until": "Suspension end (optional)", "apply": "Apply" },
+  "accountStatus": { "active": "Active", "age_verification_required": "Age verification", "suspended": "Suspended", "closed": "Closed" },
+  "appeals": { "title": "Appeals", "accept": "Accept (reopen account)", "reject": "Reject", "empty": "No pending appeals.", "statusAtAppeal": "Status at appeal" },
+  "audit": { "title": "Audit log", "admin": "Admin", "action": "Action", "target": "Target", "details": "Details" },
+  "forbidden": { "title": "No access", "body": "This panel is for admins only." }
+}

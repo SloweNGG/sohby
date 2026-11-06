@@ -1,0 +1,21 @@
+{
+  "title": "Sohby Yönetim",
+  "nav": { "reports": "Şikâyetler", "photos": "Fotoğraf onayı", "users": "Kullanıcılar", "appeals": "İtirazlar", "audit": "İşlem kaydı", "signOut": "Çıkış" },
+  "login": { "title": "Yönetici girişi", "email": "E-posta", "password": "Şifre", "submit": "Giriş yap", "error": "Giriş başarısız.", "notAdmin": "Bu hesabın yönetici yetkisi yok." },
+  "common": { "save": "Kaydet", "none": "Kayıt yok.", "user": "Kullanıcı", "date": "Tarih", "status": "Durum", "actions": "İşlemler", "back": "Geri", "deleted": "silinmiş", "error": "İşlem başarısız.", "done": "Kaydedildi." },
+  "auditNotice": "Bu paneldeki her işlem ve her sohbet görüntüleme silinemez işlem kaydına yazılır.",
+  "reports": {
+    "title": "Şikâyet kuyruğu", "open": "Açık", "all": "Tümü", "reason": "Neden", "reporter": "Şikâyet eden", "reported": "Şikâyet edilen",
+    "openCount": "{count} açık şikâyet", "view": "İncele", "anonymous": "Anonim sohbet", "note": "Not", "messages": "Sohbet",
+    "noMessages": "Bu şikâyete bağlı sohbet yok.", "reviewing": "İncelemeye al", "resolve": "Çözüldü", "dismiss": "Geçersiz",
+    "suspend7": "7 gün askıya al", "close": "Hesabı kapat", "viewLogged": "Bu sohbet görüntülemesi kayda yazıldı."
+  },
+  "reasons": { "spam": "Spam", "harassment": "Taciz", "inappropriate_content": "Uygunsuz içerik", "fake_profile": "Sahte profil", "underage": "18 yaş altı", "scam": "Dolandırıcılık", "hate_speech": "Nefret söylemi", "other": "Diğer" },
+  "reportStatus": { "open": "Açık", "reviewing": "İnceleniyor", "resolved": "Çözüldü", "dismissed": "Geçersiz" },
+  "photos": { "title": "Fotoğraf onayı", "autoApprove": "Otomatik onay", "autoApproveHint": "Açıkken yüklenen fotoğraflar hemen yayınlanır. Kapalıyken bu kuyrukta onay bekler.", "on": "Açık", "off": "Kapalı", "approve": "Onayla", "reject": "Reddet", "empty": "Onay bekleyen fotoğraf yok." },
+  "users": { "title": "Kullanıcılar", "search": "Kullanıcı adı, ad ya da e-posta", "filter": "Durum", "any": "Hepsi", "email": "E-posta", "reports": "Şikâyet", "setStatus": "Durumu değiştir", "reason": "Gerekçe (kullanıcıya gösterilir)", "until": "Askı bitişi (isteğe bağlı)", "apply": "Uygula" },
+  "accountStatus": { "active": "Aktif", "age_verification_required": "Yaş doğrulaması", "suspended": "Askıda", "closed": "Kapatıldı" },
+  "appeals": { "title": "İtirazlar", "accept": "Kabul et (hesabı aç)", "reject": "Reddet", "empty": "Bekleyen itiraz yok.", "statusAtAppeal": "İtiraz anındaki durum" },
+  "audit": { "title": "İşlem kaydı", "admin": "Yönetici", "action": "İşlem", "target": "Hedef", "details": "Ayrıntı" },
+  "forbidden": { "title": "Yetkin yok", "body": "Bu panel yalnızca yöneticiler içindir." }
+}

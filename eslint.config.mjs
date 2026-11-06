@@ -16,6 +16,7 @@ const eslintConfig = defineConfig([
     ".wrangler/**",
     "cloudflare-env.d.ts",
     "supabase/functions/**",
+    "admin/**",
   ]),
 ]);
 

@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+/*
+ * Sohby tasarım sistemi (tasarim/01-marka-renkler.png)
+ *  Mercan       #FF6B57  — birincil eylem
+ *  Lila         #CDB8FF  — ikincil vurgu
+ *  Gece yüzeyi  #2B1A4A  — kart / girdi yüzeyi
+ *  Ay ışığı     #F6F1FF  — metin / açık zemin
+ * Yazı tipi: Sora (başlıklar kalın, metin hafif).
+ */
+@theme {
+  /* CLAUDE.md "Tasarım sistemi (Gece teması)" — yalnızca bu renkler kullanılır. */
+  --color-night: #1e1033;        /* gece: sayfa zemini */
+  --color-night-deep: #160b27;   /* gece-koyu: yan menü, paneller */
+  --color-surface: #2b1a4a;      /* yuzey: kartlar, giriş alanları */
+  --color-line: #3d2a63;         /* cizgi: ayırıcılar */
+  --color-edge: #4a3675;         /* cerceve: ikincil düğme ve alan kenarları */
+  --color-coral: #ff6b57;        /* mercan: ana düğmeler, seçili öğeler, rozetler */
+  --color-coral-text: #ff8a7a;   /* mercan-yazi: koyu zeminde mercan tonlu yazı, tehlike */
+  --color-lilac: #cdb8ff;        /* lila: ikincil vurgu, bağlantılar, avatarlar */
+  --color-moon: #f6f1ff;         /* ay-isigi: ana yazı */
+  --color-muted: #b9aed6;        /* soluk-yazi: ikincil yazı */
+  --color-online: #8fe3b0;       /* cevrimici: YALNIZCA çevrimiçi göstergesi */
+  --color-ink: #1e1033;          /* mercan üzerindeki yazı her zaman gece rengidir */
+
+  --font-sans: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 1.25rem;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background: var(--color-night);
+    color: var(--color-moon);
+    font-family: var(--font-sans);
+    font-weight: 400;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-lilac);
+    outline-offset: 2px;
+  }
+
+  ::placeholder {
+    color: var(--color-muted);
+  }
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
