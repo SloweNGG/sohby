@@ -336,6 +336,53 @@ CLAUDE.md eklendi; 15 güvenlik kuralı migration'larla tek tek karşılaştır�
 
 # Gece 2 — 7 Kasım 2026
 
+## Gece 2 — Sabah özeti
+
+**11 işin 11'i bitti**, her biri ayrı commit (`git log`). **12 migration uzak veritabanında** (her biri önce
+`--dry-run`, sonra `--remote --yes`); iki Edge Function yayında (`purge-underage-accounts`,
+`upload-profile-photo`). **Cloudflare'e hiçbir şey yüklenmedi.** Gizli anahtar hiçbir dosyada yok (tarandı).
+
+Doğrulama: `npm test` → **121/121** (veritabanı/RLS, CLAUDE.md kuralları, anonimlik, saklama, yönetim,
+Edge Function'lar, çeviri ve palet korumaları), `tsc` + ESLint temiz, ana uygulama ve yönetim paneli
+`opennextjs-cloudflare build` ile paketleniyor.
+
+**Gerçek kullanıcıyla tarayıcıdan uçtan uca denenmedi**: kayıt e-postası, giriş, fotoğraf yükleme, Realtime.
+Veritabanı mantığı gerçek Postgres'te test edildi; uzakta salt okunur kontroller yapıldı.
+
+### CLAUDE.md güvenlik kuralları — son durum
+| # | Kural | Durum |
+| --- | --- | --- |
+| 1 | RLS her tabloda, istemciye güven yok | ✅ (uzakta 10/10 + yeni tablolar; testli) |
+| 2 | service_role yalnızca Edge Function'da | ✅ (testle taranıyor) |
+| 3 | Mesajları yalnızca iki katılımcı okur | ✅ |
+| 4 | Medya gizli bucket + kısa ömürlü imzalı bağlantı | ✅ profil fotoğrafı · ⏭ sohbet medyası 2. aşama |
+| 5 | Medya izni sunucuda | ⏭ 2. aşama (sohbet medyası yok) |
+| 6 | Engellenen yazamaz, engelleyeni göremez | ✅ (harita 2. aşama) |
+| 7 | Önce istek: kabule kadar tek mesaj, medya yok | ✅ (normal + anonim) |
+| 8 | Günde 20 yeni kişi, anonimde daha düşük | ✅ (20 toplam, anonim 5) |
+| 9 | 18 yaş + e-posta doğrulanmadan mesaj yok | ✅ (18 altı Google kaydı saatlik görevle silinir) |
+| 10 | Anonimde kimlik hiçbir yanıtta sızmaz; engel/şikâyet gerçek hesaba | ✅ (13 test + yan kanal önlemi) |
+| 11 | Flört ilgisi ayrı tablo, kimse okuyamaz, rıza geri çekilince silinir | ✅ |
+| 12 | Konum yalnızca semt; GPS yok | ✅ (fotoğraflardaki GPS de siliniyor) |
+| 13 | Sohbet silme yalnızca kendi görünümünden; mesajlar saklanır | ✅ (90 gün kararıyla) |
+| 14 | Yönetici işlemleri ve sohbet görüntüleme silinemez kayıtta | ✅ |
+| 15 | Yaş doğrulama belgeleri şifreli, 30 gün | ⏭ belge yükleme henüz yok |
+
+### Sabah senden gerekenler (öncelik sırasıyla)
+1. **Kendini yönetici yap** (SQL Editor): `insert into private.admins (user_id) select id from auth.users where email = 'SENİN-E-POSTAN';`
+   (önce ana uygulamadan kayıt olman gerekiyor).
+2. **Supabase paneli**: yönlendirme adresleri ve e-posta şablonları (Gece 1, Adım 3 sonundaki liste), Google sağlayıcısı.
+3. **Turnstile ve Sentry anahtarları** (İş 11'deki adımlar). Turnstile gizli anahtarı yalnızca Supabase paneline.
+4. `admin/.env.local` oluştur (iki değer, ana uygulamadakiyle aynı) ve Cloudflare Access ile admin.sohbyapp.com'u koru.
+5. Tarayıcıdan uçtan uca dene: iki hesap aç → başlangıç soruları → Keşfet → istek → kabul → anlık mesaj →
+   fotoğraf yükle → anonim yaz → engelle/şikâyet et → panelden incele.
+
+### Sormak istediklerim
+- Anonim sohbetlerde de "sohbeti sil" olsun mu? (Şu an yalnızca normal sohbetlerde.)
+- Yaş doğrulama belgesi yükleme (kural 15) bir sonraki adım olsun mu? Şifreleme için anahtar yönetimi
+  (ör. Supabase Vault) kararı gerekiyor.
+- Reddedilen istekte "kalıcı olarak bir daha istek atamaz" kuralı (Gece 1 sorusu) hâlâ açık.
+
 > Kurallar: onay beklenmedi; kararsız kalınan yerde en güvenli seçenek seçilip burada not edildi.
 > Uzak veritabanına her migration önce `--dry-run` ile denendi, sonra uygulandı. Cloudflare'e yükleme yapılmadı.
 
