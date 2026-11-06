@@ -53,3 +53,7 @@ next-env.d.ts
 
 # yerel görsel kontrol sayfaları (commit edilmez)
 /src/app/[[]locale]/dev-preview/
+
+# supabase cli yerel durumu
+supabase/.temp/
+supabase/.branches/

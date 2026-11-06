@@ -473,6 +473,7 @@ test("anon/authenticated'ın beklenmedik fonksiyon yetkisi yok", async () => {
       "get_conversation", "mark_conversation_read", "get_message_requests",
       "get_badge_counts", "block_user", "unblock_user", "get_blocked_users", "report_user",
       "set_dating_preferences", "withdraw_dating_consent", "has_dating_consent",
+      "delete_my_account",
     ].map((f) => `public.${f}:authenticated`),
   ]);
   const unexpected = rows.map((r) => `${r.fn}:${r.rolname}`).filter((k) => !allowed.has(k));

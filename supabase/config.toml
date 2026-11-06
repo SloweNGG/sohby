@@ -1,0 +1,6 @@
+# Supabase CLI yapılandırması (yalnızca bu projede kullanılan ayarlar).
+project_id = "sohby"
+
+[functions.purge-underage-accounts]
+# JWT doğrulaması fonksiyonun içinde yapılır (yalnızca service_role anahtarı kabul edilir).
+verify_jwt = false

@@ -330,3 +330,63 @@ CLAUDE.md eklendi; 15 güvenlik kuralı migration'larla tek tek karşılaştır�
 | 13 | Sohbet silme yalnızca kendi görünümünden; mesaj saklanır | 🔧 Kısmen: hesap silinince mesajlar artık yok olmuyor; sohbet silme özelliği ileride |
 | 14 | Yönetici işlemleri silinemez kayıtta | ⏭ İleride (yönetim paneli yok) |
 | 15 | Yaş doğrulama belgeleri | ⏭ İleride |
+
+
+---
+
+# Gece 2 — 7 Kasım 2026
+
+> Kurallar: onay beklenmedi; kararsız kalınan yerde en güvenli seçenek seçilip burada not edildi.
+> Uzak veritabanına her migration önce `--dry-run` ile denendi, sonra uygulandı. Cloudflare'e yükleme yapılmadı.
+
+| # | İş | Durum |
+| --- | --- | --- |
+| 1 | 3 kararın uygulanması + migration'ların uzak veritabanına uygulanması | ✅ |
+
+## İş 1 — Kararlar ve uzak veritabanı ✅
+
+### Kararların uygulanması
+- **90 gün saklama** (`20261107000500_retention_and_underage_purge.sql`):
+  - Hesabını silen kişi (`delete_my_account`) hemen görünmez olur, mesaj gönderemez/alamaz; flört
+    tercihi hemen silinir; verileri 90 gün sonra kalıcı silinir.
+  - Açık (open/reviewing) şikâyeti olan kişinin/sohbetin verileri şikâyet kapanana kadar silinmez.
+  - "Kendi görünümünden silinen sohbetler" için 90 gün kuralı, sohbet silme özelliğiyle (iş 7) eklenecek.
+- **18 yaş altı Google kaydı**: hesap hemen kilitleniyor (zaten vardı); her saat başı çalışan görev
+  (`pg_cron`, `sohby-purge-underage`) kilitli hesapları **tamamen siliyor** → en geç ~1 saatte silinir.
+  Ayrıca günlük temizlik görevi (`sohby-purge-expired`, 03:23).
+- **Edge Function** `purge-underage-accounts` yazıldı, test edildi (5 test) ve **Supabase'e yüklendi**.
+  Yalnızca service_role anahtarıyla çağrılabiliyor; uzakta anahtarsız / publishable anahtarlı çağrıların
+  403 ile reddedildiği doğrulandı.
+
+### Karar: silme işini asıl olarak veritabanı görevi yapıyor
+Edge Function'ı zamanlı çağırmak için service_role anahtarının veritabanı kasasına (Vault) yazılması
+gerekiyor; gizli anahtarı hiçbir yere yazmamam gerektiği için bunu yapmadım. "24 saat içinde silme"
+garantisi bu yüzden aynı işi yapan saatlik veritabanı görevine dayanıyor (gizli anahtar gerektirmiyor).
+Edge Function, Auth yönetici API'siyle aynı işi yapıyor; istersen Vault'a anahtarı ekleyip zamanlayıcıyı
+ona bağlayabiliriz (sabah 5 dakikalık iş).
+
+### Uzak veritabanı
+`npx supabase db push --dry-run` çıktısı (CLI 3.0, varsayılanı yerel olduğu için `--remote` eklendi):
+```
+Target: project sohbymain (vujwonanevmcmejwbseo) · production
+DRY RUN: migrations will *not* be pushed to the database.
+Would push these migrations:
+ • 20261107000100_profiles_and_hobbies.sql
+ • 20261107000200_messaging.sql
+ • 20261107000300_discover_safety.sql
+ • 20261107000400_claude_md_security.sql
+ • 20261107000500_retention_and_underage_purge.sql
+```
+Sorun yoktu → `npx supabase db push --remote --yes` ile uygulandı (CLI ajan modunda `--yes` istiyor;
+onayın mesajındaydı). 5 migration da başarılı.
+
+Salt okunur kontroller (uzakta):
+- Hobi kataloğu giriş yapmadan okunabiliyor: **48** kayıt.
+- Giriş yapmadan profiles, profile_private, messages, conversations, message_requests, blocks, reports
+  → **hepsi reddedildi** (42501).
+- `discover_profiles` ve `underage_accounts_due` giriş yapmadan çağrılamıyor; `username_available` çalışıyor.
+- `private.dating_preferences` API'ye hiç açık değil.
+- 10 tablonun **10'unda RLS açık**; iki zamanlanmış görev kurulu ve aktif.
+- `supabase migration list --remote`: yerel ve uzak 5/5 eşleşiyor.
+
+Testler: 57/57 (veritabanı, saklama, Edge Function, birim).
