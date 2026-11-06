@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentUserId } from "@/lib/auth/session";
 import { ChatRoom } from "@/components/chat/chat-room";
+import { SafetyActions } from "@/components/safety/safety-actions";
 import type { ConversationHeader, Message } from "@/lib/types";
 
 const PAGE = 50;
@@ -59,6 +60,24 @@ export default async function ConversationPage({ params }: PageProps<"/[locale]/
       header={header}
       initialMessages={messages}
       initialHasMore={messages.length === PAGE}
+      headerActions={
+        <SafetyActions
+          variant="buttons"
+          targetId={header.other.id}
+          name={header.other.display_name}
+          conversationId={header.id}
+          afterBlockHref="/chats"
+        />
+      }
+      mobileMenu={
+        <SafetyActions
+          variant="menu"
+          targetId={header.other.id}
+          name={header.other.display_name}
+          conversationId={header.id}
+          afterBlockHref="/chats"
+        />
+      }
     />
   );
 }

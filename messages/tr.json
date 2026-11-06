@@ -433,5 +433,46 @@
       "not_allowed": "Bu isteği şu anda kabul edemezsin.",
       "generic": "İşlem tamamlanamadı. Lütfen tekrar dene."
     }
+  },
+  "safety": {
+    "block": "Engelle",
+    "report": "Şikâyet et",
+    "more": "Diğer seçenekler",
+    "blockTitle": "{name} engellensin mi?",
+    "blockBody": "Engellediğin kişi sana mesaj ya da istek gönderemez, seni Keşfet’te ve profilinde göremez. Aranızdaki sohbet iki taraftan da gizlenir. Engellendiğini öğrenmez.",
+    "blockConfirm": "Engelle",
+    "blockDone": "{name} engellendi.",
+    "cancel": "Vazgeç",
+    "reportTitle": "{name} kişisini şikâyet et",
+    "reportIntro": "Şikâyetin gizlidir; {name} kimin şikâyet ettiğini öğrenmez.",
+    "reasonLabel": "Neden şikâyet ediyorsun?",
+    "reasons": {
+      "spam": "Spam ya da reklam",
+      "harassment": "Taciz ya da rahatsız edici mesajlar",
+      "inappropriate_content": "Uygunsuz içerik",
+      "fake_profile": "Sahte profil",
+      "underage": "18 yaşından küçük olduğunu düşünüyorum",
+      "scam": "Dolandırıcılık ya da para isteme",
+      "hate_speech": "Nefret söylemi",
+      "other": "Diğer"
+    },
+    "noteLabel": "Not",
+    "noteOptional": "(isteğe bağlı)",
+    "notePlaceholder": "Ne olduğunu kısaca anlat. Bu, incelememize yardımcı olur.",
+    "noteCount": "{count} / 1000",
+    "alsoBlock": "Ayrıca engelle",
+    "alsoBlockHint": "Sana bir daha yazamaz ve seni göremez.",
+    "submit": "Şikâyeti gönder",
+    "reasonRequired": "Bir neden seç.",
+    "reportDoneTitle": "Şikâyetin alındı",
+    "reportDone": "Teşekkürler. Ekibimiz en kısa sürede inceleyecek.",
+    "reportDoneBlocked": "Teşekkürler. {name} engellendi; ekibimiz şikâyetini en kısa sürede inceleyecek.",
+    "close": "Tamam",
+    "errors": {
+      "rate_limited": "Bugün çok fazla şikâyet gönderdin. Acil bir durum varsa 112’yi ara.",
+      "not_found": "Bu kişi bulunamadı.",
+      "note_too_long": "Not en çok 1000 karakter olabilir.",
+      "generic": "İşlem tamamlanamadı. Lütfen tekrar dene."
+    }
   }
 }

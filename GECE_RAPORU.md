@@ -13,7 +13,7 @@
 | 5 | Keşfet + filtreler + kişi profili | ✅ Bitti |
 | 6 | Birebir mesajlaşma (Realtime) | ✅ Bitti (Realtime gerçek Supabase'le denenemedi) |
 | 7 | Mesaj istekleri | ✅ Bitti |
-| 8 | Engelle / şikâyet et | ⏳ |
+| 8 | Engelle / şikâyet et | ✅ Bitti |
 | 9 | Tanıtım sayfası | ⏳ |
 
 ## ⚠️ Sabah ilk bakman gerekenler
@@ -237,3 +237,25 @@ Sayfalar: `/chats/requests` (liste), `/chats/requests/<id>` (ayrıntı).
 ### Kararlar
 - İstek ayrıntısındaki metin "…okuduğunu bilmez ve **seninle sohbete devam edemez**" oldu (tasarımda
   "fotoğraf ya da sesli mesaj gönderemez"; bu özellikler olmadığı için metni gerçeğe uydurdum).
+
+## Adım 8 — Engelle ve şikâyet et ✅
+
+Bileşen: `src/components/safety/safety-actions.tsx`, mantık: `src/lib/safety/actions.ts`.
+
+- Üç yerde: **kişi profili** (masaüstü yazı bağlantıları, telefonda fotoğraf üstündeki ⋯ menü),
+  **sohbet başlığı** (masaüstü çerçeveli butonlar — tasarım 08, telefonda ⋯ menü — tasarım 14),
+  **mesaj isteği ayrıntısı** (yazı bağlantıları — tasarım 09).
+- **Engelle**: onay penceresi (ne olacağı açıkça yazıyor; karşı taraf öğrenmez). Sonra Keşfet'e /
+  sohbetlere / isteklere döner; sohbet iki taraftan gizlenir, bekleyen istekler kapanır.
+- **Şikâyet et**: 8 neden (taciz, spam, uygunsuz içerik, sahte profil, 18 yaş altı, dolandırıcılık,
+  nefret söylemi, diğer), isteğe bağlı not (1000 karakter), **"Ayrıca engelle"** seçeneği.
+  Sohbetten ya da istekten açıldıysa o sohbet/istek şikâyete bağlam olarak eklenir (veritabanı,
+  bağlamın gerçekten iki kişi arasında olduğunu doğruluyor). Günde en çok 10 şikâyet.
+
+### Kararlar
+- **"Ayrıca engelle" varsayılan olarak işaretli** (güvenli seçenek); kullanıcı kaldırabilir.
+- Şikâyetler veritabanında `status = 'open'` ile birikiyor. **İnceleme paneli yok**: şikâyetleri okumak
+  ve işlem yapmak service_role (gizli anahtar) gerektiriyor → atlandı. Şimdilik Supabase panelinden
+  `reports` tablosuna bakılabilir.
+- Engellenenler listesi (Ayarlar > Engellenenler) ve engeli kaldırma arayüzü yok (ayarlar ekranı listede yoktu);
+  veritabanı tarafı (`get_blocked_users`, `unblock_user`) hazır.

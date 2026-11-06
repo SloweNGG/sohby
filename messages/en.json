@@ -433,5 +433,46 @@
       "not_allowed": "You can't accept this request right now.",
       "generic": "Couldn't complete the action. Please try again."
     }
+  },
+  "safety": {
+    "block": "Block",
+    "report": "Report",
+    "more": "More options",
+    "blockTitle": "Block {name}?",
+    "blockBody": "They won't be able to message you or send requests, and won't see you in Explore or on your profile. Your chat will be hidden for both of you. They won't be notified.",
+    "blockConfirm": "Block",
+    "blockDone": "{name} has been blocked.",
+    "cancel": "Cancel",
+    "reportTitle": "Report {name}",
+    "reportIntro": "Reports are confidential; {name} won't know who reported them.",
+    "reasonLabel": "Why are you reporting?",
+    "reasons": {
+      "spam": "Spam or advertising",
+      "harassment": "Harassment or disturbing messages",
+      "inappropriate_content": "Inappropriate content",
+      "fake_profile": "Fake profile",
+      "underage": "I think they're under 18",
+      "scam": "Scam or asking for money",
+      "hate_speech": "Hate speech",
+      "other": "Other"
+    },
+    "noteLabel": "Note",
+    "noteOptional": "(optional)",
+    "notePlaceholder": "Briefly describe what happened. It helps our review.",
+    "noteCount": "{count} / 1000",
+    "alsoBlock": "Also block",
+    "alsoBlockHint": "They won't be able to message you or see you again.",
+    "submit": "Send report",
+    "reasonRequired": "Choose a reason.",
+    "reportDoneTitle": "Report received",
+    "reportDone": "Thank you. Our team will review it as soon as possible.",
+    "reportDoneBlocked": "Thank you. {name} has been blocked and our team will review your report as soon as possible.",
+    "close": "OK",
+    "errors": {
+      "rate_limited": "You've sent too many reports today. If it's an emergency, call 112.",
+      "not_found": "This person couldn't be found.",
+      "note_too_long": "Notes can be at most 1000 characters.",
+      "generic": "Couldn't complete the action. Please try again."
+    }
   }
 }

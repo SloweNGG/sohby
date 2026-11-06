@@ -5,6 +5,7 @@ import type { Locale } from "@/i18n/routing";
 import { ablativeSuffix } from "@/lib/i18n/turkish";
 import { Silhouette } from "@/components/profile/avatar";
 import { ComposeButton, ComposeProvider, IdeaButton } from "@/components/profile/compose";
+import { SafetyActions } from "@/components/safety/safety-actions";
 import { Tag } from "@/components/ui/chip";
 import { buttonClasses } from "@/components/ui/button";
 import { signOutAction } from "@/lib/auth/actions";
@@ -119,6 +120,17 @@ export async function ProfileView({
         >
           <ChevronLeft className="h-5 w-5" aria-hidden="true" />
         </Link>
+        {!p.is_self && (
+          <div className="absolute right-4 top-4">
+            <SafetyActions
+              variant="menu"
+              targetId={p.id}
+              name={p.display_name}
+              afterBlockHref="/discover"
+              menuClassName="border-transparent bg-night/80"
+            />
+          </div>
+        )}
       </div>
 
       <div className="mx-auto mt-0 grid max-w-[1120px] gap-8 px-4 md:mt-6 md:grid-cols-[440px_minmax(0,1fr)] md:gap-10 md:px-0">
@@ -187,6 +199,9 @@ export async function ProfileView({
               </div>
               {p.outgoing_request_pending && <p className="mt-2 text-sm text-muted">{t("requestSentHint")}</p>}
               {p.incoming_request_id && <p className="mt-2 text-sm text-muted">{t("incomingRequest")}</p>}
+              <div className="mt-6 hidden md:block">
+                <SafetyActions variant="links" targetId={p.id} name={p.display_name} afterBlockHref="/discover" />
+              </div>
             </>
           )}
         </section>

@@ -5,6 +5,7 @@ import { resolveLocale } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { RequestView } from "@/components/requests/request-view";
+import { SafetyActions } from "@/components/safety/safety-actions";
 import type { MessageRequestItem } from "@/lib/types";
 
 async function loadRequest(id: string) {
@@ -38,5 +39,19 @@ export default async function RequestPage({ params }: PageProps<"/[locale]/chats
     );
   }
 
-  return <RequestView request={request} locale={locale} />;
+  return (
+    <RequestView
+      request={request}
+      locale={locale}
+      safety={
+        <SafetyActions
+          variant="links"
+          targetId={request.sender.id}
+          name={request.sender.display_name}
+          requestId={request.id}
+          afterBlockHref="/chats/requests"
+        />
+      }
+    />
+  );
 }
