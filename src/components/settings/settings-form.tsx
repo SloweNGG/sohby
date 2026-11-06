@@ -4,6 +4,8 @@ import { useRef, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { deleteAccountAction, saveSettingsAction, unblockUserAction } from "@/lib/settings/actions";
+import { unblockAnonymousAction } from "@/lib/anon/actions";
+import { useAlias } from "@/components/anon/alias";
 import { MESSAGE_POLICIES, type BlockedUser, type MessagePolicy } from "@/lib/types";
 import type { Locale } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
@@ -47,6 +49,8 @@ export function SettingsForm({
 }) {
   const t = useTranslations("settings");
   const tp = useTranslations("onboarding.privacy.policy");
+  const tAnon = useTranslations("anon");
+  const alias = useAlias();
   const router = useRouter();
   const pathname = usePathname();
   const [v, setV] = useState(initial);
@@ -178,24 +182,32 @@ export function SettingsForm({
           <p className="text-sm text-muted">{t("blockedEmpty")}</p>
         ) : (
           <ul className="divide-y divide-line border-y border-line">
-            {blockedList.map((b) => (
-              <li key={b.id} className="flex items-center justify-between gap-4 py-3">
-                <span className="min-w-0">
-                  <span className="block truncate font-semibold">{b.display_name}</span>
-                  <span className="block truncate text-sm text-muted">@{b.username}</span>
-                </span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={async () => {
-                    const r = await unblockUserAction(b.id);
-                    if (r.ok) setBlockedList((list) => list.filter((x) => x.id !== b.id));
-                  }}
-                >
-                  {t("unblock")}
-                </Button>
-              </li>
-            ))}
+            {blockedList.map((b) => {
+              const key = b.id ?? b.anon_conversation_id ?? b.blocked_at;
+              const isAnon = Boolean(b.anon_conversation_id);
+              return (
+                <li key={key} className="flex items-center justify-between gap-4 py-3">
+                  <span className="min-w-0">
+                    <span className="block truncate font-semibold">
+                      {isAnon ? alias(b.alias_adjective ?? "", b.alias_animal ?? "") : b.display_name}
+                    </span>
+                    <span className="block truncate text-sm text-muted">{isAnon ? tAnon("badge") : `@${b.username}`}</span>
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={async () => {
+                      const r = isAnon
+                        ? await unblockAnonymousAction(b.anon_conversation_id as string)
+                        : await unblockUserAction(b.id as string);
+                      if (r.ok) setBlockedList((list) => list.filter((x) => x !== b));
+                    }}
+                  >
+                    {t("unblock")}
+                  </Button>
+                </li>
+              );
+            })}
           </ul>
         )}
       </section>

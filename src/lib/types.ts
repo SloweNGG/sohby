@@ -111,7 +111,16 @@ export type ConversationHeader = {
   other_read_at?: string | null;
 };
 
-export type BlockedUser = { id: string; username: string; display_name: string; blocked_at: string };
+export type BlockedUser = {
+  id: string | null;
+  username: string | null;
+  display_name: string | null;
+  blocked_at: string;
+  /** Anonim sohbetten yapılan engel: kimlik yerine takma ad döner. */
+  anon_conversation_id?: string | null;
+  alias_adjective?: string | null;
+  alias_animal?: string | null;
+};
 
 export type Message = {
   id: string;
@@ -130,3 +139,23 @@ export type MessageRequestItem = {
 };
 
 export type BadgeCounts = { unread_messages: number; pending_requests: number };
+
+/** Anonim sohbet (alıcıya gönderen hakkında yalnızca takma ad döner). */
+export type AnonRole = "anonymous" | "recipient";
+export type AnonConversationItem = {
+  id: string;
+  role: AnonRole;
+  status: "pending" | "active" | "declined" | "revealed";
+  alias_adjective: string;
+  alias_animal: string;
+  reveal_requested: boolean;
+  created_at: string;
+  recipient: ProfileCard | null;
+  last_message: { body: string; created_at: string; from_me: boolean } | null;
+  unread_count: number;
+};
+export type AnonConversationHeader = Omit<AnonConversationItem, "last_message" | "unread_count"> & {
+  can_send: boolean;
+  revealed_conversation_id: string | null;
+};
+export type AnonMessage = { id: string; conversation_id: string; from_anonymous: boolean; body: string; created_at: string };

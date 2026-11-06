@@ -43,10 +43,14 @@ export function BadgeProvider({ initial, userId, children }: { initial: BadgeCou
         if ((payload.new as { sender_id?: string }).sender_id !== userId) void refresh();
       })
       .on("postgres_changes", { event: "*", schema: "public", table: "message_requests" }, () => void refresh())
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "anon_messages" }, () => void refresh())
       .subscribe();
     const onFocus = () => void refresh();
     window.addEventListener("focus", onFocus);
+    // Yeni anonim istekler Realtime ile gelmez (kimlik taşıyan satır yayınlanmaz); dakikada bir yoklanır.
+    const timer = window.setInterval(() => void refresh(), 60_000);
     return () => {
+      window.clearInterval(timer);
       window.removeEventListener("focus", onFocus);
       void supabase.removeChannel(channel);
     };

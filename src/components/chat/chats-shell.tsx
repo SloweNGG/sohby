@@ -18,15 +18,18 @@ import { cn } from "@/lib/cn";
 import { InitialAvatar } from "@/components/profile/avatar";
 import { useBadges } from "@/components/app/badges";
 import { useListTime } from "./time";
-import type { ConversationListItem, MessageRequestItem } from "@/lib/types";
+import type { AnonConversationItem, ConversationListItem, MessageRequestItem } from "@/lib/types";
+import { VenetianMask } from "lucide-react";
+import { useAlias } from "@/components/anon/alias";
 
 type ChatsContextValue = {
   conversations: ConversationListItem[];
   requests: MessageRequestItem[];
+  anon: AnonConversationItem[];
   refresh: () => void;
 };
 
-const ChatsContext = createContext<ChatsContextValue>({ conversations: [], requests: [], refresh: () => {} });
+const ChatsContext = createContext<ChatsContextValue>({ conversations: [], requests: [], anon: [], refresh: () => {} });
 export const useChats = () => useContext(ChatsContext);
 
 /**
@@ -38,15 +41,18 @@ export function ChatsShell({
   userId,
   initialConversations,
   initialRequests,
+  initialAnon,
   children,
 }: {
   userId: string;
   initialConversations: ConversationListItem[];
   initialRequests: MessageRequestItem[];
+  initialAnon: AnonConversationItem[];
   children: ReactNode;
 }) {
   const [conversations, setConversations] = useState(initialConversations);
   const [requests, setRequests] = useState(initialRequests);
+  const [anon, setAnon] = useState(initialAnon);
   const badges = useBadges();
   const timer = useRef<number | undefined>(undefined);
   const pathname = usePathname();
@@ -54,9 +60,14 @@ export function ChatsShell({
   const load = useCallback(async () => {
     try {
       const supabase = createClient();
-      const [c, r] = await Promise.all([supabase.rpc("get_conversations"), supabase.rpc("get_message_requests")]);
+      const [c, r, a] = await Promise.all([
+        supabase.rpc("get_conversations"),
+        supabase.rpc("get_message_requests"),
+        supabase.rpc("get_anon_conversations"),
+      ]);
       if (c.data) setConversations(c.data as ConversationListItem[]);
       if (r.data) setRequests(r.data as MessageRequestItem[]);
+      if (a.data) setAnon(a.data as AnonConversationItem[]);
     } catch {
       /* bir sonraki olayda tekrar denenir */
     }
@@ -81,6 +92,7 @@ export function ChatsShell({
       .channel(`chat-list:${userId}`)
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, () => refresh())
       .on("postgres_changes", { event: "*", schema: "public", table: "message_requests" }, () => refresh())
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "anon_messages" }, () => refresh())
       .subscribe();
     return () => {
       void supabase.removeChannel(channel);
@@ -88,15 +100,20 @@ export function ChatsShell({
   }, [userId, refresh]);
 
   // Sunucudan yeni ilk veri geldiğinde (router.refresh) eşitle.
-  const [seen, setSeen] = useState({ initialConversations, initialRequests });
-  if (seen.initialConversations !== initialConversations || seen.initialRequests !== initialRequests) {
-    setSeen({ initialConversations, initialRequests });
+  const [seen, setSeen] = useState({ initialConversations, initialRequests, initialAnon });
+  if (
+    seen.initialConversations !== initialConversations ||
+    seen.initialRequests !== initialRequests ||
+    seen.initialAnon !== initialAnon
+  ) {
+    setSeen({ initialConversations, initialRequests, initialAnon });
     setConversations(initialConversations);
     setRequests(initialRequests);
+    setAnon(initialAnon);
   }
 
   const showListOnMobile = pathname.endsWith("/chats") || pathname.endsWith("/chats/requests");
-  const value = useMemo(() => ({ conversations, requests, refresh }), [conversations, requests, refresh]);
+  const value = useMemo(() => ({ conversations, requests, anon, refresh }), [conversations, requests, anon, refresh]);
 
   return (
     <ChatsContext.Provider value={value}>
@@ -118,8 +135,9 @@ export function ChatsShell({
 function ChatsSidebar() {
   const t = useTranslations("chats");
   const pathname = usePathname();
-  const { requests } = useChats();
+  const { requests, anon } = useChats();
   const onRequests = pathname.startsWith("/chats/requests");
+  const requestCount = requests.length + anon.filter((a) => a.role === "recipient" && a.status === "pending").length;
   const [query, setQuery] = useState("");
 
   const tab = (active: boolean) =>
@@ -138,9 +156,9 @@ function ChatsSidebar() {
           </Link>
           <Link href="/chats/requests" className={tab(onRequests)} aria-current={onRequests ? "page" : undefined}>
             {t("tabRequests")}
-            {requests.length > 0 && (
+            {requestCount > 0 && (
               <span className="grid h-5 min-w-5 place-items-center rounded-full bg-coral px-1 text-[11px] font-bold text-ink">
-                {requests.length}
+                {requestCount}
               </span>
             )}
           </Link>
@@ -170,8 +188,9 @@ function ConversationList({ query }: { query: string }) {
   const t = useTranslations("chats");
   const locale = useLocale();
   const pathname = usePathname();
-  const { conversations } = useChats();
+  const { conversations, anon } = useChats();
   const listTime = useListTime();
+  const anonItems = anon.filter((a) => !(a.role === "recipient" && a.status === "pending"));
 
   const q = query.trim().toLocaleLowerCase(locale);
   const items = q
@@ -182,7 +201,7 @@ function ConversationList({ query }: { query: string }) {
       )
     : conversations;
 
-  if (conversations.length === 0) {
+  if (conversations.length === 0 && anonItems.length === 0) {
     return (
       <div className="px-4 py-10">
         <p className="text-lg font-semibold">{t("emptyTitle")}</p>
@@ -193,9 +212,19 @@ function ConversationList({ query }: { query: string }) {
       </div>
     );
   }
-  if (items.length === 0) return <p className="px-4 py-6 text-sm text-muted">{t("noMatch")}</p>;
+  if (items.length === 0 && (q || anonItems.length === 0)) return <p className="px-4 py-6 text-sm text-muted">{t("noMatch")}</p>;
 
   return (
+    <>
+    {!q && anonItems.length > 0 && (
+      <ul className="mb-1 divide-y divide-line md:divide-y-0">
+        {anonItems.map((a) => (
+          <li key={a.id}>
+            <AnonRow item={a} active={pathname === `/chats/anon/${a.id}`} />
+          </li>
+        ))}
+      </ul>
+    )}
     <ul className="divide-y divide-line md:divide-y-0">
       {items.map((c) => {
         const active = pathname === `/chats/${c.id}`;
@@ -239,6 +268,55 @@ function ConversationList({ query }: { query: string }) {
         );
       })}
     </ul>
+    </>
+  );
+}
+
+/** Anonim sohbet satırı: alıcıya yalnızca takma ad, gönderene karşı tarafın adı. */
+function AnonRow({ item, active }: { item: AnonConversationItem; active: boolean }) {
+  const t = useTranslations("anon");
+  const tc = useTranslations("chats");
+  const locale = useLocale();
+  const alias = useAlias();
+  const listTime = useListTime(item.role === "recipient" && item.status === "pending");
+  const name = item.role === "anonymous" && item.recipient ? item.recipient.display_name : alias(item.alias_adjective, item.alias_animal);
+  const unread = item.unread_count > 0;
+  return (
+    <Link
+      href={`/chats/anon/${item.id}`}
+      aria-current={active ? "page" : undefined}
+      className={cn("flex items-center gap-3.5 rounded-2xl px-3 py-3", active ? "bg-surface" : "hover:bg-surface/60")}
+    >
+      {item.role === "anonymous" && item.recipient ? (
+        <InitialAvatar id={item.recipient.id} name={item.recipient.display_name} locale={locale} size={48} />
+      ) : (
+        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-line text-lilac" aria-hidden="true">
+          <VenetianMask className="h-6 w-6" />
+        </span>
+      )}
+      <span className="min-w-0 flex-1">
+        <span className="flex items-center gap-2">
+          <span className="truncate font-semibold">{name}</span>
+          <span className="shrink-0 rounded-full border border-lilac px-2 py-px text-[11px] font-semibold text-lilac">
+            {item.role === "anonymous" ? t("listYou") : t("badge")}
+          </span>
+          {item.role === "anonymous" && item.status === "pending" && (
+            <span className="shrink-0 text-[11px] text-muted">{t("pending")}</span>
+          )}
+        </span>
+        <span className="mt-0.5 flex items-center justify-between gap-2">
+          <span className={cn("truncate text-sm", unread ? "font-semibold text-moon" : "text-muted")}>
+            {item.last_message ? (item.last_message.from_me ? `${tc("you")} ${item.last_message.body}` : item.last_message.body) : ""}
+          </span>
+          {unread && (
+            <span className="grid h-[22px] min-w-[22px] shrink-0 place-items-center rounded-full bg-coral px-1.5 text-xs font-bold text-ink">
+              {item.unread_count}
+            </span>
+          )}
+        </span>
+      </span>
+      {item.last_message && <span className="shrink-0 self-start pt-1 text-xs text-muted">{listTime(item.last_message.created_at)}</span>}
+    </Link>
   );
 }
 
@@ -247,13 +325,23 @@ function RequestList() {
   const tl = useTranslations("lookingFor");
   const locale = useLocale();
   const pathname = usePathname();
-  const { requests } = useChats();
+  const { requests, anon } = useChats();
   const listTime = useListTime(true);
+  const anonPending = anon.filter((a) => a.role === "recipient" && a.status === "pending");
 
   return (
     <>
       <p className="px-3 pb-3 text-[13px] leading-relaxed text-muted">{t("intro")}</p>
-      {requests.length === 0 ? (
+      {anonPending.length > 0 && (
+        <ul>
+          {anonPending.map((a) => (
+            <li key={a.id}>
+              <AnonRow item={a} active={pathname === `/chats/anon/${a.id}`} />
+            </li>
+          ))}
+        </ul>
+      )}
+      {requests.length === 0 && anonPending.length === 0 ? (
         <p className="px-3 py-6 text-sm text-muted">{t("empty")}</p>
       ) : (
         <ul>

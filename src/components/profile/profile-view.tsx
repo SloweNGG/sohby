@@ -6,6 +6,7 @@ import { ablativeSuffix } from "@/lib/i18n/turkish";
 import { ProfilePhoto } from "@/components/profile/avatar";
 import { ComposeButton, ComposeProvider, IdeaButton } from "@/components/profile/compose";
 import { SafetyActions } from "@/components/safety/safety-actions";
+import { AnonComposeButton } from "@/components/anon/anon-compose";
 import { Tag } from "@/components/ui/chip";
 import { buttonClasses } from "@/components/ui/button";
 import { signOutAction } from "@/lib/auth/actions";
@@ -198,9 +199,19 @@ export async function ProfileView({
             </div>
           ) : (
             <>
-              <div className="mt-6 flex items-center gap-3 md:mt-8">
+              <div className="mt-6 flex flex-wrap items-center gap-3 md:mt-8">
                 <span className="contents md:hidden">{primaryAction("mobile")}</span>
                 <span className="hidden md:contents">{primaryAction("desktop")}</span>
+                {!p.conversation_id && !p.incoming_request_id && !p.outgoing_request_pending && (
+                  <>
+                    <span className="contents md:hidden">
+                      <AnonComposeButton targetId={p.id} name={p.display_name} variant="mobile" />
+                    </span>
+                    <span className="hidden md:contents">
+                      <AnonComposeButton targetId={p.id} name={p.display_name} />
+                    </span>
+                  </>
+                )}
               </div>
               {p.outgoing_request_pending && <p className="mt-2 text-sm text-muted">{t("requestSentHint")}</p>}
               {p.incoming_request_id && <p className="mt-2 text-sm text-muted">{t("incomingRequest")}</p>}

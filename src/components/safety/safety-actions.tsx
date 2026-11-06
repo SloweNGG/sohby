@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Ban, CheckCircle2, Flag, MoreHorizontal, X } from "lucide-react";
 import { useRouter } from "@/i18n/navigation";
 import { blockUserAction, reportUserAction, type SafetyErrorCode } from "@/lib/safety/actions";
+import { blockAnonymousAction, reportAnonymousAction } from "@/lib/anon/actions";
 import { REPORT_REASONS, type ReportReason } from "@/lib/safety/reasons";
 import { Button, buttonClasses } from "@/components/ui/button";
 import { FormAlert, Textarea } from "@/components/ui/field";
@@ -15,7 +16,10 @@ import { cn } from "@/lib/cn";
 type Variant = "links" | "buttons" | "menu";
 
 type Props = {
-  targetId: string;
+  /** Normal kişi için gerçek kimlik; anonim sohbette boş bırakılır. */
+  targetId?: string;
+  /** Anonim sohbet: işlemler kimlik yerine sohbet üzerinden gerçek hesaba işler. */
+  anonConversationId?: string;
   name: string;
   /** Engelledikten sonra gidilecek sayfa (ör. /discover, /chats). */
   afterBlockHref: string;
@@ -34,6 +38,7 @@ type Props = {
  */
 export function SafetyActions({
   targetId,
+  anonConversationId,
   name,
   afterBlockHref,
   conversationId,
@@ -105,10 +110,17 @@ export function SafetyActions({
         </details>
       )}
 
-      <BlockDialog dialogRef={blockRef} targetId={targetId} name={name} afterHref={afterBlockHref} />
+      <BlockDialog
+        dialogRef={blockRef}
+        targetId={targetId}
+        anonConversationId={anonConversationId}
+        name={name}
+        afterHref={afterBlockHref}
+      />
       <ReportDialog
         dialogRef={reportRef}
         targetId={targetId}
+        anonConversationId={anonConversationId}
         name={name}
         afterBlockHref={afterBlockHref}
         conversationId={conversationId}
@@ -137,11 +149,13 @@ function DialogHeader({ title, onClose, closeLabel, id }: { title: string; onClo
 function BlockDialog({
   dialogRef,
   targetId,
+  anonConversationId,
   name,
   afterHref,
 }: {
   dialogRef: React.RefObject<HTMLDialogElement | null>;
-  targetId: string;
+  targetId?: string;
+  anonConversationId?: string;
   name: string;
   afterHref: string;
 }) {
@@ -155,9 +169,11 @@ function BlockDialog({
   const confirm = () => {
     setError(null);
     startTransition(async () => {
-      const result = await blockUserAction({ targetId });
+      const result = anonConversationId
+        ? await blockAnonymousAction(anonConversationId)
+        : await blockUserAction({ targetId: targetId ?? "" });
       if (!result.ok) {
-        setError(result.error);
+        setError((result.error as SafetyErrorCode) === "not_found" ? "not_found" : "generic");
         return;
       }
       close();
@@ -193,13 +209,15 @@ function BlockDialog({
 function ReportDialog({
   dialogRef,
   targetId,
+  anonConversationId,
   name,
   afterBlockHref,
   conversationId,
   requestId,
 }: {
   dialogRef: React.RefObject<HTMLDialogElement | null>;
-  targetId: string;
+  targetId?: string;
+  anonConversationId?: string;
   name: string;
   afterBlockHref: string;
   conversationId?: string;
@@ -244,16 +262,19 @@ function ReportDialog({
     }
     setError(null);
     startTransition(async () => {
-      const result = await reportUserAction({
-        targetId,
-        reason,
-        note: note || undefined,
-        alsoBlock,
-        conversationId,
-        requestId,
-      });
+      const result = anonConversationId
+        ? await reportAnonymousAction({ conversationId: anonConversationId, reason, note: note || undefined, alsoBlock })
+        : await reportUserAction({
+            targetId: targetId ?? "",
+            reason,
+            note: note || undefined,
+            alsoBlock,
+            conversationId,
+            requestId,
+          });
       if (!result.ok) {
-        setError(result.error);
+        const e = result.error as string | undefined;
+        setError(e === "rate_limited" || e === "not_found" || e === "note_too_long" ? e : "generic");
         return;
       }
       setDone({ blocked: alsoBlock });

@@ -468,6 +468,8 @@ test("anon/authenticated'ın beklenmedik fonksiyon yetkisi yok", async () => {
     "public.username_available:authenticated",
     "private.can_send_message:authenticated",
     "private.can_view_profile_photo:authenticated",
+    "private.anon_role:authenticated",
+    "private.anon_blocked:authenticated",
     ...[
       "set_birth_date", "touch_presence", "discover_profiles", "get_profile",
       "start_conversation", "respond_message_request", "get_conversations",
@@ -475,6 +477,9 @@ test("anon/authenticated'ın beklenmedik fonksiyon yetkisi yok", async () => {
       "get_badge_counts", "block_user", "unblock_user", "get_blocked_users", "report_user",
       "set_dating_preferences", "withdraw_dating_consent", "has_dating_consent",
       "delete_my_account",
+      "start_anonymous", "respond_anonymous", "send_anon_message", "mark_anon_read", "request_reveal",
+      "reveal_identity", "block_anonymous", "unblock_anonymous", "report_anonymous",
+      "get_anon_conversations", "get_anon_conversation",
     ].map((f) => `public.${f}:authenticated`),
   ]);
   const unexpected = rows.map((r) => `${r.fn}:${r.rolname}`).filter((k) => !allowed.has(k));

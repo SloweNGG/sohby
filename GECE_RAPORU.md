@@ -346,6 +346,7 @@ CLAUDE.md eklendi; 15 güvenlik kuralı migration'larla tek tek karşılaştır�
 | 3 | Profil düzenleme + profil fotoğrafı (gizli bucket, imzalı bağlantı) | ✅ (gerçek yükleme tarayıcıdan denenmedi) |
 | 4 | Gizlilik ayarları | ✅ |
 | 5 | Flört | ✅ |
+| 6 | Anonim sohbet | ✅ |
 
 ## İş 1 — Kararlar ve uzak veritabanı ✅
 
@@ -481,3 +482,38 @@ Migration 8 uzağa uygulandı (dry-run → push).
 ### Karar
 - İlgi tercihi sahibine de geri gösterilmediği için (kural 11) "güncelle" ekranında seçimler boş başlıyor;
   kullanıcı yeniden seçiyor.
+
+## İş 6 — Anonim sohbet ✅
+
+Migration 9 uzağa uygulandı (dry-run → push). Sayfa: `/chats/anon/<id>`; profilde "Anonim yaz".
+
+**Nasıl çalışıyor**
+- "Anonim yaz" → mesaj her zaman **istek** olarak gider; kabul edilene kadar tek mesaj. Alıcı yalnızca
+  rastgele bir **takma ad** görür ("Gizli Tilki" / "Secret Fox"; iki dilde çevrilir).
+- Alıcı kabul edince sohbet açılır. Alıcı **"Kimliğini açmasını iste"**; anonim taraf **"Kimliğini aç"**
+  (onaylı) → bütün mesajlar gerçek kimlikle normal sohbete taşınır.
+- Alıcı ayarlardan "Anonim mesajları kabul et"i kapatabilir. Zaten tanıştığın (sohbet/istek olan) kişiye
+  anonim yazılamaz. Günde en çok 5 yeni anonim sohbet (20 yeni kişi sınırına da sayılır). E-posta doğrulaması şart.
+
+**Kimlik sızmaması (kural 10) — nasıl sağlandı**
+- Anonim sohbetler ayrı tablolarda. Alıcının okuyabildiği satırlarda (`anon_conversations`,
+  `anon_messages`, Realtime yükleri) **gönderen kimliği hiç yok**; mesajlarda yalnızca "anonim taraftan mı".
+  Gerçek gönderen yalnızca API'ye kapalı `private.anon_senders` tablosunda.
+- Engel: gerçek hesaba işler (gönderen alıcıya hiçbir yoldan ulaşamaz, onu göremez). Alıcının engellenenler
+  listesinde ve engel tablosunda kimlik değil takma ad görünür.
+- Şikâyet: gerçek hesaba işler (yönetici görür). Şikâyet eden `reported_id` sütununu **okuyamaz**
+  (normal şikâyetlerde de; sütun düzeyinde yetki kaldırıldı).
+- **Dolaylı sızıntı önlemi:** normal engel çift yönlü; ama anonim sohbetten yapılan engel yalnızca engelleneni
+  kısıtlıyor. Aksi hâlde alıcı "engelledikten sonra Keşfet'imden / sohbetlerimden kim kayboldu?" diye bakıp
+  kimliği çıkarabilirdi. Testle doğrulandı: engelleyenin Keşfet'i değişmiyor.
+- Reddedilen anonim istek göndericiye "bekliyor" görünür.
+- Testler: 13 anonim sohbet testi (alıcının erişebildiği 7 farklı yanıtta gönderenin id/kullanıcı adı/adı
+  aranıyor). `npm test` → 99/99.
+
+### Kararlar / bilinen sınırlar
+- Yeni anonim istekler Realtime ile anlık gelmez (kimlik taşıyan satır yayınlamamak için); rozetler dakikada
+  bir ve sekmeye dönüşte tazelenir. Mesajlar ise anlık.
+- Anonim sohbette "okundu bilgisi" yok.
+- Yan kanal kontrolü: anonim engelden sonra engelleyen o kişiye normal yoldan yazmayı denese bile farklı bir
+  tepki almıyor (testle doğrulandı), bu yüzden bilinen bir "deneyerek bulma" yolu kalmadı. Yine de anonimlik,
+  bir güvenlik incelemesinde ayrıca gözden geçirilmeli.

@@ -2,15 +2,16 @@ import { resolveLocale } from "@/i18n/locale";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentUserId } from "@/lib/auth/session";
 import { ChatsShell } from "@/components/chat/chats-shell";
-import type { ConversationListItem, MessageRequestItem } from "@/lib/types";
+import type { AnonConversationItem, ConversationListItem, MessageRequestItem } from "@/lib/types";
 
 export default async function ChatsLayout({ children, params }: LayoutProps<"/[locale]/chats">) {
   await resolveLocale(params);
   const userId = await getCurrentUserId();
   const supabase = await createClient();
-  const [conversations, requests] = await Promise.all([
+  const [conversations, requests, anon] = await Promise.all([
     supabase.rpc("get_conversations"),
     supabase.rpc("get_message_requests"),
+    supabase.rpc("get_anon_conversations"),
   ]);
 
   return (
@@ -18,6 +19,7 @@ export default async function ChatsLayout({ children, params }: LayoutProps<"/[l
       userId={userId ?? ""}
       initialConversations={(conversations.data ?? []) as ConversationListItem[]}
       initialRequests={(requests.data ?? []) as MessageRequestItem[]}
+      initialAnon={(anon.data ?? []) as AnonConversationItem[]}
     >
       {children}
     </ChatsShell>
