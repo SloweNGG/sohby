@@ -280,7 +280,9 @@
     "profile": "Profil",
     "myProfile": "Profilim",
     "signOut": "Çıkış yap",
-    "accountMenu": "Hesap menüsü"
+    "accountMenu": "Hesap menüsü",
+    "settings": "Ayarlar",
+    "editProfile": "Profili düzenle"
   },
   "discover": {
     "metaTitle": "Keşfet",

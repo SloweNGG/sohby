@@ -280,7 +280,9 @@
     "profile": "Profile",
     "myProfile": "My profile",
     "signOut": "Sign out",
-    "accountMenu": "Account menu"
+    "accountMenu": "Account menu",
+    "settings": "Settings",
+    "editProfile": "Edit profile"
   },
   "discover": {
     "metaTitle": "Explore",

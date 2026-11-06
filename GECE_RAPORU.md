@@ -350,6 +350,7 @@ CLAUDE.md eklendi; 15 güvenlik kuralı migration'larla tek tek karşılaştır�
 | 7 | Sohbet silme, tümünü sil, tümünü okundu işaretle | ✅ |
 | 8 | Hesap durumu ekranları + itiraz | ✅ (yaş belgesi yükleme ileride) |
 | 9 | Yönetim paneli (ayrı uygulama) | ✅ (henüz yönetici hesabı yok) |
+| 10 | Menü: yalnızca çalışan sayfalar | ✅ |
 
 ## İş 1 — Kararlar ve uzak veritabanı ✅
 
@@ -583,3 +584,12 @@ Migration 12 uzağa uygulandı (dry-run → push). **Yayına alınmadı.**
    Yerelde: `cd admin && npm run dev` → http://localhost:3001
 3. Yayında **Cloudflare Access** ile admin.sohbyapp.com'u yalnızca senin e-postana aç (Zero Trust → Access →
    Applications). Veritabanı zaten korumalı; Access ikinci katman.
+
+## İş 10 — Menü ✅
+
+- Masaüstü kenar çubuğu: **Keşfet, Sohbetler (rozetli), Ayarlar** + profil menüsü (**Profilim, Profili düzenle,
+  Çıkış**). Telefon alt menüsü: **Keşfet, Sohbetler, Ayarlar, Profil** (4 sekme).
+- CLAUDE.md'deki **Harita** ve **Bildirimler** 2. aşamada; çalışmadıkları için menüde yoklar.
+- Menü tek bir listeden (`src/components/app/nav-items.ts`) üretiliyor; test her menü öğesinin gerçekten var
+  olan bir sayfaya gittiğini denetliyor (ileride sayfası olmayan bir düğme eklenirse test kırılır).
+- Düzeltme: başkasının profilindeyken "Profil" sekmesi seçili görünüyordu; artık Keşfet seçili.

@@ -1,22 +1,21 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { LogOut, MessageSquare, User, UserRound, Users } from "lucide-react";
+import { LogOut, MessageSquare, PencilLine, Settings, User, UserRound, Users, type LucideIcon } from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { LogoMark } from "@/components/logo";
 import { signOutAction } from "@/lib/auth/actions";
 import { avatarColors, initial } from "@/lib/avatar";
 import { cn } from "@/lib/cn";
 import { useBadges } from "./badges";
+import { NAV_ITEMS, activeSection, navHref, type NavKey } from "./nav-items";
 
 type Me = { id: string; username: string; displayName: string };
 
-function useSection() {
-  const pathname = usePathname();
-  if (pathname.startsWith("/chats")) return "chats";
-  if (pathname.startsWith("/discover")) return "discover";
-  if (pathname.startsWith("/u/")) return "profile";
-  return null;
+const ICONS: Record<NavKey, LucideIcon> = { discover: Users, chats: MessageSquare, settings: Settings, profile: User };
+
+function useSection(username: string) {
+  return activeSection(usePathname(), username);
 }
 
 function Badge({ count, className }: { count: number; className?: string }) {
@@ -38,7 +37,7 @@ export function Sidebar({ me }: { me: Me }) {
   const t = useTranslations("app");
   const tCommon = useTranslations("common");
   const locale = useLocale();
-  const section = useSection();
+  const section = useSection(me.username);
   const { unread_messages, pending_requests } = useBadges();
   const chatCount = unread_messages + pending_requests;
   const itemClass = (active: boolean) =>
@@ -56,23 +55,34 @@ export function Sidebar({ me }: { me: Me }) {
         <LogoMark className="h-8 w-9" />
       </Link>
       <div className="flex flex-col items-center gap-3">
-        <Link href="/discover" className={itemClass(section === "discover")} aria-current={section === "discover" ? "page" : undefined}>
-          <Users className="h-5 w-5" aria-hidden="true" />
-          <span className="sr-only">{t("discover")}</span>
-        </Link>
-        <Link href="/chats" className={itemClass(section === "chats")} aria-current={section === "chats" ? "page" : undefined}>
-          <MessageSquare className="h-5 w-5" aria-hidden="true" />
-          <Badge count={chatCount} className="right-1.5 top-1.5" />
-          <span className="sr-only">
-            {t("chats")}
-            {chatCount > 0 ? ` (${chatCount})` : ""}
-          </span>
-        </Link>
+        {NAV_ITEMS.filter((i) => i.key !== "profile").map((item) => {
+          const Icon = ICONS[item.key];
+          const active = section === item.key;
+          const count = item.key === "chats" ? chatCount : 0;
+          return (
+            <Link
+              key={item.key}
+              href={navHref(item.key, me.username)}
+              className={itemClass(active)}
+              aria-current={active ? "page" : undefined}
+            >
+              <Icon className="h-5 w-5" aria-hidden="true" />
+              <Badge count={count} className="right-1.5 top-1.5" />
+              <span className="sr-only">
+                {t(item.key)}
+                {count > 0 ? ` (${count})` : ""}
+              </span>
+            </Link>
+          );
+        })}
       </div>
       <div className="mt-auto">
         <details className="group relative">
           <summary
-            className="grid h-11 w-11 cursor-pointer list-none place-items-center rounded-full text-[15px] font-bold text-ink ring-coral group-open:ring-2 [&::-webkit-details-marker]:hidden"
+            className={cn(
+              "grid h-11 w-11 cursor-pointer list-none place-items-center rounded-full text-[15px] font-bold text-ink ring-coral group-open:ring-2 [&::-webkit-details-marker]:hidden",
+              section === "profile" && "ring-2",
+            )}
             style={{ background: avatarColors(me.id).soft }}
             aria-label={t("accountMenu")}
           >
@@ -82,6 +92,10 @@ export function Sidebar({ me }: { me: Me }) {
             <Link href={`/u/${me.username}`} className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-line">
               <UserRound className="h-4 w-4" aria-hidden="true" />
               {t("myProfile")}
+            </Link>
+            <Link href="/profile/edit" className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-line">
+              <PencilLine className="h-4 w-4" aria-hidden="true" />
+              {t("editProfile")}
             </Link>
             <form action={signOutAction}>
               <button type="submit" className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm hover:bg-line">
@@ -99,18 +113,20 @@ export function Sidebar({ me }: { me: Me }) {
 /** Telefon alt gezinme çubuğu (tasarim/12, 13, 15). Sohbet ekranında gizlenir. */
 export function BottomNav({ me }: { me: Me }) {
   const t = useTranslations("app");
-  const section = useSection();
+  const section = useSection(me.username);
   const pathname = usePathname();
   const { unread_messages, pending_requests } = useBadges();
   const chatCount = unread_messages + pending_requests;
   const inConversation = /^\/chats\/(?!requests$)[^/]+/.test(pathname);
   if (inConversation) return null;
 
-  const items = [
-    { key: "discover", href: "/discover", icon: Users, label: t("discover"), count: 0 },
-    { key: "chats", href: "/chats", icon: MessageSquare, label: t("chats"), count: chatCount },
-    { key: "profile", href: `/u/${me.username}`, icon: User, label: t("profile"), count: 0 },
-  ] as const;
+  const items = NAV_ITEMS.map((item) => ({
+    key: item.key,
+    href: navHref(item.key, me.username),
+    icon: ICONS[item.key],
+    label: t(item.key),
+    count: item.key === "chats" ? chatCount : 0,
+  }));
 
   return (
     <nav
@@ -126,7 +142,7 @@ export function BottomNav({ me }: { me: Me }) {
                 href={href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "relative flex w-20 flex-col items-center gap-1 text-xs font-semibold",
+                  "relative flex w-[72px] flex-col items-center gap-1 text-xs font-semibold",
                   active ? "text-coral-text" : "text-moon",
                 )}
               >
