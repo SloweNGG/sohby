@@ -48,12 +48,20 @@ function mapAuthError(error: AuthError | null | undefined): AuthErrorCode {
   if (code === "weak_password") return "weak_password";
   if (code === "same_password") return "same_password";
   if (code === "email_address_invalid") return "email_invalid";
+  if (code === "captcha_failed") return "captcha_failed";
   if (/underage/i.test(error.message)) return "underage";
   if (/invalid_username/i.test(error.message)) return "username_invalid";
   return "generic";
 }
 
 const configError: AuthFormState = { status: "error", error: "config" };
+
+/** Turnstile belirteci (site anahtarı tanımlıysa zorunlu). Supabase Auth doğrular. */
+function captcha(formData: FormData): { token?: string; missing: boolean } {
+  const token = str(formData, "captchaToken") || undefined;
+  const required = Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
+  return { token, missing: required && !token };
+}
 
 // ---------------------------------------------------------------------------
 // Kayıt
@@ -82,6 +90,8 @@ export async function signUpAction(_prev: AuthFormState, formData: FormData): Pr
     return { status: "error", fieldErrors, values };
   }
   if (!isSupabaseConfigured()) return { ...configError, values };
+  const cap = captcha(formData);
+  if (cap.missing) return { status: "error", error: "captcha_required", values };
 
   const supabase = await createClient();
 
@@ -101,6 +111,7 @@ export async function signUpAction(_prev: AuthFormState, formData: FormData): Pr
     email,
     password,
     options: {
+      captchaToken: cap.token,
       emailRedirectTo: `${site}/auth/confirm?next=${encodeURIComponent(next)}`,
       data: {
         username,
@@ -142,6 +153,8 @@ export async function signInAction(_prev: AuthFormState, formData: FormData): Pr
   if (!isValidEmail(email)) return { status: "error", fieldErrors: { email: "email_invalid" }, values };
   if (!password) return { status: "error", fieldErrors: { password: "required" }, values };
   if (!isSupabaseConfigured()) return { ...configError, values };
+  const cap = captcha(formData);
+  if (cap.missing) return { status: "error", error: "captcha_required", values };
 
   const cookieStore = await cookies();
   if (remember) {
@@ -156,7 +169,7 @@ export async function signInAction(_prev: AuthFormState, formData: FormData): Pr
   }
 
   const supabase = await createClient({ sessionOnly: !remember });
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { error } = await supabase.auth.signInWithPassword({ email, password, options: { captchaToken: cap.token } });
   if (error) {
     return { status: "error", error: mapAuthError(error), values };
   }
@@ -214,17 +227,21 @@ export async function requestPasswordResetAction(
     return { status: "error", fieldErrors: { email: "email_invalid" }, values: { email } };
   }
   if (!isSupabaseConfigured()) return { ...configError, values: { email } };
+  const cap = captcha(formData);
+  if (cap.missing) return { status: "error", error: "captcha_required", values: { email } };
 
   const locale = await getLocale();
   const site = await getSiteUrl();
   const supabase = await createClient();
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    captchaToken: cap.token,
     redirectTo: `${site}/auth/confirm?next=${encodeURIComponent(localizedPath(locale, "/reset-password"))}`,
   });
 
   // Hesap var mı yok mu belli etmemek için yalnızca hız sınırı hatası gösterilir.
-  if (error && mapAuthError(error) === "rate_limited") {
-    return { status: "error", error: "rate_limited", values: { email } };
+  const mapped = error ? mapAuthError(error) : null;
+  if (mapped === "rate_limited" || mapped === "captcha_failed") {
+    return { status: "error", error: mapped, values: { email } };
   }
   return { status: "success", values: { email } };
 }

@@ -8,6 +8,7 @@ import { signUpAction } from "@/lib/auth/actions";
 import { initialAuthState } from "@/lib/auth/types";
 import { formatDateInput, GENDERS } from "@/lib/validation/auth";
 import { Button } from "@/components/ui/button";
+import { Turnstile } from "./turnstile";
 import { FieldError, FormAlert, Hint, Input, Label } from "@/components/ui/field";
 import { PasswordInput } from "@/components/ui/password-input";
 import { cn } from "@/lib/cn";
@@ -159,6 +160,7 @@ export function SignupForm({ initialEmail = "" }: { initialEmail?: string }) {
         <FieldError>{err("terms")}</FieldError>
       </div>
 
+      <Turnstile resetKey={state} />
       <div>
         <Button type="submit" size="lg" full pending={pending}>
           {t("signup.submit")}

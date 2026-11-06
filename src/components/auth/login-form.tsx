@@ -6,6 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { signInAction } from "@/lib/auth/actions";
 import { initialAuthState, type AuthErrorCode } from "@/lib/auth/types";
 import { Button } from "@/components/ui/button";
+import { Turnstile } from "./turnstile";
 import { FieldError, FormAlert, Input, Label } from "@/components/ui/field";
 import { PasswordInput } from "@/components/ui/password-input";
 
@@ -66,6 +67,7 @@ export function LoginForm({ next, initialError }: { next?: string; initialError?
         {t("login.remember")}
       </label>
 
+      <Turnstile resetKey={state} />
       <Button type="submit" size="lg" full pending={pending}>
         {t("login.submit")}
       </Button>

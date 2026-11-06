@@ -351,6 +351,7 @@ CLAUDE.md eklendi; 15 güvenlik kuralı migration'larla tek tek karşılaştır�
 | 8 | Hesap durumu ekranları + itiraz | ✅ (yaş belgesi yükleme ileride) |
 | 9 | Yönetim paneli (ayrı uygulama) | ✅ (henüz yönetici hesabı yok) |
 | 10 | Menü: yalnızca çalışan sayfalar | ✅ |
+| 11 | Turnstile ve Sentry (kod hazır, anahtarlar boş) | ✅ |
 
 ## İş 1 — Kararlar ve uzak veritabanı ✅
 
@@ -593,3 +594,24 @@ Migration 12 uzağa uygulandı (dry-run → push). **Yayına alınmadı.**
 - Menü tek bir listeden (`src/components/app/nav-items.ts`) üretiliyor; test her menü öğesinin gerçekten var
   olan bir sayfaya gittiğini denetliyor (ileride sayfası olmayan bir düğme eklenirse test kırılır).
 - Düzeltme: başkasının profilindeyken "Profil" sekmesi seçili görünüyordu; artık Keşfet seçili.
+
+## İş 11 — Turnstile ve Sentry ✅ (anahtarlar boş)
+
+- **Turnstile**: kayıt, giriş ve şifre sıfırlama formlarında. Supabase Auth'un yerleşik CAPTCHA desteği
+  kullanılıyor: form belirteci Supabase'e iletiyor, **doğrulamayı Supabase yapıyor** → Turnstile'ın gizli
+  anahtarı uygulamaya hiç girmiyor. Site anahtarı boşken widget görünmüyor ve akış eskisi gibi çalışıyor.
+- **Sentry**: istemci + sunucu hata takibi, yalnızca DSN tanımlıysa açılıyor. **Kişisel veri gönderilmiyor**
+  (istek gövdesi, çerezler, başlıklar, kullanıcı bilgisi, ayrıntılar silinir; oturum kaydı kapalı) — testle doğrulandı.
+- `.env.local`'e boş değişkenler eklendi: `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `NEXT_PUBLIC_SENTRY_DSN`,
+  `NEXT_PUBLIC_SENTRY_ENVIRONMENT` (açıklamaları `.env.example`'da).
+
+### Anahtarları nereden alacaksın
+1. **Turnstile site anahtarı** → Cloudflare paneli → **Turnstile** → *Add widget* → alan adları: `sohbyapp.com`
+   (ve geliştirme için `localhost`) → *Site Key*'i `NEXT_PUBLIC_TURNSTILE_SITE_KEY`'e yaz.
+   **Secret Key**'i dosyaya değil, Supabase paneli → **Authentication → Attack Protection (Bot and Abuse
+   Protection)** → *Enable CAPTCHA protection* → sağlayıcı **Turnstile** → gizli anahtarı oraya yapıştır.
+   ⚠️ Supabase'te CAPTCHA'yı açtığın anda site anahtarı da tanımlı olmalı; yoksa kayıt/giriş reddedilir.
+2. **Sentry DSN** → sentry.io → yeni proje (platform: Next.js) → *Settings → Client Keys (DSN)* →
+   `NEXT_PUBLIC_SENTRY_DSN`'e yaz. Kaynak haritası yükleme (gizli auth token gerektirir) yapılandırılmadı.
+3. Cloudflare'de yayına alırken bu `NEXT_PUBLIC_*` değerleri **derleme ortamına** da girilmeli (derleme
+   sırasında koda gömülürler).

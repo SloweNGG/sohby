@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { requestPasswordResetAction } from "@/lib/auth/actions";
 import { initialAuthState } from "@/lib/auth/types";
 import { Button } from "@/components/ui/button";
+import { Turnstile } from "./turnstile";
 import { FieldError, FormAlert, Input, Label } from "@/components/ui/field";
 
 export function ForgotForm() {
@@ -34,6 +35,7 @@ export function ForgotForm() {
         />
         <FieldError>{fe.email ? t(`errors.${fe.email}`) : null}</FieldError>
       </div>
+      <Turnstile resetKey={state} />
       <Button type="submit" size="lg" full pending={pending}>
         {t("forgot.submit")}
       </Button>

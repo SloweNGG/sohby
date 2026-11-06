@@ -122,7 +122,9 @@
       "link_invalid": "This link is invalid or has expired. Please try again.",
       "oauth_failed": "Couldn't start Google sign-in. Please try again.",
       "config": "Server configuration (Supabase) is missing. Please try again later.",
-      "generic": "Something went wrong. Please try again."
+      "generic": "Something went wrong. Please try again.",
+      "captcha_required": "Please complete the robot check.",
+      "captcha_failed": "The robot check failed. Please try again."
     }
   },
   "legal": {

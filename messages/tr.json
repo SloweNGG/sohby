@@ -122,7 +122,9 @@
       "link_invalid": "Bağlantı geçersiz ya da süresi dolmuş. Lütfen tekrar dene.",
       "oauth_failed": "Google ile giriş başlatılamadı. Lütfen tekrar dene.",
       "config": "Sunucu yapılandırması eksik (Supabase). Lütfen daha sonra tekrar dene.",
-      "generic": "Bir şeyler ters gitti. Lütfen tekrar dene."
+      "generic": "Bir şeyler ters gitti. Lütfen tekrar dene.",
+      "captcha_required": "Lütfen robot doğrulamasını tamamla.",
+      "captcha_failed": "Robot doğrulaması başarısız oldu. Lütfen tekrar dene."
     }
   },
   "legal": {
