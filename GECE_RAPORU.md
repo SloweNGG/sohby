@@ -14,7 +14,7 @@
 | 6 | Birebir mesajlaşma (Realtime) | ✅ Bitti (Realtime gerçek Supabase'le denenemedi) |
 | 7 | Mesaj istekleri | ✅ Bitti |
 | 8 | Engelle / şikâyet et | ✅ Bitti |
-| 9 | Tanıtım sayfası | ⏳ |
+| 9 | Tanıtım sayfası | ✅ Bitti |
 
 ## ⚠️ Sabah ilk bakman gerekenler
 
@@ -259,3 +259,12 @@ Bileşen: `src/components/safety/safety-actions.tsx`, mantık: `src/lib/safety/a
   `reports` tablosuna bakılabilir.
 - Engellenenler listesi (Ayarlar > Engellenenler) ve engeli kaldırma arayüzü yok (ayarlar ekranı listede yoktu);
   veritabanı tarafı (`get_blocked_users`, `unblock_user`) hazır.
+
+## Adım 9 — Tanıtım sayfası ✅
+
+Sayfa: `/` (ve `/en`). Tasarım 02'ye birebir yakın: üst çubuk (Nasıl çalışır, TR/EN, Giriş yap, Katıl),
+"Bu akşam kiminle muhabbet?" başlığı, e-posta kutusu + "Hemen katıl" (e-postayı kayıt formuna taşır),
+18 yaş notu, örnek profil kapsülleri, "Üç adım, bir selam." bölümü, üç özellik, alt bilgi.
+
+- Alt bilgideki **Gizlilik politikası, KVKK aydınlatma metni, İletişim** yer tutucu sayfalara gidiyor.
+- Örnek profiller (Elif, Mert, Zeynep, Can) tasarımdaki gibi sabit metin; gerçek kullanıcı değil.

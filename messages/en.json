@@ -121,7 +121,10 @@
   "legal": {
     "termsTitle": "Terms of use",
     "kvkkTitle": "Privacy notice (KVKK)",
-    "draft": "This text is being prepared. A legally reviewed version will be added here before launch."
+    "draft": "This text is being prepared. A legally reviewed version will be added here before launch.",
+    "privacyPolicyTitle": "Privacy policy",
+    "contactTitle": "Contact",
+    "contactDraft": "Contact details will be available here soon."
   },
   "lookingFor": {
     "chat": "Chat",
@@ -473,6 +476,52 @@
       "not_found": "This person couldn't be found.",
       "note_too_long": "Notes can be at most 1000 characters.",
       "generic": "Couldn't complete the action. Please try again."
+    }
+  },
+  "landing": {
+    "howItWorks": "How it works",
+    "login": "Sign in",
+    "join": "Join",
+    "headline": "Who are you chatting with tonight?",
+    "subtitle": "Meet people nearby who love the same things you do. Browse profiles and start with a hello.",
+    "emailPlaceholder": "Your email address",
+    "cta": "Join now",
+    "ageNote": "Sohby is only for people aged 18 and over.",
+    "examplesLabel": "Example profiles",
+    "stepsTitle": "Three steps, one hello.",
+    "steps": {
+      "1": {
+        "title": "Join with your email",
+        "body": "Pick a username and password, then verify your account with the link we email you."
+      },
+      "2": {
+        "title": "Create your profile",
+        "body": "Your neighbourhood, your hobbies, a few lines about you. You decide how much to share."
+      },
+      "3": {
+        "title": "Message people you click with",
+        "body": "Find people nearby or with shared hobbies, and send a message."
+      }
+    },
+    "features": {
+      "adult": {
+        "title": "18+ only",
+        "body": "We ask for your date of birth at sign-up; under-18s can't register."
+      },
+      "private": {
+        "title": "Private messages",
+        "body": "Only the two people in a chat can see it."
+      },
+      "safety": {
+        "title": "Block and report",
+        "body": "Keep anyone who bothers you away with one tap."
+      }
+    },
+    "footer": {
+      "copyright": "© {year} Sohby",
+      "privacy": "Privacy policy",
+      "kvkk": "Privacy notice (KVKK)",
+      "contact": "Contact"
     }
   }
 }

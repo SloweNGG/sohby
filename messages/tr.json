@@ -121,7 +121,10 @@
   "legal": {
     "termsTitle": "Kullanım koşulları",
     "kvkkTitle": "KVKK aydınlatma metni",
-    "draft": "Bu metin hazırlanıyor. Yayına almadan önce hukuki olarak onaylanmış metin buraya eklenecek."
+    "draft": "Bu metin hazırlanıyor. Yayına almadan önce hukuki olarak onaylanmış metin buraya eklenecek.",
+    "privacyPolicyTitle": "Gizlilik politikası",
+    "contactTitle": "İletişim",
+    "contactDraft": "İletişim bilgileri yakında burada olacak."
   },
   "lookingFor": {
     "chat": "Sohbet",
@@ -473,6 +476,52 @@
       "not_found": "Bu kişi bulunamadı.",
       "note_too_long": "Not en çok 1000 karakter olabilir.",
       "generic": "İşlem tamamlanamadı. Lütfen tekrar dene."
+    }
+  },
+  "landing": {
+    "howItWorks": "Nasıl çalışır",
+    "login": "Giriş yap",
+    "join": "Katıl",
+    "headline": "Bu akşam kiminle muhabbet?",
+    "subtitle": "Yakınında oturan, aynı şeyleri seven insanlarla tanış. Profillere göz at, bir selamla başla.",
+    "emailPlaceholder": "E-posta adresin",
+    "cta": "Hemen katıl",
+    "ageNote": "Sohby yalnızca 18 yaş ve üzerine açıktır.",
+    "examplesLabel": "Örnek profiller",
+    "stepsTitle": "Üç adım, bir selam.",
+    "steps": {
+      "1": {
+        "title": "E-postanla katıl",
+        "body": "Kullanıcı adını ve şifreni belirle, e-postana gelen bağlantıyla hesabını doğrula."
+      },
+      "2": {
+        "title": "Profilini oluştur",
+        "body": "Semtin, hobilerin, kendinden birkaç satır. Ne kadarını paylaşacağına sen karar ver."
+      },
+      "3": {
+        "title": "Ortak noktası olanlara yaz",
+        "body": "Yakınındakileri ya da ortak hobisi olanları bul; mesajını gönder."
+      }
+    },
+    "features": {
+      "adult": {
+        "title": "Yalnızca 18 yaş üstü",
+        "body": "Kayıtta doğum tarihi istenir; 18 yaşından küçükler kayıt olamaz."
+      },
+      "private": {
+        "title": "Özel mesajlar",
+        "body": "Sohbeti yalnızca içindeki iki kişi görür."
+      },
+      "safety": {
+        "title": "Engelle ve bildir",
+        "body": "Rahatsız olduğun kişiyi tek tıkla uzaklaştır."
+      }
+    },
+    "footer": {
+      "copyright": "© {year} Sohby",
+      "privacy": "Gizlilik politikası",
+      "kvkk": "KVKK aydınlatma metni",
+      "contact": "İletişim"
     }
   }
 }
