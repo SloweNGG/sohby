@@ -367,5 +367,71 @@
       "onboarding_required": "Önce profilini tamamlamalısın.",
       "generic": "Mesaj gönderilemedi. Lütfen tekrar dene."
     }
+  },
+  "chats": {
+    "metaTitle": "Sohbetler",
+    "title": "Sohbetler",
+    "tabChats": "Sohbetler",
+    "tabRequests": "İstekler",
+    "search": "Sohbetlerde ara",
+    "you": "Sen:",
+    "unread": "{count, plural, =1 {1 okunmamış mesaj} other {# okunmamış mesaj}}",
+    "emptyTitle": "Henüz sohbetin yok",
+    "emptyBody": "Keşfet’te ortak noktası olan birine selam ver.",
+    "emptyCta": "Keşfet’e git",
+    "noMatch": "Aramana uyan sohbet yok.",
+    "selectTitle": "Bir sohbet seç",
+    "selectBody": "Soldaki listeden bir sohbet seç ya da Keşfet’te yeni biriyle tanış.",
+    "yesterday": "Dün",
+    "today": "Bugün",
+    "minutesShort": "{count} dk",
+    "hoursShort": "{count} sa"
+  },
+  "chat": {
+    "back": "Sohbetlere dön",
+    "online": "Çevrimiçi",
+    "placeholder": "Bir şey yaz…",
+    "placeholderMobile": "Mesaj yaz…",
+    "send": "Gönder",
+    "loadOlder": "Daha eski mesajlar",
+    "noMore": "Sohbetin başı",
+    "sending": "Gönderiliyor…",
+    "failed": "Gönderilemedi",
+    "retry": "Tekrar dene",
+    "cannotSend": "Bu sohbete artık mesaj gönderemezsin.",
+    "notFoundTitle": "Sohbet bulunamadı",
+    "notFoundBody": "Bu sohbet kaldırılmış ya da erişimin yok.",
+    "viewProfile": "Profili gör",
+    "more": "Diğer seçenekler",
+    "start": "Sohbetin başlangıcı. Saygılı ol, kişisel bilgilerini paylaşmadan önce iki kez düşün.",
+    "errors": {
+      "rate_limited": "Çok hızlı mesaj gönderiyorsun. Biraz yavaşla.",
+      "not_allowed": "Bu sohbete mesaj gönderemezsin.",
+      "too_long": "Mesaj en çok 2000 karakter olabilir.",
+      "generic": "Mesaj gönderilemedi."
+    }
+  },
+  "requests": {
+    "metaTitle": "Mesaj istekleri",
+    "intro": "Henüz konuşmadığın kişilerin ilk mesajları burada bekler. Sen kabul etmeden sohbet açılmaz.",
+    "empty": "Bekleyen mesaj isteğin yok.",
+    "selectTitle": "Bir istek seç",
+    "selectBody": "İsteği açıp mesajı okuyabilir, kabul edebilir ya da reddedebilirsin.",
+    "viewProfile": "Profili gör",
+    "commonHobbies": "ortak hobileriniz",
+    "sentAgo": "{time} gönderildi",
+    "flirt": "Flört isteği",
+    "privacyNote": "Kabul edene kadar {name} mesajını okuduğunu bilmez ve seninle sohbete devam edemez.",
+    "accept": "Kabul et",
+    "decline": "Reddet",
+    "declined": "İstek reddedildi. {name} bunu bilmeyecek.",
+    "notFoundTitle": "İstek bulunamadı",
+    "notFoundBody": "Bu istek yanıtlanmış ya da kaldırılmış olabilir.",
+    "back": "İsteklere dön",
+    "errors": {
+      "not_found": "Bu istek artık geçerli değil.",
+      "not_allowed": "Bu isteği şu anda kabul edemezsin.",
+      "generic": "İşlem tamamlanamadı. Lütfen tekrar dene."
+    }
   }
 }

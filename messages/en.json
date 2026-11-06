@@ -367,5 +367,71 @@
       "onboarding_required": "Please complete your profile first.",
       "generic": "Couldn't send the message. Please try again."
     }
+  },
+  "chats": {
+    "metaTitle": "Chats",
+    "title": "Chats",
+    "tabChats": "Chats",
+    "tabRequests": "Requests",
+    "search": "Search chats",
+    "you": "You:",
+    "unread": "{count, plural, =1 {1 unread message} other {# unread messages}}",
+    "emptyTitle": "No chats yet",
+    "emptyBody": "Say hi to someone you have something in common with on Explore.",
+    "emptyCta": "Go to Explore",
+    "noMatch": "No chats match your search.",
+    "selectTitle": "Pick a chat",
+    "selectBody": "Choose a chat from the list or meet someone new on Explore.",
+    "yesterday": "Yesterday",
+    "today": "Today",
+    "minutesShort": "{count}m",
+    "hoursShort": "{count}h"
+  },
+  "chat": {
+    "back": "Back to chats",
+    "online": "Online",
+    "placeholder": "Write something…",
+    "placeholderMobile": "Write a message…",
+    "send": "Send",
+    "loadOlder": "Older messages",
+    "noMore": "Start of the conversation",
+    "sending": "Sending…",
+    "failed": "Not sent",
+    "retry": "Retry",
+    "cannotSend": "You can no longer send messages in this chat.",
+    "notFoundTitle": "Chat not found",
+    "notFoundBody": "This chat was removed or you don't have access.",
+    "viewProfile": "View profile",
+    "more": "More options",
+    "start": "This is the start of your chat. Be kind, and think twice before sharing personal details.",
+    "errors": {
+      "rate_limited": "You're sending messages too fast. Slow down a bit.",
+      "not_allowed": "You can't send messages in this chat.",
+      "too_long": "Messages can be at most 2000 characters.",
+      "generic": "Couldn't send the message."
+    }
+  },
+  "requests": {
+    "metaTitle": "Message requests",
+    "intro": "First messages from people you haven't talked to wait here. No chat opens until you accept.",
+    "empty": "You have no pending message requests.",
+    "selectTitle": "Pick a request",
+    "selectBody": "Open a request to read the message, then accept or decline it.",
+    "viewProfile": "View profile",
+    "commonHobbies": "shared hobbies",
+    "sentAgo": "Sent {time}",
+    "flirt": "Dating request",
+    "privacyNote": "Until you accept, {name} won't know you've read the message and can't continue the chat.",
+    "accept": "Accept",
+    "decline": "Decline",
+    "declined": "Request declined. {name} won't be notified.",
+    "notFoundTitle": "Request not found",
+    "notFoundBody": "This request may have been answered or removed.",
+    "back": "Back to requests",
+    "errors": {
+      "not_found": "This request is no longer valid.",
+      "not_allowed": "You can't accept this request right now.",
+      "generic": "Couldn't complete the action. Please try again."
+    }
   }
 }

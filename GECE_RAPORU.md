@@ -11,7 +11,7 @@
 | 3 | Kayıt / giriş / şifre sıfırlama | ✅ Bitti (gerçek Supabase'le denenemedi) |
 | 4 | Başlangıç soruları akışı | ✅ Bitti |
 | 5 | Keşfet + filtreler + kişi profili | ✅ Bitti |
-| 6 | Birebir mesajlaşma (Realtime) | ⏳ |
+| 6 | Birebir mesajlaşma (Realtime) | ✅ Bitti (Realtime gerçek Supabase'le denenemedi) |
 | 7 | Mesaj istekleri | ⏳ |
 | 8 | Engelle / şikâyet et | ⏳ |
 | 9 | Tanıtım sayfası | ⏳ |
@@ -196,3 +196,27 @@ Sayfalar: `/discover`, `/u/<kullanıcı-adı>`. Uygulama kabuğu: `src/app/[loca
 - Fotoğraf olmadığı için tasarımdaki siluetleri kullanıcıya özgü renkle çizdim; küçük fotoğraf şeridi yok.
 - Profil sayfaları `noindex` (arama motorlarına kapalı); profiller yalnızca giriş yapmış kullanıcılara açık.
 - Yaş filtresinde 18–99 seçiliyse filtre yok sayılıyor; aksi hâlde yaşını gizleyenler hiç görünmezdi.
+
+## Adım 6 — Birebir mesajlaşma ✅
+
+Sayfalar: `/chats` (liste), `/chats/<id>` (sohbet). Bileşenler: `src/components/chat/`.
+
+- **Sohbet listesi** (tasarım 08 / 13): Sohbetler / İstekler sekmeleri (istek sayısı rozetli), arama,
+  baş harfli avatar + çevrimiçi noktası, son mesaj ("Sen: …"), okunmamışlar kalın + mercan sayı,
+  telefonda zaman etiketi (14:32 / Dün / Pzt).
+- **Sohbet ekranı** (tasarım 08 / 14): başlık (ad, semt ya da "Çevrimiçi"), gün ayraçları (Bugün / Dün),
+  balonlar (gelen: gece yüzeyi, giden: mercan), otomatik büyüyen yazma alanı, Enter ile gönder
+  (Shift+Enter yeni satır), "Daha eski mesajlar" ile 50'şer geriye yükleme.
+- **Anlık iletim**: Supabase Realtime `postgres_changes` (sohbet ekranı yalnızca o sohbeti, liste ve
+  rozetler kullanıcının görebildiği tüm mesajları dinler; yetki RLS ile).
+- **İyimser gönderim**: mesaj anında görünür; hata olursa sebebiyle ("çok hızlı", "gönderemezsin")
+  ve "Tekrar dene" ile. Realtime ile çift görünme engellendi.
+- **Okunmamış sayıları**: sohbet açıkken ve sekme görünürken `mark_conversation_read`; liste ve
+  gezinme rozeti anında güncellenir. Engellenen ilişkide yazma alanı yerine bilgi notu çıkar.
+- Telefonda sohbet ekranında alt gezinme gizlenir (tasarım 14).
+
+### Kararlar / kapsam dışı
+- Fotoğraf ve sesli mesaj butonları (tasarımda var) **eklenmedi**: görev "yazılı mesajlaşma".
+- Sohbeti silme (çöp kutusu ikonu) eklenmedi: veritabanında "benden gizle" desteği yok, sabah konuşalım.
+- "Okundu" bilgisi gösterilmiyor (ayarlar ekranıyla birlikte gelmeli: tasarımda "okundu bilgisi" ayarı var).
+- Saatler next-intl üzerinden **Europe/Istanbul** saat dilimiyle gösteriliyor (sunucu/istemci uyumu için).
