@@ -274,6 +274,7 @@ export async function ProfileView({
       name={p.display_name}
       mode={p.message_mode === "direct" ? "direct" : "request"}
       autoOpen={autoCompose}
+      flirtAllowed={p.flirt_compatible}
     >
       {content}
     </ComposeProvider>

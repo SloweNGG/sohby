@@ -1,5 +1,5 @@
 import { useLocale, useTranslations } from "next-intl";
-import { MessageSquare } from "lucide-react";
+import { Heart, MessageSquare } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { ProfilePhoto } from "@/components/profile/avatar";
 import { Tag } from "@/components/ui/chip";
@@ -46,6 +46,12 @@ export function DiscoverCard({ p }: { p: ProfileCard }) {
       <div className="flex flex-1 items-center gap-2 p-3 sm:flex-col sm:items-stretch sm:p-[18px]">
         <div className="min-w-0 flex-1">
           <h2 className="truncate text-base font-bold tracking-[-0.02em] sm:text-xl">{nameLine}</h2>
+          {p.looking_for.includes("flirt") && (
+            <span className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-coral-text">
+              <Heart className="h-3 w-3" aria-hidden="true" />
+              {t("flirtTag")}
+            </span>
+          )}
           <p className="truncate text-[13px] text-muted sm:hidden">{shortPlace}</p>
           <p className="hidden truncate text-sm text-muted sm:block">{place}</p>
           {p.hobbies.length > 0 && (

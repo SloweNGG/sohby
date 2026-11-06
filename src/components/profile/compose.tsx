@@ -8,6 +8,7 @@ import { startConversationAction } from "@/lib/chat/actions";
 import type { ChatErrorCode } from "@/lib/chat/errors";
 import { Button } from "@/components/ui/button";
 import { FormAlert, Textarea } from "@/components/ui/field";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type ComposeContextValue = { open: (prefill?: string) => void };
 const ComposeContext = createContext<ComposeContextValue>({ open: () => {} });
@@ -25,12 +26,15 @@ export function ComposeProvider({
   name,
   mode,
   autoOpen,
+  flirtAllowed = false,
   children,
 }: {
   targetId: string;
   name: string;
   mode: "direct" | "request";
   autoOpen?: boolean;
+  /** İki taraf da karşılıklı flört uyumluysa "flört isteği" seçeneği gösterilir. */
+  flirtAllowed?: boolean;
   children: ReactNode;
 }) {
   const t = useTranslations("profile");
@@ -39,6 +43,7 @@ export function ComposeProvider({
   const [body, setBody] = useState("");
   const [error, setError] = useState<ChatErrorCode | null>(null);
   const [sent, setSent] = useState(false);
+  const [asFlirt, setAsFlirt] = useState(false);
   const [pending, startTransition] = useTransition();
 
   const open = (prefill?: string) => {
@@ -60,7 +65,7 @@ export function ComposeProvider({
   const send = () => {
     setError(null);
     startTransition(async () => {
-      const result = await startConversationAction({ targetId, body });
+      const result = await startConversationAction({ targetId, body, flirt: flirtAllowed && asFlirt });
       if (!result.ok) {
         setError(result.error);
         return;
@@ -121,9 +126,18 @@ export function ComposeProvider({
                 className="bg-night-deep"
               />
               <div className="mt-2 flex justify-between gap-4 text-xs text-muted">
-                <span>{mode === "request" ? t("compose.requestNote", { name }) : t("compose.directNote")}</span>
+                <span>{mode === "request" || asFlirt ? t("compose.requestNote", { name }) : t("compose.directNote")}</span>
                 <span className="shrink-0">{t("compose.count", { count: body.length, max: 1000 })}</span>
               </div>
+              {flirtAllowed && (
+                <label className="mt-4 flex cursor-pointer items-start gap-3">
+                  <Checkbox checked={asFlirt} onChange={(e) => setAsFlirt(e.target.checked)} className="mt-0.5" />
+                  <span>
+                    <span className="block font-semibold">{t("compose.asFlirt")}</span>
+                    <span className="block text-[13px] text-muted">{t("compose.asFlirtHint")}</span>
+                  </span>
+                </label>
+              )}
               {error && (
                 <div className="mt-4">
                   <FormAlert>{t(`errors.${error}`)}</FormAlert>

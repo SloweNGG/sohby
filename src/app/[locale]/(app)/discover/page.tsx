@@ -6,6 +6,7 @@ import { DiscoverView } from "@/components/discover/discover-view";
 import { DISCOVER_FILTERS, type DiscoverFilter, type DiscoverQuery } from "@/components/discover/toolbar";
 import type { ProfileCard } from "@/lib/types";
 import { withPhotoUrls } from "@/lib/photos";
+import { getMyAccount } from "@/lib/profile";
 
 const PAGE_SIZE = 24;
 const MAX_PAGES = 10;
@@ -33,8 +34,11 @@ export default async function DiscoverPage({ params, searchParams }: PageProps<"
   if (minAge === 18 && (maxAge === null || maxAge === 99)) minAge = null;
   if (maxAge === 99 && minAge === null) maxAge = null;
 
+  const account = await getMyAccount();
+  const canFlirt = Boolean(account?.profile.looking_for.includes("flirt"));
+  const requested = DISCOVER_FILTERS.includes(sp.filter as DiscoverFilter) ? (sp.filter as DiscoverFilter) : "all";
   const current: DiscoverQuery = {
-    filter: DISCOVER_FILTERS.includes(sp.filter as DiscoverFilter) ? (sp.filter as DiscoverFilter) : "all",
+    filter: requested === "flirt" && !canFlirt ? "all" : requested,
     q: typeof sp.q === "string" ? sp.q.trim().slice(0, 50) : "",
     minAge,
     maxAge,
@@ -61,6 +65,7 @@ export default async function DiscoverPage({ params, searchParams }: PageProps<"
       error={Boolean(error)}
       hasMore={hasMore}
       page={page}
+      canFlirt={canFlirt}
     />
   );
 }

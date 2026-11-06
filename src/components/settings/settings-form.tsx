@@ -36,7 +36,15 @@ type ToggleKey =
   | "acceptAnonymous";
 
 /** Ayarlar > Gizlilik (tasarim/11). Yalnızca çalışan ayarlar gösterilir. */
-export function SettingsForm({ initial, blocked }: { initial: SettingsInitial; blocked: BlockedUser[] }) {
+export function SettingsForm({
+  initial,
+  blocked,
+  flirtSection,
+}: {
+  initial: SettingsInitial;
+  blocked: BlockedUser[];
+  flirtSection?: React.ReactNode;
+}) {
   const t = useTranslations("settings");
   const tp = useTranslations("onboarding.privacy.policy");
   const router = useRouter();
@@ -160,6 +168,8 @@ export function SettingsForm({ initial, blocked }: { initial: SettingsInitial; b
           </Button>
         </div>
       </form>
+
+      {flirtSection}
 
       <section id="blocked" className="scroll-mt-6">
         <h2 className="text-xl">{t("blockedTitle")}</h2>

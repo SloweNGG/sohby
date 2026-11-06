@@ -16,6 +16,7 @@ export async function DiscoverView({
   error,
   hasMore,
   page,
+  canFlirt,
 }: {
   locale: Locale;
   current: DiscoverQuery;
@@ -23,6 +24,7 @@ export async function DiscoverView({
   error: boolean;
   hasMore: boolean;
   page: number;
+  canFlirt: boolean;
 }) {
   const t = await getTranslations({ locale, namespace: "discover" });
   const tc = await getTranslations({ locale, namespace: "common" });
@@ -50,7 +52,7 @@ export async function DiscoverView({
       </header>
 
       <div className="mt-4 md:mt-5">
-        <DiscoverFilters current={current} locale={locale} />
+        <DiscoverFilters current={current} locale={locale} canFlirt={canFlirt} />
       </div>
 
       {error ? (
@@ -60,7 +62,7 @@ export async function DiscoverView({
       ) : people.length === 0 ? (
         <div className="mt-16 max-w-md">
           <h2 className="text-2xl">{t("emptyTitle")}</h2>
-          <p className="mt-2 text-muted">{current.filter === "nearby" ? t("emptyNearby") : t("emptyBody")}</p>
+          <p className="mt-2 text-muted">{current.filter === "nearby" ? t("emptyNearby") : current.filter === "flirt" ? t("emptyFlirt") : t("emptyBody")}</p>
           {filtered && (
             <Link href="/discover" className={buttonClasses({ variant: "outline", className: "mt-6" })}>
               {t("clearFilters")}

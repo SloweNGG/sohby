@@ -68,3 +68,33 @@ export async function deleteAccountAction(): Promise<{ ok: boolean }> {
   (await cookies()).delete(SESSION_ONLY_COOKIE);
   return { ok: true };
 }
+
+// ---------------------------------------------------------------------------
+// Flört (CLAUDE.md kural 11: ilgi tercihi ayrı ve okunamaz tabloda)
+// ---------------------------------------------------------------------------
+const flirtSchema = z.object({
+  interestedIn: z.array(z.enum(["female", "male", "other"])).min(1).max(3),
+  consent: z.literal(true),
+});
+
+export async function enableFlirtAction(input: z.input<typeof flirtSchema>): Promise<{ ok: boolean }> {
+  const userId = await getCurrentUserId();
+  const parsed = flirtSchema.safeParse(input);
+  if (!userId || !parsed.success) return { ok: false };
+  const supabase = await createClient();
+  const pref = await supabase.rpc("set_dating_preferences", { p_interested_in: parsed.data.interestedIn });
+  if (pref.error) return { ok: false };
+  const { data: profile } = await supabase.from("profiles").select("looking_for").eq("id", userId).single();
+  const lookingFor = [...new Set([...((profile?.looking_for as string[]) ?? []), "flirt"])];
+  const { error } = await supabase.from("profiles").update({ looking_for: lookingFor }).eq("id", userId);
+  revalidatePath("/", "layout");
+  return { ok: !error };
+}
+
+export async function disableFlirtAction(): Promise<{ ok: boolean }> {
+  if (!(await getCurrentUserId())) return { ok: false };
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("withdraw_dating_consent");
+  revalidatePath("/", "layout");
+  return { ok: !error };
+}

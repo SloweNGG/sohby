@@ -292,7 +292,8 @@
       "nearby": "Nearby",
       "common_hobby": "Shared hobby",
       "online": "Online",
-      "age": "Age range"
+      "age": "Age range",
+      "flirt": "Dating"
     },
     "age": {
       "min": "Min",
@@ -312,7 +313,9 @@
     "emptyNearby": "Nobody else in your city yet. Check the Everyone tab.",
     "clearFilters": "Clear filters",
     "results": "{count, plural, =0 {No results} =1 {1 person} other {# people}}",
-    "photoAlt": "{name}'s profile photo"
+    "photoAlt": "{name}'s profile photo",
+    "flirtTag": "Dating",
+    "emptyFlirt": "Nobody is a mutual dating match for you right now."
   },
   "profile": {
     "back": "Back to Explore",
@@ -369,7 +372,9 @@
       "count": "{count} / {max}",
       "sentTitle": "Request sent",
       "sentBody": "If {name} accepts, the chat will open and we'll let you know.",
-      "close": "OK"
+      "close": "OK",
+      "asFlirt": "Send as a dating request",
+      "asFlirtHint": "Shown only because you're both interested in dating. Dating requests always arrive as requests."
     },
     "errors": {
       "not_found": "You can't message this person right now.",
@@ -607,7 +612,8 @@
     "nav": {
       "privacy": "Privacy",
       "blocked": "Blocked",
-      "account": "Account"
+      "account": "Account",
+      "flirt": "Dating"
     },
     "messagesTitle": "Who can message you?",
     "messagesHint": "Tighten this if unexpected messages bother you.",
@@ -647,6 +653,19 @@
     "deleteConfirmBody": "This can't be undone. Your account closes immediately and you'll be signed out.",
     "deleteConfirm": "Yes, delete my account",
     "cancel": "Cancel",
-    "deleteError": "Couldn't delete the account. Please try again."
+    "deleteError": "Couldn't delete the account. Please try again.",
+    "flirtTitle": "Dating",
+    "flirtOnHint": "Dating is on. Only mutual matches can see this. Your preference is never shown to anyone, and nobody (including you) can read it back.",
+    "flirtOffHint": "Dating is off. If you turn it on, only mutual matches will see it.",
+    "flirtInterest": "Who would you like to meet?",
+    "flirtConsent": "I give my explicit consent for my dating preference and the gender(s) I'm interested in to be processed solely to show me suitable people. I can withdraw this consent here at any time.",
+    "flirtEnable": "Turn on dating",
+    "flirtUpdate": "Update my preference",
+    "flirtDisable": "Turn off dating and withdraw consent",
+    "flirtNeedInterest": "Choose who you'd like to meet.",
+    "flirtNeedConsent": "You need to give explicit consent to use dating.",
+    "flirtSaved": "Your dating preferences were saved.",
+    "flirtDisabled": "Dating turned off; your preference was deleted.",
+    "flirtError": "Couldn't complete the action. Please try again."
   }
 }

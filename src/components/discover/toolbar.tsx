@@ -1,11 +1,11 @@
 import { getTranslations } from "next-intl/server";
-import { Search, SlidersHorizontal } from "lucide-react";
+import { Heart, Search, SlidersHorizontal } from "lucide-react";
 import { Link, getPathname } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/cn";
 import { inputClasses } from "@/components/ui/field";
 
-export const DISCOVER_FILTERS = ["all", "nearby", "common_hobby", "online"] as const;
+export const DISCOVER_FILTERS = ["all", "nearby", "common_hobby", "online", "flirt"] as const;
 export type DiscoverFilter = (typeof DISCOVER_FILTERS)[number];
 
 export type DiscoverQuery = {
@@ -56,20 +56,30 @@ export async function DiscoverSearch({ current, locale, className }: { current: 
   );
 }
 
-export async function DiscoverFilters({ current, locale }: { current: DiscoverQuery; locale: Locale }) {
+export async function DiscoverFilters({
+  current,
+  locale,
+  canFlirt,
+}: {
+  current: DiscoverQuery;
+  locale: Locale;
+  /** Flört filtresi yalnızca flört seçmiş kullanıcıya gösterilir. */
+  canFlirt: boolean;
+}) {
   const t = await getTranslations("discover");
   const action = getPathname({ href: "/discover", locale });
   const ageActive = current.minAge !== null || current.maxAge !== null;
 
   return (
     <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-none md:mx-0 md:flex-wrap md:overflow-visible md:px-0">
-      {DISCOVER_FILTERS.map((f) => (
+      {DISCOVER_FILTERS.filter((f) => f !== "flirt" || canFlirt).map((f) => (
         <Link
           key={f}
           href={{ pathname: "/discover", query: query(current, { filter: f }) }}
           className={chipClass(current.filter === f)}
           aria-current={current.filter === f ? "true" : undefined}
         >
+          {f === "flirt" && <Heart className="h-4 w-4" aria-hidden="true" />}
           {t(`filters.${f}`)}
         </Link>
       ))}

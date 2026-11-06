@@ -5,6 +5,7 @@ import { redirect } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ageFromBirthDate, getMyAccount } from "@/lib/profile";
 import { SettingsForm } from "@/components/settings/settings-form";
+import { FlirtSettings } from "@/components/settings/flirt-settings";
 import type { BlockedUser } from "@/lib/types";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/settings">): Promise<Metadata> {
@@ -30,7 +31,7 @@ export default async function SettingsPage({ params }: PageProps<"/[locale]/sett
       <nav aria-label={t("title")} className="mb-6 md:mb-0">
         <h1 className="text-[34px] tracking-[-0.05em]">{t("title")}</h1>
         <ul className="mt-4 flex gap-2 overflow-x-auto md:mt-6 md:flex-col md:gap-1">
-          {(["privacy", "blocked", "account"] as const).map((k, i) => (
+          {(["privacy", "flirt", "blocked", "account"] as const).map((k, i) => (
             <li key={k}>
               <a
                 href={`#${k}`}
@@ -46,6 +47,7 @@ export default async function SettingsPage({ params }: PageProps<"/[locale]/sett
         </ul>
       </nav>
       <SettingsForm
+        flirtSection={<FlirtSettings enabled={profile.looking_for.includes("flirt")} />}
         blocked={(blocked ?? []) as BlockedUser[]}
         initial={{
           displayName: profile.display_name ?? profile.username,

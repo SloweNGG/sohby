@@ -345,6 +345,7 @@ CLAUDE.md eklendi; 15 güvenlik kuralı migration'larla tek tek karşılaştır�
 | 2 | CLAUDE.md farkları: renkler, gömülü metinler, EN çeviriler | ✅ |
 | 3 | Profil düzenleme + profil fotoğrafı (gizli bucket, imzalı bağlantı) | ✅ (gerçek yükleme tarayıcıdan denenmedi) |
 | 4 | Gizlilik ayarları | ✅ |
+| 5 | Flört | ✅ |
 
 ## İş 1 — Kararlar ve uzak veritabanı ✅
 
@@ -461,3 +462,22 @@ Sayfa: `/settings` (tasarım 11'in çalışan bölümleri). Migration 7 uzağa u
 ### Kapsam dışı bırakılanlar (tasarım 11'de var)
 Haritada görün, arkadaş listem, fotoğraf/sesli mesaj izinleri, gelen fotoğrafları gizle, şikâyetlerim,
 verilerimi indir, bildirimler — hepsi 2. aşama özelliklerine bağlı; çalışmayan seçenek göstermedim.
+
+## İş 5 — Flört ✅
+
+Migration 8 uzağa uygulandı (dry-run → push).
+
+- **Yalnızca birbirini flört amacıyla görme**: Keşfet'te "Flört" filtresi yalnızca flört seçmiş kişiye
+  görünür ve yalnızca **karşılıklı uyumlu** kişileri döndürür (ikisi de flört seçmiş + açık rıza + birbirinin
+  ilgilendiği cinsiyete uyuyor). Flört seçmemiş biri filtreyi API'den çağırsa bile reddedilir.
+- **Eşleştirme** yalnızca `private.dating_preferences`'tan; hiçbir yanıtta ilgi tercihi yok (test var).
+- **Kartta "Flört" etiketi** yalnızca uyumlu izleyene görünür.
+- **Flört etiketli mesaj isteği**: profilde "Flört isteği olarak gönder" seçeneği yalnızca karşılıklı
+  uyumluysanız çıkar; flört istekleri alıcının ayarı "herkes" olsa bile her zaman **istek** olarak gider ve
+  istek listesinde "Flört" etiketiyle görünür.
+- **Ayarlar > Flört**: aç (ilgi + açık rıza), tercihi güncelle, kapat ve rızayı geri çek (tercih hemen silinir).
+- Testler: 5 yeni flört testi. `npm test` → 86/86.
+
+### Karar
+- İlgi tercihi sahibine de geri gösterilmediği için (kural 11) "güncelle" ekranında seçimler boş başlıyor;
+  kullanıcı yeniden seçiyor.

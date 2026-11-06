@@ -292,7 +292,8 @@
       "nearby": "Yakınımdakiler",
       "common_hobby": "Ortak hobi",
       "online": "Çevrimiçi",
-      "age": "Yaş aralığı"
+      "age": "Yaş aralığı",
+      "flirt": "Flört"
     },
     "age": {
       "min": "En az",
@@ -312,7 +313,9 @@
     "emptyNearby": "Şehrinde henüz başka kimse yok. Herkes sekmesine göz at.",
     "clearFilters": "Filtreleri temizle",
     "results": "{count, plural, =0 {Sonuç yok} =1 {1 kişi} other {# kişi}}",
-    "photoAlt": "{name} profil fotoğrafı"
+    "photoAlt": "{name} profil fotoğrafı",
+    "flirtTag": "Flört",
+    "emptyFlirt": "Şu an seninle karşılıklı flört eşleşmesi olan kimse yok."
   },
   "profile": {
     "back": "Keşfet’e dön",
@@ -369,7 +372,9 @@
       "count": "{count} / {max}",
       "sentTitle": "İsteğin gönderildi",
       "sentBody": "{name} kabul ederse sohbet açılacak ve sana haber vereceğiz.",
-      "close": "Tamam"
+      "close": "Tamam",
+      "asFlirt": "Flört isteği olarak gönder",
+      "asFlirtHint": "Yalnızca ikiniz de flörtle ilgilendiğiniz için görünüyor. Flört istekleri her zaman istek olarak gider."
     },
     "errors": {
       "not_found": "Bu kişiye şu anda yazamazsın.",
@@ -607,7 +612,8 @@
     "nav": {
       "privacy": "Gizlilik",
       "blocked": "Engellenenler",
-      "account": "Hesap"
+      "account": "Hesap",
+      "flirt": "Flört"
     },
     "messagesTitle": "Kimler sana mesaj atabilir?",
     "messagesHint": "Beklemediğin mesajlardan rahatsız oluyorsan sıkılaştır.",
@@ -647,6 +653,19 @@
     "deleteConfirmBody": "Bu işlem geri alınamaz. Hesabın hemen kapanır ve oturumun sonlandırılır.",
     "deleteConfirm": "Evet, hesabımı sil",
     "cancel": "Vazgeç",
-    "deleteError": "Hesap silinemedi. Lütfen tekrar dene."
+    "deleteError": "Hesap silinemedi. Lütfen tekrar dene.",
+    "flirtTitle": "Flört",
+    "flirtOnHint": "Flört açık. Yalnızca seninle karşılıklı eşleşen kişiler bunu görür. İlgi tercihin kimseye gösterilmez; sen de dahil kimse onu okuyamaz.",
+    "flirtOffHint": "Flört kapalı. Açarsan yalnızca seninle karşılıklı eşleşen kişiler bunu görür.",
+    "flirtInterest": "Kimlerle tanışmak istersin?",
+    "flirtConsent": "Flört tercihimin ve ilgi duyduğum cinsiyetin, yalnızca bana uygun kişileri göstermek amacıyla işlenmesine açık rızam ile onay veriyorum. Rızamı istediğim zaman buradan geri alabilirim.",
+    "flirtEnable": "Flört’ü aç",
+    "flirtUpdate": "İlgi tercihimi güncelle",
+    "flirtDisable": "Flört’ü kapat ve rızamı geri çek",
+    "flirtNeedInterest": "Kimlerle tanışmak istediğini seç.",
+    "flirtNeedConsent": "Flört için açık rıza vermelisin.",
+    "flirtSaved": "Flört tercihlerin kaydedildi.",
+    "flirtDisabled": "Flört kapatıldı; ilgi tercihin silindi.",
+    "flirtError": "İşlem tamamlanamadı. Lütfen tekrar dene."
   }
 }
