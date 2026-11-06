@@ -11,12 +11,14 @@
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "cf:build": "opennextjs-cloudflare build",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
-    "test:db": "node --test supabase/tests/*.test.mjs"
+    "test:db": "node --test supabase/tests/*.test.mjs",
+    "test": "node --test \"supabase/tests/*.test.mjs\" \"src/**/*.test.mjs\""
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.20.16",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.119.0",
+    "lucide-react": "^1.70.0",
     "next": "16.4.5",
     "next-intl": "^4.14.9",
     "react": "19.3.0",
@@ -32,6 +34,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.5",
+    "playwright-core": "^1.65.0",
     "tailwindcss": "^4",
     "typescript": "^5",
     "wrangler": "^4.158.0"

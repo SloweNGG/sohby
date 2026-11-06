@@ -17,5 +17,110 @@
     "close": "Kapat",
     "genericError": "Bir şeyler ters gitti. Lütfen tekrar dene.",
     "configError": "Sunucu yapılandırması eksik. Lütfen daha sonra tekrar dene."
+  },
+  "auth": {
+    "aside": {
+      "signupHeadline": "Yakınındaki insanlar bir selam uzağında.",
+      "signupBubbleThem": "Selam! Profilinde satranç gördüm",
+      "signupBubbleMe": "Cumartesi oynayalım mı?",
+      "signupFootnote": "E-posta adresin yalnızca giriş yapman ve hesabını doğrulaman için kullanılır, profilinde görünmez.",
+      "loginHeadline": "Tekrar hoş geldin.",
+      "loginBubbleThem": "Sen yokken 3 yeni mesajın oldu",
+      "loginBubbleMe": "Hemen bakıyorum!",
+      "resetHeadline": "Yeni bir şifreyle devam et.",
+      "resetBubbleThem": "Şifremi unuttum galiba…",
+      "resetBubbleMe": "Hallederiz, bir dakika!"
+    },
+    "signup": {
+      "metaTitle": "Hesap oluştur",
+      "title": "Hesap oluştur",
+      "subtitle": "Bir dakikadan kısa sürer.",
+      "username": "Kullanıcı adı",
+      "usernamePlaceholder": "selin_k",
+      "usernameHint": "Harf, rakam ve alt çizgi kullanabilirsin. Profilinde görünür.",
+      "email": "E-posta",
+      "emailPlaceholder": "ornek@eposta.com",
+      "password": "Şifre",
+      "passwordHint": "En az 8 karakter; bir harf ve bir rakam içersin.",
+      "birthDate": "Doğum tarihi",
+      "birthDatePlaceholder": "GG.AA.YYYY",
+      "birthDateHint": "Sohby yalnızca 18 yaş ve üzerine açıktır. Doğum tarihin profilinde görünmez.",
+      "gender": "Cinsiyet",
+      "genderHint": "Profilinde görünüp görünmeyeceğini Ayarlar'dan seçebilirsin.",
+      "terms": "<terms>Kullanım koşullarını</terms> ve <kvkk>KVKK aydınlatma metnini</kvkk> okudum, kabul ediyorum.",
+      "submit": "Hesap oluştur",
+      "verifyNote": "Hesabını etkinleştirmen için e-postana bir doğrulama bağlantısı göndereceğiz.",
+      "google": "Google ile devam et",
+      "haveAccount": "Zaten hesabın var mı?",
+      "loginLink": "Giriş yap",
+      "successTitle": "E-postanı kontrol et",
+      "successBody": "{email} adresine bir doğrulama bağlantısı gönderdik. Bağlantıya tıkladıktan sonra profilini oluşturmaya başlayabilirsin.",
+      "successHint": "E-posta gelmediyse istenmeyen (spam) klasörüne bak."
+    },
+    "gender": {
+      "female": "Kadın",
+      "male": "Erkek",
+      "other": "Diğer",
+      "unspecified": "Belirtmek istemiyorum"
+    },
+    "login": {
+      "metaTitle": "Giriş yap",
+      "title": "Giriş yap",
+      "subtitle": "Kaldığın yerden devam et.",
+      "email": "E-posta",
+      "emailPlaceholder": "ornek@eposta.com",
+      "password": "Şifre",
+      "forgot": "Şifremi unuttum",
+      "remember": "Beni hatırla",
+      "submit": "Giriş yap",
+      "google": "Google ile devam et",
+      "noAccount": "Hesabın yok mu?",
+      "signupLink": "Kayıt ol"
+    },
+    "forgot": {
+      "metaTitle": "Şifremi unuttum",
+      "title": "Şifreni sıfırla",
+      "subtitle": "Hesabına bağlı e-posta adresini yaz; sana bir sıfırlama bağlantısı gönderelim.",
+      "email": "E-posta",
+      "submit": "Sıfırlama bağlantısı gönder",
+      "success": "Bu adrese kayıtlı bir hesap varsa birkaç dakika içinde sıfırlama bağlantısı gelecek.",
+      "back": "Giriş sayfasına dön"
+    },
+    "reset": {
+      "metaTitle": "Yeni şifre",
+      "title": "Yeni şifre belirle",
+      "subtitle": "Hesabın için yeni bir şifre seç.",
+      "password": "Yeni şifre",
+      "confirm": "Yeni şifre (tekrar)",
+      "submit": "Şifremi güncelle",
+      "noSession": "Bu sayfaya e-postandaki sıfırlama bağlantısıyla gelmelisin. Bağlantının süresi dolmuş olabilir.",
+      "requestNew": "Yeni bağlantı iste"
+    },
+    "errors": {
+      "required": "Bu alan zorunlu.",
+      "username_invalid": "3–20 karakter; yalnızca küçük harf, rakam ve alt çizgi.",
+      "username_taken": "Bu kullanıcı adı alınmış.",
+      "email_invalid": "Geçerli bir e-posta adresi yaz.",
+      "password_invalid": "En az 8 karakter; bir harf ve bir rakam içermeli.",
+      "password_mismatch": "Şifreler eşleşmiyor.",
+      "birth_date_invalid": "Doğum tarihini GG.AA.YYYY biçiminde yaz.",
+      "underage": "Sohby yalnızca 18 yaş ve üzerine açıktır.",
+      "gender_required": "Bir seçenek işaretle.",
+      "terms_required": "Devam etmek için koşulları kabul etmelisin.",
+      "invalid_credentials": "E-posta ya da şifre hatalı.",
+      "email_not_confirmed": "Önce e-postana gelen bağlantıyla hesabını doğrulamalısın.",
+      "rate_limited": "Çok fazla deneme yaptın. Biraz bekleyip tekrar dene.",
+      "weak_password": "Bu şifre çok zayıf ya da sızdırılmış şifreler listesinde. Başka bir şifre seç.",
+      "same_password": "Yeni şifre eskisiyle aynı olamaz.",
+      "link_invalid": "Bağlantı geçersiz ya da süresi dolmuş. Lütfen tekrar dene.",
+      "oauth_failed": "Google ile giriş başlatılamadı. Lütfen tekrar dene.",
+      "config": "Sunucu yapılandırması eksik (Supabase). Lütfen daha sonra tekrar dene.",
+      "generic": "Bir şeyler ters gitti. Lütfen tekrar dene."
+    }
+  },
+  "legal": {
+    "termsTitle": "Kullanım koşulları",
+    "kvkkTitle": "KVKK aydınlatma metni",
+    "draft": "Bu metin hazırlanıyor. Yayına almadan önce hukuki olarak onaylanmış metin buraya eklenecek."
   }
 }

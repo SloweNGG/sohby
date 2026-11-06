@@ -17,5 +17,110 @@
     "close": "Close",
     "genericError": "Something went wrong. Please try again.",
     "configError": "Server configuration is missing. Please try again later."
+  },
+  "auth": {
+    "aside": {
+      "signupHeadline": "People nearby are just one hello away.",
+      "signupBubbleThem": "Hi! I saw chess on your profile",
+      "signupBubbleMe": "Want to play on Saturday?",
+      "signupFootnote": "Your email is only used to sign in and verify your account. It never appears on your profile.",
+      "loginHeadline": "Welcome back.",
+      "loginBubbleThem": "You got 3 new messages while you were away",
+      "loginBubbleMe": "Checking right now!",
+      "resetHeadline": "Continue with a new password.",
+      "resetBubbleThem": "I think I forgot my password…",
+      "resetBubbleMe": "No worries, one minute!"
+    },
+    "signup": {
+      "metaTitle": "Create account",
+      "title": "Create account",
+      "subtitle": "Takes less than a minute.",
+      "username": "Username",
+      "usernamePlaceholder": "selin_k",
+      "usernameHint": "Letters, numbers and underscores. Shown on your profile.",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "password": "Password",
+      "passwordHint": "At least 8 characters, with a letter and a number.",
+      "birthDate": "Date of birth",
+      "birthDatePlaceholder": "DD.MM.YYYY",
+      "birthDateHint": "Sohby is for people aged 18 and over. Your date of birth is never shown on your profile.",
+      "gender": "Gender",
+      "genderHint": "You can choose whether it appears on your profile in Settings.",
+      "terms": "I have read and accept the <terms>Terms of use</terms> and the <kvkk>Privacy notice (KVKK)</kvkk>.",
+      "submit": "Create account",
+      "verifyNote": "We'll send a verification link to your email to activate your account.",
+      "google": "Continue with Google",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Sign in",
+      "successTitle": "Check your email",
+      "successBody": "We sent a verification link to {email}. Once you click it, you can start setting up your profile.",
+      "successHint": "If you can't find it, check your spam folder."
+    },
+    "gender": {
+      "female": "Woman",
+      "male": "Man",
+      "other": "Other",
+      "unspecified": "Prefer not to say"
+    },
+    "login": {
+      "metaTitle": "Sign in",
+      "title": "Sign in",
+      "subtitle": "Pick up where you left off.",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "password": "Password",
+      "forgot": "Forgot password",
+      "remember": "Remember me",
+      "submit": "Sign in",
+      "google": "Continue with Google",
+      "noAccount": "Don't have an account?",
+      "signupLink": "Sign up"
+    },
+    "forgot": {
+      "metaTitle": "Forgot password",
+      "title": "Reset your password",
+      "subtitle": "Enter the email linked to your account and we'll send you a reset link.",
+      "email": "Email",
+      "submit": "Send reset link",
+      "success": "If an account exists for this address, a reset link will arrive in a few minutes.",
+      "back": "Back to sign in"
+    },
+    "reset": {
+      "metaTitle": "New password",
+      "title": "Set a new password",
+      "subtitle": "Choose a new password for your account.",
+      "password": "New password",
+      "confirm": "New password (again)",
+      "submit": "Update password",
+      "noSession": "Open this page from the reset link in your email. The link may have expired.",
+      "requestNew": "Request a new link"
+    },
+    "errors": {
+      "required": "This field is required.",
+      "username_invalid": "3–20 characters: lowercase letters, numbers and underscores only.",
+      "username_taken": "This username is taken.",
+      "email_invalid": "Enter a valid email address.",
+      "password_invalid": "At least 8 characters, with a letter and a number.",
+      "password_mismatch": "Passwords don't match.",
+      "birth_date_invalid": "Enter your date of birth as DD.MM.YYYY.",
+      "underage": "Sohby is only for people aged 18 and over.",
+      "gender_required": "Pick an option.",
+      "terms_required": "You need to accept the terms to continue.",
+      "invalid_credentials": "Incorrect email or password.",
+      "email_not_confirmed": "Please verify your account using the link in your email first.",
+      "rate_limited": "Too many attempts. Please wait a bit and try again.",
+      "weak_password": "This password is too weak or has appeared in a data breach. Choose another one.",
+      "same_password": "Your new password must be different from the old one.",
+      "link_invalid": "This link is invalid or has expired. Please try again.",
+      "oauth_failed": "Couldn't start Google sign-in. Please try again.",
+      "config": "Server configuration (Supabase) is missing. Please try again later.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "legal": {
+    "termsTitle": "Terms of use",
+    "kvkkTitle": "Privacy notice (KVKK)",
+    "draft": "This text is being prepared. A legally reviewed version will be added here before launch."
   }
 }

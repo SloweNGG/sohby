@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
 import { routing } from "./i18n/routing";
 import { isSupabaseConfigured, getSupabaseEnv } from "./lib/supabase/env";
+import { applyCookiePolicy, SESSION_ONLY_COOKIE } from "./lib/supabase/cookie-policy";
 
 /*
  * Not: Next.js 16 `middleware.ts`'yi `proxy.ts` lehine kullanımdan kaldırdı.
@@ -46,6 +47,7 @@ export default async function middleware(request: NextRequest) {
   }
 
   const { url, key } = getSupabaseEnv();
+  const sessionOnly = request.cookies.get(SESSION_ONLY_COOKIE)?.value === "1";
   const supabase = createServerClient(url, key, {
     cookies: {
       getAll() {
@@ -54,7 +56,7 @@ export default async function middleware(request: NextRequest) {
       setAll(cookiesToSet) {
         cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
         cookiesToSet.forEach(({ name, value, options }) =>
-          response.cookies.set(name, value, options),
+          response.cookies.set(name, value, applyCookiePolicy(options, sessionOnly)),
         );
       },
     },

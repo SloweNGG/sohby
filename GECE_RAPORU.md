@@ -8,7 +8,7 @@
 | --- | --- | --- |
 | 1 | Next.js + Cloudflare Workers + Tailwind + next-intl + tema | ✅ Bitti |
 | 2 | Veritabanı migration'ları + RLS | ✅ Bitti (35 test geçiyor) |
-| 3 | Kayıt / giriş / şifre sıfırlama | ⏳ |
+| 3 | Kayıt / giriş / şifre sıfırlama | ✅ Bitti (gerçek Supabase'le denenemedi) |
 | 4 | Başlangıç soruları akışı | ⏳ |
 | 5 | Keşfet + filtreler + kişi profili | ⏳ |
 | 6 | Birebir mesajlaşma (Realtime) | ⏳ |
@@ -104,3 +104,38 @@ düzeltildi (CHECK kısıtının yetki sorunu; kabul edilen isteğin "okunmamı�
 
 ### Migration'ları uygulamak (sabah, sen onaylarsan)
 `supabase link --project-ref <ref>` → `supabase db push`, ya da SQL Editor'de üç dosyayı sırayla çalıştır.
+
+## Adım 3 — Kayıt, giriş, şifre sıfırlama ✅
+
+Sayfalar: `/signup`, `/login`, `/forgot-password`, `/reset-password` (+ `/en/...`), dönüş noktası `/auth/confirm`.
+Mantık: `src/lib/auth/actions.ts` (Server Action'lar), doğrulama `src/lib/validation/auth.ts`.
+
+- Kayıt: kullanıcı adı (müsaitlik RPC ile kontrol), e-posta, şifre (≥8, harf+rakam), doğum tarihi
+  (GG.AA.YYYY maskeli, **Türkiye saatine göre 18 yaş**), cinsiyet (4 seçenek), koşullar onayı.
+  Hatalar alan alan gösteriliyor; doğrulama e-postası ekranı var.
+- Giriş: e-posta + şifre, "Beni hatırla" (işaretsizse çerezler tarayıcı kapanınca silinir),
+  `?next=` ile kaldığı sayfaya döner (açık yönlendirmeye karşı yalnızca site içi yollar).
+- Şifre sıfırlama: e-posta → bağlantı → `/reset-password` → yeni şifre.
+- Google ile devam et: buton ve akış hazır.
+- Tarayıcıda denendi: tüm alan hataları, tarih maskesi, TR/EN, korumalı sayfa yönlendirmesi.
+  **Gerçek Supabase'e karşı uçtan uca denenemedi** (proje adresi yok).
+
+### Kararlar
+- **Giriş yalnızca e-posta ile.** Tasarımda "E-posta ya da kullanıcı adı" yazıyor; ama kullanıcı
+  adından e-postayı bulmak ya (a) herkese açık bir "kullanıcı adı → e-posta" sorgusu (e-posta sızıntısı)
+  ya da (b) **gizli service_role anahtarı** gerektiriyor. Talimat gereği atladım, etiketi "E-posta" yaptım.
+- Hesap varlığını sızdırmamak için: kayıtlı e-postayla tekrar kayıtta da, şifre sıfırlamada da aynı
+  "e-postanı kontrol et" mesajı gösteriliyor; giriş hatası her zaman "e-posta ya da şifre hatalı".
+- Kayıtta cinsiyet için varsayılan seçili değil (tasarımda "Kadın" seçili görünüyor; bilinçli seçim istedim).
+- Kullanım koşulları ve KVKK aydınlatma metni için `/legal/terms` ve `/legal/privacy` **yer tutucu** sayfalar.
+
+### Sabah Supabase panelinde yapılması gerekenler
+1. **Authentication → URL Configuration**: Site URL ve Redirect URL'lere `https://<alan-adın>/auth/confirm`
+   (ve geliştirme için `http://localhost:3000/auth/confirm`) ekle.
+2. **E-posta şablonları** (Confirm signup ve Reset password): bağlantıyı
+   `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email&next={{ .RedirectTo }}` yerine en basit hâliyle
+   `{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=email` (sıfırlamada `type=recovery`) yap. Böylece bağlantı başka
+   cihazda açılsa da çalışır. (Varsayılan şablonla da `?code=` akışı çalışır ama yalnızca aynı tarayıcıda.)
+3. **Google sağlayıcısı**: Google Cloud'da OAuth istemcisi oluşturup istemci kimliği/gizli anahtarını Supabase
+   paneline gir. (Gizli anahtar uygulama koduna girmiyor.)
+4. İstersen **Leaked password protection**'ı aç (hata mesajı hazır).
