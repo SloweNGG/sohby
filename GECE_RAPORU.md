@@ -343,6 +343,7 @@ CLAUDE.md eklendi; 15 güvenlik kuralı migration'larla tek tek karşılaştır�
 | --- | --- | --- |
 | 1 | 3 kararın uygulanması + migration'ların uzak veritabanına uygulanması | ✅ |
 | 2 | CLAUDE.md farkları: renkler, gömülü metinler, EN çeviriler | ✅ |
+| 3 | Profil düzenleme + profil fotoğrafı (gizli bucket, imzalı bağlantı) | ✅ (gerçek yükleme tarayıcıdan denenmedi) |
 
 ## İş 1 — Kararlar ve uzak veritabanı ✅
 
@@ -412,3 +413,31 @@ Testler: 57/57 (veritabanı, saklama, Edge Function, birim).
 - Tanıtım sayfasının açık bölümündeki "01-02-03" numaraları tasarımda mercan; ama mercan açık zeminde
   kontrastı 2.5:1 (CLAUDE.md en az 4.5:1 istiyor) → **gece renginde** gösteriliyor.
 - Arama kutuları tasarımda tam yuvarlak; CLAUDE.md "giriş alanları 16px" dediği için 16px yapıldı.
+
+## İş 3 — Profil düzenleme ve profil fotoğrafı ✅
+
+Sayfa: `/profile/edit` (tasarım 10; kendi profilinde "Profili düzenle"). Migration 6 uzağa uygulandı
+(dry-run → push), Edge Function `upload-profile-photo` yayında.
+
+- **Düzenleme**: görünen ad, şehir (81 il), semt, okul/iş, cinsiyet, hakkında, hobiler (kaldır ×, "Ekle"
+  ile aranabilir liste, en çok 15), "Profilimde görünsün" (yaş, semt, çevrimiçi), canlı önizleme kartı.
+- **Fotoğraf güvenliği**:
+  - Gizli bucket `profile-photos` (5 MB, yalnızca JPEG/PNG/WebP). Kullanıcıların bucket'a **yazma izni yok**;
+    tek yol Edge Function. Fonksiyon: oturum belirtecini Supabase Auth'ta doğrular, türü **baytlardan**
+    belirler (".jpg" adlı SVG reddedilir), **EXIF/GPS/XMP/metin üst verilerini siler** (kural 12),
+    kullanıcının kendi klasörüne yazar, veritabanı kaydı başarısızsa dosyayı geri siler.
+  - Görüntüleme: sunucu **15 dakikalık imzalı bağlantı** üretir; storage RLS bağlantıyı yalnızca profili
+    görmeye yetkili kişilere verir (engelli, gizli profil, giriş yapmamış → yok).
+  - **Otomatik onay varsayılan açık** (`private.app_settings`); kapalıyken fotoğraf "inceleniyor" kalır
+    ve sahibi dışında kimse göremez. Günde en çok 10 yükleme. Yeni fotoğraf eskisini siler.
+  - Fotoğraflar Keşfet kartlarında ve kişi profilinde gösteriliyor (yoksa siluet).
+- Testler: 8 fotoğraf erişim testi + 5 üst veri temizleme testi + 6 yükleme fonksiyonu testi. `npm test` → 77/77.
+- Uzakta doğrulandı: bucket gizli, 5 MB, 1 okuma politikası / 0 yazma politikası; fonksiyon anahtarsız
+  ve publishable anahtarla çağrıyı 401 ile reddediyor.
+
+### Kararlar
+- Fotoğraf tarayıcıda 1600 px'e küçültülüp yeniden kodlanıyor (hız için); güvenlik kontrolleri yine de
+  sunucuda yapılıyor, tarayıcıya güvenilmiyor.
+- Testi sırasında bulunan hata: günlük yükleme sınırı her yeni yükleme eskisini sildiği için hiç
+  dolmuyordu → yüklemeler ayrı bir sayaç tablosunda sayılıyor.
+- Sohbet listesindeki küçük avatarlar şimdilik baş harfli (fotoğraf yalnızca kart ve profilde).

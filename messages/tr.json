@@ -311,7 +311,8 @@
     "emptyBody": "Filtreleri değiştirmeyi ya da aramayı temizlemeyi dene.",
     "emptyNearby": "Şehrinde henüz başka kimse yok. Herkes sekmesine göz at.",
     "clearFilters": "Filtreleri temizle",
-    "results": "{count, plural, =0 {Sonuç yok} =1 {1 kişi} other {# kişi}}"
+    "results": "{count, plural, =0 {Sonuç yok} =1 {1 kişi} other {# kişi}}",
+    "photoAlt": "{name} profil fotoğrafı"
   },
   "profile": {
     "back": "Keşfet’e dön",
@@ -379,7 +380,9 @@
       "onboarding_required": "Önce profilini tamamlamalısın.",
       "generic": "Mesaj gönderilemedi. Lütfen tekrar dene.",
       "email_not_verified": "Mesaj göndermeden önce e-posta adresini doğrulamalısın. E-postana gelen bağlantıya tıkla."
-    }
+    },
+    "photoAlt": "{name} profil fotoğrafı",
+    "editProfile": "Profili düzenle"
   },
   "chats": {
     "metaTitle": "Sohbetler",
@@ -550,6 +553,51 @@
         "name": "Can",
         "place": "Bornova, müzik"
       }
+    }
+  },
+  "profileEdit": {
+    "metaTitle": "Profilini düzenle",
+    "title": "Profilin",
+    "uploadPhoto": "Fotoğraf yükle",
+    "changePhoto": "Fotoğrafı değiştir",
+    "removePhoto": "Fotoğrafı kaldır",
+    "uploading": "Yükleniyor…",
+    "photoPending": "Fotoğrafın inceleniyor. Onaylanınca profilinde görünecek.",
+    "photoRejected": "Son yüklediğin fotoğraf onaylanmadı. Başka bir fotoğraf deneyebilirsin.",
+    "photoHint": "JPEG, PNG ya da WebP; en çok 5 MB. Fotoğraftaki konum bilgisi kaydetmeden önce silinir.",
+    "displayName": "Görünen ad",
+    "city": "Şehir",
+    "district": "Semt",
+    "occupation": "Okul ya da iş",
+    "optional": "(isteğe bağlı)",
+    "occupationPlaceholder": "Örneğin grafik tasarımcı",
+    "gender": "Cinsiyet",
+    "bio": "Hakkında",
+    "hobbies": "Hobiler",
+    "addHobby": "Ekle",
+    "addHobbyLabel": "Hobi ekle",
+    "removeHobby": "{name} hobisini kaldır",
+    "hobbySearch": "Hobi ara",
+    "visibleTitle": "Profilimde görünsün",
+    "showAge": "Yaşım",
+    "showDistrict": "Semtim",
+    "showOnline": "Çevrimiçi olduğum",
+    "save": "Kaydet",
+    "saved": "Değişiklikler kaydedildi.",
+    "previewTitle": "Başkaları seni böyle görür",
+    "errors": {
+      "generic": "Kaydedilemedi. Lütfen tekrar dene.",
+      "display_name_required": "Görünen adını yaz (en çok 40 karakter).",
+      "city_required": "Şehrini seç.",
+      "hobbies_required": "En az bir hobi seç.",
+      "too_many_hobbies": "En çok 15 hobi seçebilirsin.",
+      "bio_too_long": "Hakkında en çok 500 karakter olabilir.",
+      "photo_unauthorized": "Oturumun sona ermiş. Lütfen tekrar giriş yap.",
+      "photo_too_large": "Fotoğraf en çok 5 MB olabilir.",
+      "photo_unsupported_type": "Yalnızca JPEG, PNG ya da WebP yükleyebilirsin.",
+      "photo_invalid_image": "Bu dosya okunamadı. Başka bir fotoğraf dene.",
+      "photo_rate_limited": "Bugün çok fazla fotoğraf yükledin. Yarın tekrar dene.",
+      "photo_failed": "Fotoğraf yüklenemedi. Lütfen tekrar dene."
     }
   }
 }

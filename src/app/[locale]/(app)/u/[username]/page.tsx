@@ -4,6 +4,7 @@ import { resolveLocale } from "@/i18n/locale";
 import { createClient } from "@/lib/supabase/server";
 import { BackLink, ProfileView } from "@/components/profile/profile-view";
 import type { ProfileDetail } from "@/lib/types";
+import { withPhotoUrls } from "@/lib/photos";
 
 async function loadProfile(username: string) {
   const supabase = await createClient();
@@ -37,5 +38,6 @@ export default async function ProfilePage({ params, searchParams }: PageProps<"/
     );
   }
 
-  return <ProfileView p={p} locale={locale} autoCompose={sp.compose === "1"} />;
+  const [withPhoto] = await withPhotoUrls([p]);
+  return <ProfileView p={withPhoto} locale={locale} autoCompose={sp.compose === "1"} />;
 }

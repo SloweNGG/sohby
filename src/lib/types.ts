@@ -71,6 +71,10 @@ export type ProfileCard = {
   looking_for: LookingFor[];
   is_online: boolean;
   member_since: string;
+  /** Onaylı profil fotoğrafının depolama yolu (yalnızca yetkili izleyenlere döner). */
+  photo_path?: string | null;
+  /** Sunucuda üretilen kısa ömürlü imzalı bağlantı. */
+  photo_url?: string | null;
   common_hobby_count: number;
   hobbies: Array<{ slug: string; name_tr: string; name_en: string; common: boolean }>;
 };

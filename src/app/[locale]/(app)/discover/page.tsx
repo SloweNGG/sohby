@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { DiscoverView } from "@/components/discover/discover-view";
 import { DISCOVER_FILTERS, type DiscoverFilter, type DiscoverQuery } from "@/components/discover/toolbar";
 import type { ProfileCard } from "@/lib/types";
+import { withPhotoUrls } from "@/lib/photos";
 
 const PAGE_SIZE = 24;
 const MAX_PAGES = 10;
@@ -49,7 +50,7 @@ export default async function DiscoverPage({ params, searchParams }: PageProps<"
     p_limit: PAGE_SIZE * page,
     p_offset: 0,
   });
-  const people = (data ?? []) as ProfileCard[];
+  const people = await withPhotoUrls((data ?? []) as ProfileCard[]);
   const hasMore = people.length === PAGE_SIZE * page && page < MAX_PAGES;
 
   return (

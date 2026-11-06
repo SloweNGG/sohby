@@ -16,7 +16,7 @@ import { applyCookiePolicy, SESSION_ONLY_COOKIE } from "./lib/supabase/cookie-po
 const handleI18n = createIntlMiddleware(routing);
 
 /** Giriş yapmış kullanıcı gerektiren yollar (yerel önek çıkarılmış hâli). */
-const PROTECTED_PREFIXES = ["/discover", "/chats", "/u", "/onboarding"];
+const PROTECTED_PREFIXES = ["/discover", "/chats", "/u", "/onboarding", "/profile", "/settings"];
 /** Giriş yapmış kullanıcının görmesine gerek olmayan yollar. */
 const GUEST_ONLY = ["/login", "/signup", "/forgot-password"];
 

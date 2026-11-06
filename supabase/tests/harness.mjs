@@ -39,6 +39,24 @@ const SUPABASE_STUB = `
   alter default privileges in schema public grant all on sequences to anon, authenticated, service_role;
 
   create publication supabase_realtime;
+
+  -- Supabase Storage (sadeleştirilmiş): RLS'e tabi nesne tablosu
+  create schema storage;
+  create table storage.buckets (
+    id text primary key, name text not null, public boolean not null default false,
+    file_size_limit bigint, allowed_mime_types text[]
+  );
+  create table storage.objects (
+    id uuid primary key default gen_random_uuid(),
+    bucket_id text references storage.buckets (id),
+    name text not null,
+    owner uuid,
+    created_at timestamptz not null default now()
+  );
+  alter table storage.objects enable row level security;
+  grant usage on schema storage to anon, authenticated, service_role;
+  grant select, insert, update, delete on storage.objects to anon, authenticated, service_role;
+  grant select on storage.buckets to anon, authenticated, service_role;
 `;
 
 export async function createDb() {
@@ -76,6 +94,15 @@ class TestDb {
       await tx.exec(`set local role ${role}`);
       const res = await tx.query(sql, params);
       return res.rows;
+    });
+  }
+
+  /** service_role olarak sorgu (Edge Function'ların yetkisi). */
+  async asService(sql, params = []) {
+    return this.db.transaction(async (tx) => {
+      await tx.query(`select set_config('request.jwt.claims', '{"role":"service_role"}', true)`);
+      await tx.exec(`set local role service_role`);
+      return (await tx.query(sql, params)).rows;
     });
   }
 

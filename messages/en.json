@@ -311,7 +311,8 @@
     "emptyBody": "Try changing the filters or clearing your search.",
     "emptyNearby": "Nobody else in your city yet. Check the Everyone tab.",
     "clearFilters": "Clear filters",
-    "results": "{count, plural, =0 {No results} =1 {1 person} other {# people}}"
+    "results": "{count, plural, =0 {No results} =1 {1 person} other {# people}}",
+    "photoAlt": "{name}'s profile photo"
   },
   "profile": {
     "back": "Back to Explore",
@@ -379,7 +380,9 @@
       "onboarding_required": "Please complete your profile first.",
       "generic": "Couldn't send the message. Please try again.",
       "email_not_verified": "Please verify your email before sending messages. Click the link we sent you."
-    }
+    },
+    "photoAlt": "{name}'s profile photo",
+    "editProfile": "Edit profile"
   },
   "chats": {
     "metaTitle": "Chats",
@@ -550,6 +553,51 @@
         "name": "Can",
         "place": "Bornova, music"
       }
+    }
+  },
+  "profileEdit": {
+    "metaTitle": "Edit your profile",
+    "title": "Your profile",
+    "uploadPhoto": "Upload photo",
+    "changePhoto": "Change photo",
+    "removePhoto": "Remove photo",
+    "uploading": "Uploading…",
+    "photoPending": "Your photo is being reviewed. It will appear on your profile once approved.",
+    "photoRejected": "Your last photo wasn't approved. You can try another one.",
+    "photoHint": "JPEG, PNG or WebP; up to 5 MB. Location data in the photo is removed before saving.",
+    "displayName": "Display name",
+    "city": "City",
+    "district": "Neighbourhood",
+    "occupation": "School or work",
+    "optional": "(optional)",
+    "occupationPlaceholder": "e.g. graphic designer",
+    "gender": "Gender",
+    "bio": "About",
+    "hobbies": "Hobbies",
+    "addHobby": "Add",
+    "addHobbyLabel": "Add a hobby",
+    "removeHobby": "Remove {name}",
+    "hobbySearch": "Search hobbies",
+    "visibleTitle": "Show on my profile",
+    "showAge": "My age",
+    "showDistrict": "My neighbourhood",
+    "showOnline": "When I'm online",
+    "save": "Save",
+    "saved": "Changes saved.",
+    "previewTitle": "This is how others see you",
+    "errors": {
+      "generic": "Couldn't save. Please try again.",
+      "display_name_required": "Enter your display name (max 40 characters).",
+      "city_required": "Choose your city.",
+      "hobbies_required": "Pick at least one hobby.",
+      "too_many_hobbies": "You can pick up to 15 hobbies.",
+      "bio_too_long": "About can be at most 500 characters.",
+      "photo_unauthorized": "Your session has expired. Please sign in again.",
+      "photo_too_large": "Photos can be at most 5 MB.",
+      "photo_unsupported_type": "You can only upload JPEG, PNG or WebP.",
+      "photo_invalid_image": "This file couldn't be read. Try another photo.",
+      "photo_rate_limited": "You've uploaded too many photos today. Try again tomorrow.",
+      "photo_failed": "Couldn't upload the photo. Please try again."
     }
   }
 }

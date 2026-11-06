@@ -467,6 +467,7 @@ test("anon/authenticated'ın beklenmedik fonksiyon yetkisi yok", async () => {
     "public.username_available:anon",
     "public.username_available:authenticated",
     "private.can_send_message:authenticated",
+    "private.can_view_profile_photo:authenticated",
     ...[
       "set_birth_date", "touch_presence", "discover_profiles", "get_profile",
       "start_conversation", "respond_message_request", "get_conversations",

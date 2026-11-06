@@ -1,7 +1,7 @@
 import { useLocale, useTranslations } from "next-intl";
 import { MessageSquare } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-import { Silhouette } from "@/components/profile/avatar";
+import { ProfilePhoto } from "@/components/profile/avatar";
 import { Tag } from "@/components/ui/chip";
 import type { ProfileCard } from "@/lib/types";
 
@@ -21,7 +21,7 @@ export function DiscoverCard({ p }: { p: ProfileCard }) {
       </Link>
 
       <div className="relative">
-        <Silhouette id={p.id} className="h-[215px] sm:h-[250px]" />
+        <ProfilePhoto id={p.id} url={p.photo_url} alt={t("photoAlt", { name: p.display_name })} className="h-[215px] sm:h-[250px]" />
         <div className="absolute inset-x-2.5 top-3 flex items-start justify-between gap-1">
           {p.is_online ? (
             <>

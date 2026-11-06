@@ -4,6 +4,7 @@ import { z } from "zod";
 import { getLocale } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { syncHobbies } from "@/lib/profile/hobbies";
 import { getCurrentUserId } from "@/lib/auth/session";
 import { checkBirthDate, isValidUsername, normalizeUsername, GENDERS } from "@/lib/validation/auth";
 import { DATING_INTERESTS, LANGUAGES, LOOKING_FOR, MESSAGE_POLICIES } from "@/lib/types";
@@ -232,29 +233,8 @@ export async function saveOnboardingStep(input: OnboardingStepInput): Promise<On
     }
 
     case "hobbies": {
-      const ids = [...new Set(data.hobbyIds)];
-      const { data: current } = await supabase
-        .from("profile_hobbies")
-        .select("hobby_id")
-        .eq("profile_id", userId);
-      const have = new Set((current ?? []).map((r: { hobby_id: number }) => r.hobby_id));
-      const toRemove = [...have].filter((id) => !ids.includes(id));
-      const toAdd = ids.filter((id) => !have.has(id));
-      if (toRemove.length) {
-        const { error } = await supabase
-          .from("profile_hobbies")
-          .delete()
-          .eq("profile_id", userId)
-          .in("hobby_id", toRemove);
-        if (error) return { ok: false, error: "generic" };
-      }
-      if (toAdd.length) {
-        const { error } = await supabase
-          .from("profile_hobbies")
-          .insert(toAdd.map((hobby_id) => ({ profile_id: userId, hobby_id })));
-        if (error) return { ok: false, error: dbError(error.message) };
-      }
-      return { ok: true };
+      const error = await syncHobbies(supabase, userId, data.hobbyIds);
+      return error ? { ok: false, error: dbError(error) } : { ok: true };
     }
 
     case "languages": {

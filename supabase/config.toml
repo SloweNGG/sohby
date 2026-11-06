@@ -4,3 +4,7 @@ project_id = "sohby"
 [functions.purge-underage-accounts]
 # JWT doğrulaması fonksiyonun içinde yapılır (yalnızca service_role anahtarı kabul edilir).
 verify_jwt = false
+
+[functions.upload-profile-photo]
+# Kullanıcı belirteci fonksiyon içinde Supabase Auth ile doğrulanır.
+verify_jwt = false

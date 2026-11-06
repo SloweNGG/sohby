@@ -3,7 +3,7 @@ import { CalendarDays, ChevronLeft, GraduationCap, Lock, MapPin, MessageSquare, 
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { ablativeSuffix } from "@/lib/i18n/turkish";
-import { Silhouette } from "@/components/profile/avatar";
+import { ProfilePhoto } from "@/components/profile/avatar";
 import { ComposeButton, ComposeProvider, IdeaButton } from "@/components/profile/compose";
 import { SafetyActions } from "@/components/safety/safety-actions";
 import { Tag } from "@/components/ui/chip";
@@ -112,7 +112,7 @@ export async function ProfileView({
 
       {/* Telefon: tam genişlik görsel + üst butonlar (tasarim/15) */}
       <div className="relative md:hidden">
-        <Silhouette id={p.id} className="h-[330px] w-full" />
+        <ProfilePhoto id={p.id} url={p.photo_url} alt={t("photoAlt", { name: p.display_name })} className="h-[330px] w-full" />
         <Link
           href="/discover"
           className="absolute left-4 top-4 grid h-11 w-11 place-items-center rounded-full bg-night/80"
@@ -134,7 +134,7 @@ export async function ProfileView({
       </div>
 
       <div className="mx-auto mt-0 grid max-w-[1120px] gap-8 px-4 md:mt-6 md:grid-cols-[440px_minmax(0,1fr)] md:gap-10 md:px-0">
-        <Silhouette id={p.id} className="hidden h-[550px] rounded-[28px] md:block" />
+        <ProfilePhoto id={p.id} url={p.photo_url} alt={t("photoAlt", { name: p.display_name })} className="hidden h-[550px] rounded-[28px] md:block" />
 
         <section className="pt-5 md:pt-0">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -185,7 +185,12 @@ export async function ProfileView({
             <div className="mt-8 rounded-[var(--radius-card)] border border-edge bg-surface p-5">
               <p className="font-semibold">{t("selfTitle")}</p>
               <p className="mt-1 text-sm text-muted">{t("selfBody")}</p>
-              <form action={signOutAction} className="mt-4">
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Link href="/profile/edit" className={buttonClasses({ size: "sm" })}>
+                  {t("editProfile")}
+                </Link>
+              </div>
+              <form action={signOutAction} className="mt-3">
                 <button type="submit" className={buttonClasses({ variant: "outline", size: "sm" })}>
                   {ta("signOut")}
                 </button>

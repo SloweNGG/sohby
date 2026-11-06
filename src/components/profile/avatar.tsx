@@ -43,3 +43,25 @@ export function Silhouette({ id, className }: { id: string; className?: string }
     </div>
   );
 }
+
+/** Profil fotoğrafı; yoksa siluet. `url` sunucunun ürettiği imzalı bağlantıdır. */
+export function ProfilePhoto({
+  id,
+  url,
+  alt,
+  className,
+}: {
+  id: string;
+  url?: string | null;
+  alt: string;
+  className?: string;
+}) {
+  if (!url) return <Silhouette id={id} className={className} />;
+  return (
+    <div className={cn("relative overflow-hidden bg-surface", className)}>
+      {/* İmzalı, kısa ömürlü bağlantı: Next görsel optimizasyonundan geçirilmez. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={url} alt={alt} className="absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async" />
+    </div>
+  );
+}

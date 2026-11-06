@@ -9,6 +9,10 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 // resmi olarak belgelemiyor.
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  experimental: {
+    // Profil fotoğrafı yükleme (en çok 5 MB) Server Action üzerinden geçer.
+    serverActions: { bodySizeLimit: "6mb" },
+  },
   turbopack: {
     rules: {
       "*.css": {
