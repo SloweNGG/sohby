@@ -406,7 +406,14 @@
     "yesterday": "Dün",
     "today": "Bugün",
     "minutesShort": "{count} dk",
-    "hoursShort": "{count} sa"
+    "hoursShort": "{count} sa",
+    "menu": "Sohbet seçenekleri",
+    "markAllRead": "Tümünü okundu işaretle",
+    "deleteAll": "Tüm sohbetleri sil",
+    "deleteAllTitle": "Tüm sohbetler silinsin mi?",
+    "deleteAllBody": "Sohbetler yalnızca senin görünümünden silinir; karşı taraf mesajları görmeye devam eder. Yeni mesaj gelirse sohbet yeniden görünür.",
+    "confirmDelete": "Sil",
+    "cancel": "Vazgeç"
   },
   "chat": {
     "back": "Sohbetlere dön",
@@ -431,7 +438,13 @@
       "too_long": "Mesaj en çok 2000 karakter olabilir.",
       "generic": "Mesaj gönderilemedi."
     },
-    "read": "Okundu"
+    "read": "Okundu",
+    "delete": "Sohbeti sil",
+    "deleteTitle": "Bu sohbet silinsin mi?",
+    "deleteBody": "Sohbet yalnızca senin görünümünden silinir; karşı taraf mesajları görmeye devam eder. Yeni mesaj gelirse sohbet yeniden görünür.",
+    "confirmDelete": "Sil",
+    "cancel": "Vazgeç",
+    "deleteError": "Sohbet silinemedi. Lütfen tekrar dene."
   },
   "requests": {
     "metaTitle": "Mesaj istekleri",

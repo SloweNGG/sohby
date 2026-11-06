@@ -60,3 +60,27 @@ export async function respondToRequestAction(input: z.input<typeof respondSchema
   }
   return { ok: true, conversationId: (data as string | null) ?? null };
 }
+
+// ---------------------------------------------------------------------------
+// Sohbet silme (yalnızca kendi görünümünden — CLAUDE.md kural 13) ve toplu işlemler
+// ---------------------------------------------------------------------------
+export async function hideConversationAction(conversationId: string): Promise<{ ok: boolean }> {
+  if (!(await getCurrentUserId()) || !z.uuid().safeParse(conversationId).success) return { ok: false };
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("hide_conversation", { p_conversation: conversationId });
+  return { ok: !error };
+}
+
+export async function hideAllConversationsAction(): Promise<{ ok: boolean }> {
+  if (!(await getCurrentUserId())) return { ok: false };
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("hide_all_conversations");
+  return { ok: !error };
+}
+
+export async function markAllReadAction(): Promise<{ ok: boolean }> {
+  if (!(await getCurrentUserId())) return { ok: false };
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("mark_all_read");
+  return { ok: !error };
+}

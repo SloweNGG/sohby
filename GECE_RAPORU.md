@@ -347,6 +347,7 @@ CLAUDE.md eklendi; 15 güvenlik kuralı migration'larla tek tek karşılaştır�
 | 4 | Gizlilik ayarları | ✅ |
 | 5 | Flört | ✅ |
 | 6 | Anonim sohbet | ✅ |
+| 7 | Sohbet silme, tümünü sil, tümünü okundu işaretle | ✅ |
 
 ## İş 1 — Kararlar ve uzak veritabanı ✅
 
@@ -517,3 +518,20 @@ Migration 9 uzağa uygulandı (dry-run → push). Sayfa: `/chats/anon/<id>`; pro
 - Yan kanal kontrolü: anonim engelden sonra engelleyen o kişiye normal yoldan yazmayı denese bile farklı bir
   tepki almıyor (testle doğrulandı), bu yüzden bilinen bir "deneyerek bulma" yolu kalmadı. Yine de anonimlik,
   bir güvenlik incelemesinde ayrıca gözden geçirilmeli.
+
+## İş 7 — Sohbet silme ve toplu işlemler ✅
+
+Migration 10 uzağa uygulandı (dry-run → push).
+
+- **Sohbeti sil** (sohbet başlığındaki çöp kutusu, tasarım 08): onay penceresi → sohbet **yalnızca senin
+  görünümünden** silinir. Silen kişi eski mesajları API'den de göremez (RLS), karşı taraf görmeye devam eder.
+  Yeni mesaj gelirse sohbet yalnızca yeni mesajlarla geri gelir.
+- **Sohbet listesi "⋯" menüsü**: "Tümünü okundu işaretle" (normal + anonim) ve "Tüm sohbetleri sil" (onaylı).
+- **90 gün kararı**: bir mesaj **iki tarafın da** görünümünden silinmişse ve son silmenin üzerinden 90 gün
+  geçtiyse günlük görevde kalıcı silinir; açık şikâyet varsa beklenir.
+- Testler: 6 yeni test. Test yazarken bir hata yakalandı: erişim kuralında nitelenmemiş `created_at` sohbetin
+  tarihine çözülüyordu → düzeltildi. `npm test` → 105/105.
+
+### Kararlar
+- Yalnızca bir taraf sildiyse mesajlar kalıcı silinmiyor (karşı tarafın verisi). Silen kişiye zaten görünmüyor.
+- Anonim sohbetlerde "sil" yok (şimdilik yalnızca "okundu işaretle" kapsıyor).

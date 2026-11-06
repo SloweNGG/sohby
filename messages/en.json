@@ -406,7 +406,14 @@
     "yesterday": "Yesterday",
     "today": "Today",
     "minutesShort": "{count}m",
-    "hoursShort": "{count}h"
+    "hoursShort": "{count}h",
+    "menu": "Chat options",
+    "markAllRead": "Mark all as read",
+    "deleteAll": "Delete all chats",
+    "deleteAllTitle": "Delete all chats?",
+    "deleteAllBody": "Chats are only removed from your view; the other person can still see the messages. A chat reappears if a new message arrives.",
+    "confirmDelete": "Delete",
+    "cancel": "Cancel"
   },
   "chat": {
     "back": "Back to chats",
@@ -431,7 +438,13 @@
       "too_long": "Messages can be at most 2000 characters.",
       "generic": "Couldn't send the message."
     },
-    "read": "Read"
+    "read": "Read",
+    "delete": "Delete chat",
+    "deleteTitle": "Delete this chat?",
+    "deleteBody": "The chat is only removed from your view; the other person can still see the messages. It reappears if a new message arrives.",
+    "confirmDelete": "Delete",
+    "cancel": "Cancel",
+    "deleteError": "Couldn't delete the chat. Please try again."
   },
   "requests": {
     "metaTitle": "Message requests",

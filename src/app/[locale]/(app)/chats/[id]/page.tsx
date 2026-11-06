@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getCurrentUserId } from "@/lib/auth/session";
 import { ChatRoom } from "@/components/chat/chat-room";
 import { SafetyActions } from "@/components/safety/safety-actions";
+import { DeleteConversationButton } from "@/components/chat/chat-menus";
 import type { ConversationHeader, Message } from "@/lib/types";
 
 const PAGE = 50;
@@ -63,6 +64,7 @@ export default async function ConversationPage({ params }: PageProps<"/[locale]/
       initialMessages={messages}
       initialHasMore={messages.length === PAGE}
       headerActions={
+        <>
         <SafetyActions
           variant="buttons"
           targetId={header.other.id}
@@ -70,8 +72,12 @@ export default async function ConversationPage({ params }: PageProps<"/[locale]/
           conversationId={header.id}
           afterBlockHref="/chats"
         />
+        <DeleteConversationButton conversationId={header.id} />
+        </>
       }
       mobileMenu={
+        <div className="flex items-center gap-2">
+        <DeleteConversationButton conversationId={header.id} />
         <SafetyActions
           variant="menu"
           targetId={header.other.id}
@@ -79,6 +85,7 @@ export default async function ConversationPage({ params }: PageProps<"/[locale]/
           conversationId={header.id}
           afterBlockHref="/chats"
         />
+        </div>
       }
     />
   );

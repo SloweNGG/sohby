@@ -21,6 +21,7 @@ import { useListTime } from "./time";
 import type { AnonConversationItem, ConversationListItem, MessageRequestItem } from "@/lib/types";
 import { VenetianMask } from "lucide-react";
 import { useAlias } from "@/components/anon/alias";
+import { ChatsMenu } from "./chat-menus";
 
 type ChatsContextValue = {
   conversations: ConversationListItem[];
@@ -149,7 +150,10 @@ function ChatsSidebar() {
   return (
     <>
       <div className="px-4 pt-5 md:px-6 md:pt-6">
-        <h1 className="text-[32px] font-extrabold tracking-[-0.05em]">{t("title")}</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-[32px] font-extrabold tracking-[-0.05em]">{t("title")}</h1>
+          <ChatsMenu />
+        </div>
         <nav className="mt-4 flex rounded-full bg-night-deep p-1" aria-label={t("title")}>
           <Link href="/chats" className={tab(!onRequests)} aria-current={!onRequests ? "page" : undefined}>
             {t("tabChats")}
