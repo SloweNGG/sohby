@@ -46,7 +46,7 @@
       "birthDatePlaceholder": "GG.AA.YYYY",
       "birthDateHint": "Sohby yalnızca 18 yaş ve üzerine açıktır. Doğum tarihin profilinde görünmez.",
       "gender": "Cinsiyet",
-      "genderHint": "Profilinde görünüp görünmeyeceğini Ayarlar'dan seçebilirsin.",
+      "genderHint": "Profilinde görünüp görünmeyeceğini Ayarlar’dan seçebilirsin.",
       "terms": "<terms>Kullanım koşullarını</terms> ve <kvkk>KVKK aydınlatma metnini</kvkk> okudum, kabul ediyorum.",
       "submit": "Hesap oluştur",
       "verifyNote": "Hesabını etkinleştirmen için e-postana bir doğrulama bağlantısı göndereceğiz.",
@@ -122,5 +122,143 @@
     "termsTitle": "Kullanım koşulları",
     "kvkkTitle": "KVKK aydınlatma metni",
     "draft": "Bu metin hazırlanıyor. Yayına almadan önce hukuki olarak onaylanmış metin buraya eklenecek."
+  },
+  "lookingFor": {
+    "chat": "Sohbet",
+    "friends": "Yeni arkadaşlar",
+    "hobby_buddy": "Hobi arkadaşı",
+    "activity": "Birlikte etkinlik",
+    "flirt": "Flört",
+    "new_in_town": "Yeni şehirde çevre",
+    "language_practice": "Dil pratiği"
+  },
+  "lookingForDesc": {
+    "chat": "Gün içinde laflayacak birileri",
+    "friends": "Buluşup bir şeyler yapabileceğin kişiler",
+    "hobby_buddy": "Aynı şeyleri sevenlerle tanışmak",
+    "activity": "Konser, maç, yürüyüş için eşlik",
+    "flirt": "Romantik bir tanışmaya açığım",
+    "new_in_town": "Taşındın ve kimseyi tanımıyorsun",
+    "language_practice": "Başka bir dili konuşarak geliştirmek"
+  },
+  "datingInterest": {
+    "female": "Kadınlar",
+    "male": "Erkekler",
+    "other": "Diğer"
+  },
+  "onboarding": {
+    "metaTitle": "Profilini oluştur",
+    "stepOf": "Adım {current} / {total}",
+    "stepLabel": "Adım {current}",
+    "back": "Geri",
+    "continue": "Devam",
+    "finish": "Bitir ve keşfet",
+    "previewTitle": "Profilin böyle görünecek",
+    "previewBio": "Kendinden bahsettiğin kısım burada görünecek.",
+    "previewLooking": "Arıyor:",
+    "previewLanguages": "Diller:",
+    "previewName": "Adın",
+    "lookingFor": {
+      "title": "Sohby’de ne arıyorsun?",
+      "subtitle": "Birden fazlasını seçebilirsin. Sana uygun kişileri öne çıkarmak için kullanırız.",
+      "flirtNote": "Flört’ü seçersen bunu yalnızca aynı seçeneği işaretleyenler görür. Flört aramayanlar sana bu amaçla yazamaz."
+    },
+    "dating": {
+      "title": "Flört tercihlerin",
+      "subtitle": "Bu bilgiler yalnızca eşleşmeleri belirlemek için kullanılır ve profilinde kimseye gösterilmez.",
+      "interestLabel": "Kimlerle tanışmak istersin?",
+      "consentTitle": "Açık rıza",
+      "consentText": "Flört tercihimin ve ilgi duyduğum cinsiyetin, yalnızca bana uygun kişileri göstermek amacıyla Sohby tarafından işlenmesine açık rızam ile onay veriyorum. Bu rızamı istediğim zaman Flört seçeneğini kaldırarak geri alabilirim.",
+      "consentLink": "KVKK aydınlatma metni",
+      "removeFlirt": "Flört’ü kaldır ve devam et"
+    },
+    "basics": {
+      "title": "Seni nasıl tanıyalım?",
+      "subtitle": "Görünen adın profilinde ve mesajlarda görünür.",
+      "displayName": "Görünen ad",
+      "displayNamePlaceholder": "Örneğin Selin",
+      "username": "Kullanıcı adı",
+      "birthDate": "Doğum tarihi",
+      "birthDateHint": "Sohby yalnızca 18 yaş ve üzerine açıktır. Doğum tarihin profilinde görünmez ve sonradan değiştirilemez.",
+      "gender": "Cinsiyet"
+    },
+    "location": {
+      "title": "Nerede yaşıyorsun?",
+      "subtitle": "Yakınındaki insanları bulmak için şehrini kullanırız. Tam konumun asla istenmez ve paylaşılmaz.",
+      "city": "Şehir",
+      "cityPlaceholder": "Şehir seç",
+      "district": "Semt",
+      "districtPlaceholder": "Örneğin Kadıköy",
+      "districtHint": "İsteğe bağlı. Görünüp görünmeyeceğini son adımda seçebilirsin."
+    },
+    "hobbies": {
+      "title": "Nelerden hoşlanırsın?",
+      "subtitle": "En az 1, en çok 15 hobi seç. Ortak hobisi olanları sana öne çıkarırız.",
+      "search": "Hobi ara",
+      "selected": "{count} / 15 seçildi",
+      "empty": "Aramana uyan hobi yok."
+    },
+    "languages": {
+      "title": "Hangi dilleri konuşuyorsun?",
+      "subtitle": "En az birini seç."
+    },
+    "about": {
+      "title": "Kendinden biraz bahset",
+      "subtitle": "Birkaç satır yeterli. Ne kadarını paylaşacağına sen karar ver.",
+      "bio": "Hakkında",
+      "bioPlaceholder": "Hafta sonları sinema, hafta içi satranç. Yeni insanlarla kahve içmeyi severim.",
+      "occupation": "Okul ya da iş",
+      "optional": "(isteğe bağlı)",
+      "occupationPlaceholder": "Örneğin grafik tasarımcı",
+      "count": "{count} / {max}"
+    },
+    "privacy": {
+      "title": "Profilinde neler görünsün?",
+      "subtitle": "Kapattığın bilgiler başkalarına gösterilmez. Bunları istediğin zaman Ayarlar’dan değiştirebilirsin.",
+      "showInDiscover": "Keşfet’te görün",
+      "showInDiscoverHint": "Kapatırsan yalnızca senin yazdıkların seni görür.",
+      "showAge": "Yaşım",
+      "showAgeHint": "Profilinde \"{name}, {age}\" gibi görünür.",
+      "showDistrict": "Semtim",
+      "showDistrictHint": "Kapatırsan yalnızca şehrin görünür.",
+      "showGender": "Cinsiyetim",
+      "showGenderHint": "Kapatırsan profilinde cinsiyetin görünmez.",
+      "showOnline": "Çevrimiçi durumum",
+      "showOnlineHint": "Başkaları ne zaman çevrimiçi olduğunu görür.",
+      "messageTitle": "Kimler sana mesaj atabilir?",
+      "policy": {
+        "everyone": "Herkes",
+        "everyoneHint": "Sohby’deki herkes doğrudan yazabilir.",
+        "request_first": "Önce mesaj isteği",
+        "request_firstHint": "İlk mesajlar istek olarak gelir; onaylarsan sohbet açılır.",
+        "common_hobby": "Yalnızca ortak hobisi olanlar",
+        "common_hobbyHint": "En az bir ortak hobiniz olmalı; onlar da istek olarak gelir."
+      }
+    },
+    "errors": {
+      "generic": "Kaydedilemedi. Lütfen tekrar dene.",
+      "looking_for_required": "En az bir seçenek işaretle.",
+      "dating_consent_required": "Flört seçeneği için açık rıza vermelisin.",
+      "dating_interest_required": "Kimlerle tanışmak istediğini seç.",
+      "display_name_required": "Görünen adını yaz (en çok 40 karakter).",
+      "username_invalid": "3–20 karakter; yalnızca küçük harf, rakam ve alt çizgi.",
+      "username_taken": "Bu kullanıcı adı alınmış.",
+      "birth_date_invalid": "Doğum tarihini GG.AA.YYYY biçiminde yaz.",
+      "underage": "Sohby yalnızca 18 yaş ve üzerine açıktır.",
+      "gender_required": "Bir seçenek işaretle.",
+      "terms_required": "Devam etmek için koşulları kabul etmelisin.",
+      "city_required": "Şehrini seç.",
+      "hobbies_required": "En az bir hobi seç.",
+      "too_many_hobbies": "En çok 15 hobi seçebilirsin.",
+      "languages_required": "En az bir dil seç.",
+      "bio_too_long": "Hakkında en çok 500 karakter olabilir.",
+      "occupation_too_long": "Okul ya da iş en çok 80 karakter olabilir."
+    }
+  },
+  "blocked": {
+    "metaTitle": "Hesap kullanılamıyor",
+    "title": "Sohby yalnızca 18 yaş ve üzerine açıktır",
+    "body": "Girdiğin doğum tarihine göre şu anda Sohby’yi kullanamazsın. Bir hata olduğunu düşünüyorsan bizimle iletişime geç.",
+    "home": "Ana sayfaya dön"
   }
 }

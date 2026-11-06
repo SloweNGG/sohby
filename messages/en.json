@@ -122,5 +122,143 @@
     "termsTitle": "Terms of use",
     "kvkkTitle": "Privacy notice (KVKK)",
     "draft": "This text is being prepared. A legally reviewed version will be added here before launch."
+  },
+  "lookingFor": {
+    "chat": "Chat",
+    "friends": "New friends",
+    "hobby_buddy": "Hobby buddy",
+    "activity": "Do things together",
+    "flirt": "Dating",
+    "new_in_town": "New in town",
+    "language_practice": "Language practice"
+  },
+  "lookingForDesc": {
+    "chat": "Someone to talk to during the day",
+    "friends": "People to meet up and do things with",
+    "hobby_buddy": "Meet people who love the same things",
+    "activity": "Company for concerts, games, walks",
+    "flirt": "Open to a romantic connection",
+    "new_in_town": "You just moved and don't know anyone",
+    "language_practice": "Improve a language by speaking it"
+  },
+  "datingInterest": {
+    "female": "Women",
+    "male": "Men",
+    "other": "Other"
+  },
+  "onboarding": {
+    "metaTitle": "Create your profile",
+    "stepOf": "Step {current} / {total}",
+    "stepLabel": "Step {current}",
+    "back": "Back",
+    "continue": "Continue",
+    "finish": "Finish and explore",
+    "previewTitle": "Your profile will look like this",
+    "previewBio": "The part where you talk about yourself will appear here.",
+    "previewLooking": "Looking for:",
+    "previewLanguages": "Languages:",
+    "previewName": "Your name",
+    "lookingFor": {
+      "title": "What are you looking for on Sohby?",
+      "subtitle": "You can pick more than one. We use it to highlight people who suit you.",
+      "flirtNote": "If you pick Dating, only people who picked it too will see it. People not looking for dating can't message you for that."
+    },
+    "dating": {
+      "title": "Your dating preferences",
+      "subtitle": "This is only used to find matches and is never shown on your profile.",
+      "interestLabel": "Who would you like to meet?",
+      "consentTitle": "Explicit consent",
+      "consentText": "I give my explicit consent for Sohby to process my dating preference and the gender(s) I'm interested in, solely to show me suitable people. I can withdraw this consent at any time by removing the Dating option.",
+      "consentLink": "Privacy notice (KVKK)",
+      "removeFlirt": "Remove Dating and continue"
+    },
+    "basics": {
+      "title": "How should we know you?",
+      "subtitle": "Your display name appears on your profile and in messages.",
+      "displayName": "Display name",
+      "displayNamePlaceholder": "e.g. Selin",
+      "username": "Username",
+      "birthDate": "Date of birth",
+      "birthDateHint": "Sohby is for people aged 18 and over. Your date of birth is never shown and can't be changed later.",
+      "gender": "Gender"
+    },
+    "location": {
+      "title": "Where do you live?",
+      "subtitle": "We use your city to find people nearby. We never ask for or share your exact location.",
+      "city": "City",
+      "cityPlaceholder": "Choose a city",
+      "district": "Neighbourhood",
+      "districtPlaceholder": "e.g. Kadıköy",
+      "districtHint": "Optional. You can choose whether it's shown in the last step."
+    },
+    "hobbies": {
+      "title": "What do you enjoy?",
+      "subtitle": "Pick 1 to 15 hobbies. We'll highlight people who share them.",
+      "search": "Search hobbies",
+      "selected": "{count} / 15 selected",
+      "empty": "No hobbies match your search."
+    },
+    "languages": {
+      "title": "Which languages do you speak?",
+      "subtitle": "Pick at least one."
+    },
+    "about": {
+      "title": "Tell us a bit about yourself",
+      "subtitle": "A few lines are enough. You decide how much to share.",
+      "bio": "About",
+      "bioPlaceholder": "Cinema on weekends, chess on weekdays. I love having coffee with new people.",
+      "occupation": "School or work",
+      "optional": "(optional)",
+      "occupationPlaceholder": "e.g. graphic designer",
+      "count": "{count} / {max}"
+    },
+    "privacy": {
+      "title": "What should your profile show?",
+      "subtitle": "Anything you turn off is hidden from others. You can change these any time in Settings.",
+      "showInDiscover": "Appear in Explore",
+      "showInDiscoverHint": "If off, only people you message can see you.",
+      "showAge": "My age",
+      "showAgeHint": "Shown on your profile like \"{name}, {age}\".",
+      "showDistrict": "My neighbourhood",
+      "showDistrictHint": "If off, only your city is shown.",
+      "showGender": "My gender",
+      "showGenderHint": "If off, your gender isn't shown on your profile.",
+      "showOnline": "My online status",
+      "showOnlineHint": "Others can see when you're online.",
+      "messageTitle": "Who can message you?",
+      "policy": {
+        "everyone": "Everyone",
+        "everyoneHint": "Anyone on Sohby can message you directly.",
+        "request_first": "Message request first",
+        "request_firstHint": "First messages arrive as requests; the chat opens when you accept.",
+        "common_hobby": "Only people with a shared hobby",
+        "common_hobbyHint": "You must share at least one hobby; these also arrive as requests."
+      }
+    },
+    "errors": {
+      "generic": "Couldn't save. Please try again.",
+      "looking_for_required": "Pick at least one option.",
+      "dating_consent_required": "You need to give explicit consent to use Dating.",
+      "dating_interest_required": "Choose who you'd like to meet.",
+      "display_name_required": "Enter your display name (max 40 characters).",
+      "username_invalid": "3–20 characters: lowercase letters, numbers and underscores only.",
+      "username_taken": "This username is taken.",
+      "birth_date_invalid": "Enter your date of birth as DD.MM.YYYY.",
+      "underage": "Sohby is only for people aged 18 and over.",
+      "gender_required": "Pick an option.",
+      "terms_required": "You need to accept the terms to continue.",
+      "city_required": "Choose your city.",
+      "hobbies_required": "Pick at least one hobby.",
+      "too_many_hobbies": "You can pick up to 15 hobbies.",
+      "languages_required": "Pick at least one language.",
+      "bio_too_long": "About can be at most 500 characters.",
+      "occupation_too_long": "School or work can be at most 80 characters."
+    }
+  },
+  "blocked": {
+    "metaTitle": "Account unavailable",
+    "title": "Sohby is only for people aged 18 and over",
+    "body": "Based on the date of birth you entered, you can't use Sohby right now. If you think this is a mistake, please contact us.",
+    "home": "Back to home"
   }
 }

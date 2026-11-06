@@ -9,7 +9,7 @@
 | 1 | Next.js + Cloudflare Workers + Tailwind + next-intl + tema | ✅ Bitti |
 | 2 | Veritabanı migration'ları + RLS | ✅ Bitti (35 test geçiyor) |
 | 3 | Kayıt / giriş / şifre sıfırlama | ✅ Bitti (gerçek Supabase'le denenemedi) |
-| 4 | Başlangıç soruları akışı | ⏳ |
+| 4 | Başlangıç soruları akışı | ✅ Bitti |
 | 5 | Keşfet + filtreler + kişi profili | ⏳ |
 | 6 | Birebir mesajlaşma (Realtime) | ⏳ |
 | 7 | Mesaj istekleri | ⏳ |
@@ -139,3 +139,32 @@ Mantık: `src/lib/auth/actions.ts` (Server Action'lar), doğrulama `src/lib/vali
 3. **Google sağlayıcısı**: Google Cloud'da OAuth istemcisi oluşturup istemci kimliği/gizli anahtarını Supabase
    paneline gir. (Gizli anahtar uygulama koduna girmiyor.)
 4. İstersen **Leaked password protection**'ı aç (hata mesajı hazır).
+
+## Adım 4 — Başlangıç soruları ✅
+
+Sayfa: `/onboarding` — `src/components/onboarding/wizard.tsx`, kayıt: `src/lib/onboarding/actions.ts`.
+
+Adımlar (flört seçilirse 8, seçilmezse 7):
+1. **Ne arıyorsun?** — 7 seçenek, çoklu seçim (tasarım 05).
+2. **Flört tercihleri** *(yalnızca Flört seçildiyse)* — kimlerle tanışmak istiyor (Kadınlar / Erkekler / Diğer)
+   + **KVKK açık rıza** onay kutusu. Rıza verilmeden flört kaydedilemiyor (veritabanı da reddediyor).
+   "Flört'ü kaldır ve devam et" seçeneği var.
+3. **Temel bilgiler** — görünen ad, kullanıcı adı, cinsiyet. Google ile gelenlerden ayrıca doğum tarihi
+   ve koşullar onayı istenir (18 altıysa hesap kilitlenir, çıkış yaptırılır → `/account-blocked`).
+4. **Konum** — 81 il listesinden şehir + serbest semt. Tam konum istenmiyor.
+5. **Hobiler** — katalogdan 1–15 seçim, arama kutusu.
+6. **Diller** — 18 dil (adlar tarayıcının diline göre otomatik çevrilir).
+7. **Hakkında** — 500 karakter + isteğe bağlı okul/iş.
+8. **Gizlilik** — Keşfet'te görün, yaş, semt, cinsiyet, çevrimiçi + "Kimler mesaj atabilir?".
+
+- Her "Devam"da o adım veritabanına kaydedilir; sayfa yenilenirse **kaldığı ilk eksik adımdan** devam eder.
+- Sağda canlı "Profilin böyle görünecek" önizleme kartı (masaüstü). Telefonda gizli, ilerleme çubuğu tek parça.
+- Son adımda `onboarding_completed_at` yazılır; veritabanı zorunlu alanları son kez denetler → `/discover`.
+- Başlangıcı bitirmeyen kullanıcı hiçbir sosyal özelliği kullanamaz (veritabanı seviyesinde).
+
+### Kararlar
+- Tasarımda "Adım 1 / 8" yazıyor; toplam adım sayısını **dinamik** yaptım (flörtsüz 7, flörtlü 8).
+- Şehir **serbest metin değil, 81 il listesi**: "Yakınımdakiler" eşleşmesinin "istanbul / İstanbul / ist"
+  gibi yazım farklarından bozulmaması için. Yurt dışındaki kullanıcılar için seçenek yok (sorulacak).
+- Önizleme kartında "Arıyor" satırında **Flört gösterilmiyor** (zaten yalnızca uyumlu kişiler görecek).
+- Profil fotoğrafı adımı yok (fotoğraf yükleme kapsam dışı; kartlarda baş harf avatarı kullanılıyor).

@@ -50,3 +50,6 @@ next-env.d.ts
 # yerel test çıktıları
 /test-results
 /playwright-report
+
+# yerel görsel kontrol sayfaları (commit edilmez)
+/src/app/[[]locale]/dev-preview/
