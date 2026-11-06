@@ -24,7 +24,8 @@ npm run dev                  # http://localhost:3000
 | `npm run cf:build` | Cloudflare Workers paketi (`.open-next/`) |
 | `npm run preview` | Workers paketini yerelde wrangler ile çalıştırır |
 | `npm run typecheck` | TypeScript denetimi |
-| `npm run test:db` | Migration + RLS testleri (PGlite, Docker gerektirmez) |
+| `npm test` | Tüm testler (veritabanı/RLS + birim) |
+| `npm run test:db` | Yalnızca migration + RLS testleri (PGlite, Docker gerektirmez) |
 
 ## Klasörler
 
@@ -33,3 +34,7 @@ npm run dev                  # http://localhost:3000
 - `supabase/tests/` — RLS / iş kuralı testleri
 - `messages/` — çeviri dosyaları
 - `src/app/[locale]/` — sayfalar
+- `scripts/screenshot.mjs` — yüklü Chrome ile sayfa ekran görüntüsü (tasarımla karşılaştırma için)
+- `scripts/merge-messages.mjs` — çeviri dosyalarına toplu anahtar ekleme
+
+Gece çalışmasının ayrıntılı raporu ve açık sorular: `GECE_RAPORU.md`.

@@ -6,6 +6,9 @@ import { ageFromBirthDate, getHobbyCatalog, getMyAccount } from "@/lib/profile";
 import { OnboardingWizard, type StepId, type WizardInitial } from "@/components/onboarding/wizard";
 import { BlockedNotice } from "@/components/blocked-notice";
 
+// Oturuma bağlı: her istekte sunucuda render edilir.
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: PageProps<"/[locale]/onboarding">): Promise<Metadata> {
   const locale = await resolveLocale(params);
   const t = await getTranslations({ locale, namespace: "onboarding" });

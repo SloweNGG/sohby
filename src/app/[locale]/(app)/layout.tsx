@@ -8,6 +8,9 @@ import { PresenceHeartbeat } from "@/components/app/presence";
 import { BottomNav, Sidebar } from "@/components/app/nav";
 import type { BadgeCounts } from "@/lib/types";
 
+// Oturuma bağlı: her istekte sunucuda render edilir.
+export const dynamic = "force-dynamic";
+
 /**
  * Giriş yapmış ve başlangıcı tamamlamış kullanıcıların sayfaları.
  * Middleware'e ek olarak burada da kontrol edilir (savunma derinliği).

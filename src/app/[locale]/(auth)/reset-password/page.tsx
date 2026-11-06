@@ -8,6 +8,9 @@ import { FormAlert } from "@/components/ui/field";
 import { buttonClasses } from "@/components/ui/button";
 import { getCurrentUserId } from "@/lib/auth/session";
 
+// Oturuma bağlı: her istekte sunucuda render edilir.
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: PageProps<"/[locale]/reset-password">): Promise<Metadata> {
   const locale = await resolveLocale(params);
   const t = await getTranslations({ locale, namespace: "auth.reset" });

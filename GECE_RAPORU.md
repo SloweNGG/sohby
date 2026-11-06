@@ -16,16 +16,51 @@
 | 8 | Engelle / şikâyet et | ✅ Bitti |
 | 9 | Tanıtım sayfası | ✅ Bitti |
 
+## Kısaca
+
+9 adımın **hepsi bitti** ve her biri ayrı commit'lendi (`git log`). Hiçbir şey canlıya yüklenmedi,
+migration'lar uzak veritabanına uygulanmadı, gizli anahtar kullanılmadı.
+
+Doğrulama: `npm test` → **40/40** (35 veritabanı/RLS + 5 birim testi), `tsc` ve ESLint temiz,
+`next build` ve `opennextjs-cloudflare build` başarılı. Her ekran masaüstü (1440) ve telefon (390)
+genişliğinde ekran görüntüsüyle tasarımla karşılaştırıldı (örnek veriyle; önizleme sayfaları silindi).
+
+**Denenemeyen tek şey: gerçek Supabase'e karşı uçtan uca akış** (kayıt e-postası, giriş, Realtime),
+çünkü proje adresi gelmedi. Kod yolları yazıldı ve veritabanı mantığı gerçek Postgres'te (PGlite) test
+edildi; ama ilk gerçek kullanımda küçük ayar sorunları çıkabilir.
+
 ## ⚠️ Sabah ilk bakman gerekenler
 
-1. **CLAUDE.md bulunamadı.** Proje klasöründe `CLAUDE.md` yok, `claudecode.md` ise boş (0 bayt).
-   "CLAUDE.md'deki güvenlik kurallarına birebir uy" talimatını bu yüzden uygulayamadım; onun yerine
-   aşağıda "Güvenlik varsayımları" bölümündeki **en sıkı** kuralları uyguladım. Dosyayı eklersen
-   migration'ı onunla karşılaştırıp farkları kapatmam gerekir.
-2. **Supabase adresi eksik.** Mesajda `NEXT_PUBLIC_SUPABASE_URL=[PROJE_ADRESİ]` yer tutucu olarak
-   gelmiş. `.env.local` dosyasına aynen bu değeri yazdım; gerçek adresi (`https://xxxx.supabase.co`)
-   girmen gerekiyor. Adres geçersizken uygulama çökmez, Supabase gerektiren sayfalar
-   "yapılandırma eksik" mesajı gösterir.
+1. **CLAUDE.md bulunamadı.** Klasörde `CLAUDE.md` yok, `claudecode.md` boş (0 bayt). "Güvenlik
+   kurallarına birebir uy" talimatını bu yüzden uygulayamadım; yerine **en sıkı** kuralları seçtim
+   (Adım 2 → "Güvenlik varsayımları"). Dosyayı paylaşırsan migration'ı onunla karşılaştırırım.
+2. **Supabase adresi eksik.** `NEXT_PUBLIC_SUPABASE_URL=[PROJE_ADRESİ]` yer tutucu olarak geldi;
+   `.env.local`'e aynen yazdım. Gerçek adresi (`https://xxxx.supabase.co`) girmen gerekiyor.
+   Adres geçersizken uygulama çökmüyor: sayfalar açılıyor, Supabase gerektiren işlemler
+   "yapılandırma eksik" diyor, korumalı sayfalar girişe yönleniyor.
+3. **Migration'ları uygulamak** (sen onaylayınca): `supabase link --project-ref <ref>` → `supabase db push`
+   ya da SQL Editor'de `supabase/migrations/` altındaki üç dosyayı sırayla çalıştır.
+4. **Supabase paneli ayarları** (Adım 3 sonundaki liste): yönlendirme adresleri, e-posta şablonları, Google.
+
+## Sana sormam gerekenler
+
+1. **CLAUDE.md'deki güvenlik kuralları** neler? (Yukarıdaki madde 1.)
+2. **Kullanıcı adıyla giriş** istiyor musun? Güvenli yapmak için sunucu tarafında gizli anahtarlı bir
+   Edge Function gerekir. Şimdilik giriş yalnızca e-posta ile.
+3. **Şehir listesi yalnızca Türkiye'nin 81 ili.** Yurt dışındaki kullanıcılar da olacak mı?
+4. **Reddedilen istek kalıcı mı olsun?** Şu an gönderen asla öğrenmiyor ve aynı kişiye bir daha istek
+   atamıyor. Örneğin 30 gün sonra yeniden izin verelim mi?
+5. **Flört eşleşmesi** şu an karşılıklı (iki taraf da flört seçmiş, açık rıza vermiş ve birbirinin cinsiyet
+   tercihine uyuyor). "Cinsiyet belirtmek istemiyorum" diyenler flört eşleşmesine giremiyor. Uygun mu?
+6. **"Ayrıca engelle" varsayılan olarak işaretli.** Kalsın mı?
+7. **Başlangıç soruları 7 adım** (flört seçilirse 8). Tasarımda "1 / 8" yazıyor; 8'e tamamlamak için bir
+   adım (ör. fotoğraf) eklemek ister misin?
+8. **Hukuki metinler**: kullanım koşulları, KVKK aydınlatma metni, gizlilik politikası, iletişim bilgisi.
+   Şu an yer tutucu; açık rıza metni de hukukçuya gösterilmeli.
+9. **Gizli anahtar gerektiren, bilerek atladığım işler:** hesap silme (KVKK için gerekli), şikâyet
+   inceleme paneli, kullanıcı adıyla giriş. Bunlar için Edge Function / yönetici paneli planlayalım mı?
+10. **Sıradaki işler**: fotoğraf yükleme, profil düzenleme (tasarım 10), ayarlar ve gizlilik (tasarım 11),
+    engellenenler listesi, bildirimler, harita, anonim mesaj, arkadaşlık. Öncelik sırası?
 
 ## Adım 1 — Proje kurulumu ✅
 
@@ -132,10 +167,13 @@ Mantık: `src/lib/auth/actions.ts` (Server Action'lar), doğrulama `src/lib/vali
 ### Sabah Supabase panelinde yapılması gerekenler
 1. **Authentication → URL Configuration**: Site URL ve Redirect URL'lere `https://<alan-adın>/auth/confirm`
    (ve geliştirme için `http://localhost:3000/auth/confirm`) ekle.
-2. **E-posta şablonları** (Confirm signup ve Reset password): bağlantıyı
-   `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email&next={{ .RedirectTo }}` yerine en basit hâliyle
-   `{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=email` (sıfırlamada `type=recovery`) yap. Böylece bağlantı başka
-   cihazda açılsa da çalışır. (Varsayılan şablonla da `?code=` akışı çalışır ama yalnızca aynı tarayıcıda.)
+2. **E-posta şablonları** (Authentication → Email Templates). Bağlantının başka cihazda açılınca da
+   çalışması için:
+   - *Confirm signup*: `<a href="{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=email">Hesabımı doğrula</a>`
+   - *Reset password*: `<a href="{{ .RedirectTo }}&token_hash={{ .TokenHash }}&type=recovery">Şifremi sıfırla</a>`
+
+   (`RedirectTo` zaten `.../auth/confirm?next=...` içeriyor; uygulama bunu gönderiyor. Varsayılan şablonla
+   da `?code=` akışı çalışır, ama yalnızca kaydın yapıldığı tarayıcıda.)
 3. **Google sağlayıcısı**: Google Cloud'da OAuth istemcisi oluşturup istemci kimliği/gizli anahtarını Supabase
    paneline gir. (Gizli anahtar uygulama koduna girmiyor.)
 4. İstersen **Leaked password protection**'ı aç (hata mesajı hazır).
