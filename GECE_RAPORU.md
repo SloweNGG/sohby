@@ -10,7 +10,7 @@
 | 2 | Veritabanı migration'ları + RLS | ✅ Bitti (35 test geçiyor) |
 | 3 | Kayıt / giriş / şifre sıfırlama | ✅ Bitti (gerçek Supabase'le denenemedi) |
 | 4 | Başlangıç soruları akışı | ✅ Bitti |
-| 5 | Keşfet + filtreler + kişi profili | ⏳ |
+| 5 | Keşfet + filtreler + kişi profili | ✅ Bitti |
 | 6 | Birebir mesajlaşma (Realtime) | ⏳ |
 | 7 | Mesaj istekleri | ⏳ |
 | 8 | Engelle / şikâyet et | ⏳ |
@@ -168,3 +168,31 @@ Adımlar (flört seçilirse 8, seçilmezse 7):
   gibi yazım farklarından bozulmaması için. Yurt dışındaki kullanıcılar için seçenek yok (sorulacak).
 - Önizleme kartında "Arıyor" satırında **Flört gösterilmiyor** (zaten yalnızca uyumlu kişiler görecek).
 - Profil fotoğrafı adımı yok (fotoğraf yükleme kapsam dışı; kartlarda baş harf avatarı kullanılıyor).
+
+## Adım 5 — Keşfet ve kişi profili ✅
+
+Sayfalar: `/discover`, `/u/<kullanıcı-adı>`. Uygulama kabuğu: `src/app/[locale]/(app)/layout.tsx`.
+
+- **Uygulama kabuğu**: masaüstünde sol kenar çubuğu (Keşfet, Sohbetler + rozet, hesap menüsü: Profilim /
+  Çıkış), telefonda alt gezinme (Keşfet, Sohbetler, Profil). Giriş yapmamış → `/login`, başlangıcı
+  bitmemiş → `/onboarding`, 18 altı kilitli → bilgi ekranı (middleware'e ek ikinci kontrol).
+- **Çevrimiçi sinyali**: sekme açıkken 2 dakikada bir `touch_presence` (yalnızca ayarı açık olanlar görünür).
+- **Keşfet** (tasarım 06 / 12): Herkes, Yakınımdakiler, Ortak hobi, Çevrimiçi, Yaş aralığı filtreleri;
+  isim/semt/hobi araması; ortak hobiler mercan, "N ortak hobi" ve "Çevrimiçi" rozetleri; "Daha fazla göster".
+  Filtreler URL'de tutuluyor (paylaşılabilir, geri tuşu çalışır, JS'siz de çalışır).
+- **Kişi profili** (tasarım 07 / 15): ad-yaş, çevrimiçi, semt, okul/iş, cinsiyet, "… beri Sohby'de",
+  Arıyor etiketleri, Hakkında, Hobiler (ortaklar vurgulu), Diller, gizlilik notu.
+  "Sohbeti başlatmak için bir fikir" kutusu ortak hobiye göre soru öneriyor; "Bu soruyla selam ver"
+  mesaj penceresini hazır metinle açıyor.
+- **Selam ver**: pencere içinden ilk mesaj → alıcının ayarına göre doğrudan sohbet (sohbete yönlendirir)
+  ya da mesaj isteği ("İsteğin gönderildi"). Duruma göre buton "Sohbete git", "İsteği gör",
+  "İstek gönderildi" ya da "yalnızca ortak hobisi olanlardan mesaj alıyor" olur.
+- Keşfet kartındaki mesaj butonu profili mesaj penceresi açık olarak getiriyor.
+
+### Kararlar
+- Tasarımdaki **Harita, Bildirimler, Ayarlar** ikonlarını ve profildeki **Anonim yaz / Arkadaş ekle**
+  butonlarıyla **Arkadaşları** kartını koymadım: bu gecenin listesinde yoklar, çalışmayan buton
+  göstermek yerine gizlemeyi seçtim.
+- Fotoğraf olmadığı için tasarımdaki siluetleri kullanıcıya özgü renkle çizdim; küçük fotoğraf şeridi yok.
+- Profil sayfaları `noindex` (arama motorlarına kapalı); profiller yalnızca giriş yapmış kullanıcılara açık.
+- Yaş filtresinde 18–99 seçiliyse filtre yok sayılıyor; aksi hâlde yaşını gizleyenler hiç görünmezdi.
