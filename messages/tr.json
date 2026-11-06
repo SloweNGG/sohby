@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "title": "Sohby — Bu akşam kiminle muhabbet?",
+    "description": "Yakınında oturan, aynı şeyleri seven insanlarla tanış."
+  },
+  "common": {
+    "brand": "sohby",
+    "language": "Dil",
+    "loading": "Yükleniyor…",
+    "save": "Kaydet",
+    "cancel": "Vazgeç",
+    "back": "Geri",
+    "continue": "Devam",
+    "or": "ya da",
+    "show": "Göster",
+    "hide": "Gizle",
+    "close": "Kapat",
+    "genericError": "Bir şeyler ters gitti. Lütfen tekrar dene.",
+    "configError": "Sunucu yapılandırması eksik. Lütfen daha sonra tekrar dene."
+  }
+}

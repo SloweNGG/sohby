@@ -1,0 +1,35 @@
+# Sohby
+
+Yakındaki, aynı hobileri paylaşan insanlarla tanışma ve birebir mesajlaşma uygulaması.
+
+- **Next.js 16** (App Router, TypeScript) — Cloudflare Workers'a **OpenNext** ile paketlenir
+- **Tailwind CSS v4** — tasarım belirteçleri `src/app/globals.css` içinde
+- **next-intl** — TR (varsayılan, öneksiz) / EN (`/en/...`)
+- **Supabase** — Auth, Postgres (RLS), Realtime
+
+## Kurulum
+
+```bash
+npm install
+cp .env.example .env.local   # Supabase adresi ve publishable anahtarı
+npm run dev                  # http://localhost:3000
+```
+
+## Komutlar
+
+| Komut | Açıklama |
+| --- | --- |
+| `npm run dev` | Geliştirme sunucusu |
+| `npm run build` | Next.js üretim derlemesi |
+| `npm run cf:build` | Cloudflare Workers paketi (`.open-next/`) |
+| `npm run preview` | Workers paketini yerelde wrangler ile çalıştırır |
+| `npm run typecheck` | TypeScript denetimi |
+| `npm run test:db` | Migration + RLS testleri (PGlite, Docker gerektirmez) |
+
+## Klasörler
+
+- `tasarim/` — ekran tasarımları (referans PNG'ler)
+- `supabase/migrations/` — veritabanı şeması ve erişim kuralları
+- `supabase/tests/` — RLS / iş kuralı testleri
+- `messages/` — çeviri dosyaları
+- `src/app/[locale]/` — sayfalar

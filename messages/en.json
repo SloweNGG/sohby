@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "title": "Sohby — Who are you chatting with tonight?",
+    "description": "Meet people nearby who love the same things you do."
+  },
+  "common": {
+    "brand": "sohby",
+    "language": "Language",
+    "loading": "Loading…",
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back",
+    "continue": "Continue",
+    "or": "or",
+    "show": "Show",
+    "hide": "Hide",
+    "close": "Close",
+    "genericError": "Something went wrong. Please try again.",
+    "configError": "Server configuration is missing. Please try again later."
+  }
+}

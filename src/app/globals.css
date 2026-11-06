@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+/*
+ * Sohby tasarım sistemi (tasarim/01-marka-renkler.png)
+ *  Mercan       #FF6B57  — birincil eylem
+ *  Lila         #CDB8FF  — ikincil vurgu
+ *  Gece yüzeyi  #2B1A4A  — kart / girdi yüzeyi
+ *  Ay ışığı     #F6F1FF  — metin / açık zemin
+ * Yazı tipi: Sora (başlıklar kalın, metin hafif).
+ */
+@theme {
+  --color-coral: #ff6b57;
+  --color-coral-strong: #f25744;
+  --color-coral-ink: #c8402e;
+  --color-lilac: #cdb8ff;
+  --color-surface: #2b1a4a;
+  --color-surface-hover: #35225a;
+  --color-moon: #f6f1ff;
+
+  --color-night: #1e1133;
+  --color-night-deep: #170d29;
+  --color-night-deeper: #130a22;
+  --color-line: #3b2965;
+  --color-line-soft: #2e1f4d;
+  --color-muted: #b5a6d3;
+  --color-subtle: #8c7cad;
+  --color-online: #7ee2a8;
+  --color-ink: #1e1133;
+
+  --font-sans: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 1.25rem;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background: var(--color-night);
+    color: var(--color-moon);
+    font-family: var(--font-sans);
+    font-weight: 300;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-lilac);
+    outline-offset: 2px;
+  }
+
+  ::placeholder {
+    color: var(--color-subtle);
+  }
+}
+
+@utility scrollbar-none {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
