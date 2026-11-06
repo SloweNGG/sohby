@@ -28,7 +28,7 @@ function query(base: DiscoverQuery, patch: Partial<DiscoverQuery>) {
 const chipClass = (active: boolean) =>
   cn(
     "inline-flex h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-4 text-[15px] transition-colors",
-    active ? "border-coral bg-coral font-semibold text-ink" : "border-line text-moon hover:bg-surface",
+    active ? "border-coral bg-coral font-semibold text-ink" : "border-edge text-moon hover:bg-surface",
   );
 
 /** Arama kutusu (GET formu: JavaScript olmadan da çalışır). */
@@ -42,14 +42,14 @@ export async function DiscoverSearch({ current, locale, className }: { current: 
       {current.maxAge !== null && <input type="hidden" name="maxAge" value={current.maxAge} />}
       <label className="relative block">
         <span className="sr-only">{t("search")}</span>
-        <Search className="pointer-events-none absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle md:hidden" aria-hidden="true" />
+        <Search className="pointer-events-none absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted md:hidden" aria-hidden="true" />
         <input
           type="search"
           name="q"
           maxLength={50}
           defaultValue={current.q}
           placeholder={t("search")}
-          className={cn(inputClasses, "h-12 rounded-full pl-12 pr-5 md:pl-5")}
+          className={cn(inputClasses, "h-12 pl-12 pr-5 md:pl-5")}
         />
       </label>
     </form>
@@ -84,7 +84,7 @@ export async function DiscoverFilters({ current, locale }: { current: DiscoverQu
         <form
           action={action}
           method="get"
-          className="fixed inset-x-4 top-40 z-40 rounded-2xl border border-line bg-surface p-4 shadow-2xl md:absolute md:inset-x-auto md:left-0 md:top-12 md:w-72"
+          className="fixed inset-x-4 top-40 z-40 rounded-2xl border border-edge bg-surface p-4 shadow-2xl md:absolute md:inset-x-auto md:left-0 md:top-12 md:w-72"
         >
           {current.filter !== "all" && <input type="hidden" name="filter" value={current.filter} />}
           {current.q && <input type="hidden" name="q" value={current.q} />}

@@ -2,8 +2,8 @@ import type { InputHTMLAttributes, LabelHTMLAttributes, ReactNode, TextareaHTMLA
 import { cn } from "@/lib/cn";
 
 export const inputClasses =
-  "h-[50px] w-full rounded-2xl border border-line bg-surface px-[18px] text-[15px] font-normal text-moon " +
-  "outline-none transition-colors placeholder:text-subtle focus:border-lilac/80 focus-visible:outline-none " +
+  "h-[50px] w-full rounded-2xl border border-edge bg-surface px-[18px] text-[15px] font-normal text-moon " +
+  "outline-none transition-colors placeholder:text-muted focus:border-lilac/80 focus-visible:outline-none " +
   "aria-[invalid=true]:border-coral";
 
 export function Label({ className, ...rest }: LabelHTMLAttributes<HTMLLabelElement>) {
@@ -34,7 +34,7 @@ export function Hint({ children, className, id }: { children: ReactNode; classNa
 export function FieldError({ children, id }: { children?: ReactNode; id?: string }) {
   if (!children) return null;
   return (
-    <p id={id} role="alert" className="mt-2 text-xs font-medium text-coral">
+    <p id={id} role="alert" className="mt-2 text-xs font-medium text-coral-text">
       {children}
     </p>
   );
@@ -54,8 +54,8 @@ export function FormAlert({
       className={cn(
         "rounded-2xl border px-4 py-3 text-sm leading-relaxed",
         tone === "error" && "border-coral/50 bg-coral/10 text-moon",
-        tone === "success" && "border-online/40 bg-online/10 text-moon",
-        tone === "info" && "border-line bg-surface text-muted",
+        tone === "success" && "border-lilac/50 bg-lilac/10 text-moon",
+        tone === "info" && "border-edge bg-surface text-muted",
       )}
     >
       {children}

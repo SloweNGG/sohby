@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/logo";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -18,12 +19,13 @@ type AuthShellProps = {
  * sohbet balonları), sağda form. Telefonda yalnızca üst çubuk + form.
  */
 export function AuthShell({ headline, bubbleThem, bubbleMe, footnote, children, centered }: AuthShellProps) {
+  const tCommon = useTranslations("common");
   return (
     <div className="grid min-h-dvh lg:grid-cols-[minmax(0,686fr)_minmax(0,754fr)]">
       {/* Sol panel (masaüstü) */}
-      <aside className="relative hidden flex-col bg-night-deeper px-12 pb-12 pt-12 lg:flex">
+      <aside className="relative hidden flex-col bg-night-deep px-12 pb-12 pt-12 lg:flex">
         <div className="flex items-center justify-between">
-          <Link href="/" aria-label="Sohby">
+          <Link href="/" aria-label={tCommon("homeLink")}>
             <Logo className="text-[26px]" markClassName="h-8 w-9" />
           </Link>
           <LanguageSwitcher />
@@ -47,7 +49,7 @@ export function AuthShell({ headline, bubbleThem, bubbleMe, footnote, children, 
       {/* Sağ panel */}
       <main className="flex min-h-dvh flex-col bg-night lg:min-h-0">
         <div className="flex items-center justify-between px-4 pt-5 sm:px-6 lg:hidden">
-          <Link href="/" aria-label="Sohby">
+          <Link href="/" aria-label={tCommon("homeLink")}>
             <Logo className="text-[22px]" markClassName="h-7 w-8" />
           </Link>
           <LanguageSwitcher />

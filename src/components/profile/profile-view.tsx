@@ -174,7 +174,7 @@ export async function ProfileView({
             <div className="mt-5 hidden flex-wrap items-center gap-2 md:flex">
               <span className="text-sm text-muted">{t("lookingFor")}</span>
               {lookingFor.map((l) => (
-                <Tag key={l} className={l === "flirt" ? "border-coral text-coral" : undefined}>
+                <Tag key={l} className={l === "flirt" ? "border-coral text-coral-text" : undefined}>
                   {tl(l)}
                 </Tag>
               ))}
@@ -182,7 +182,7 @@ export async function ProfileView({
           )}
 
           {p.is_self ? (
-            <div className="mt-8 rounded-[var(--radius-card)] border border-line bg-surface p-5">
+            <div className="mt-8 rounded-[var(--radius-card)] border border-edge bg-surface p-5">
               <p className="font-semibold">{t("selfTitle")}</p>
               <p className="mt-1 text-sm text-muted">{t("selfBody")}</p>
               <form action={signOutAction} className="mt-4">
@@ -209,9 +209,9 @@ export async function ProfileView({
 
       <div className="mx-auto max-w-[1120px] px-4 md:px-0">
         {idea && canCompose && (
-          <div className="mt-6 flex flex-col gap-4 rounded-[var(--radius-card)] bg-night-deeper p-4 md:mt-8 md:flex-row md:items-center md:justify-between md:px-6 md:py-5">
+          <div className="mt-6 flex flex-col gap-4 rounded-[var(--radius-card)] bg-night-deep p-4 md:mt-8 md:flex-row md:items-center md:justify-between md:px-6 md:py-5">
             <div>
-              <p className="text-[13px] font-semibold text-coral">{t("ideaTitle")}</p>
+              <p className="text-[13px] font-semibold text-coral-text">{t("ideaTitle")}</p>
               <p className="mt-1 font-semibold leading-snug md:text-lg">{idea.text}</p>
             </div>
             <IdeaButton
@@ -237,7 +237,7 @@ export async function ProfileView({
                 ))}
               </div>
               {p.common_hobby_count > 0 && (
-                <p className="mt-4 text-sm font-semibold text-coral">{t("commonCount", { count: p.common_hobby_count })}</p>
+                <p className="mt-4 text-sm font-semibold text-coral-text">{t("commonCount", { count: p.common_hobby_count })}</p>
               )}
             </Card>
           )}

@@ -23,12 +23,12 @@ export function SignupForm({ initialEmail = "" }: { initialEmail?: string }) {
   if (state.status === "success") {
     return (
       <div className="rounded-[var(--radius-card)] bg-surface p-6">
-        <MailCheck className="mb-4 h-8 w-8 text-coral" aria-hidden="true" />
+        <MailCheck className="mb-4 h-8 w-8 text-coral-text" aria-hidden="true" />
         <h2 className="text-2xl font-bold">{t("signup.successTitle")}</h2>
         <p className="mt-2 leading-relaxed text-muted">
           {t("signup.successBody", { email: state.values?.email ?? "" })}
         </p>
-        <p className="mt-3 text-sm text-subtle">{t("signup.successHint")}</p>
+        <p className="mt-3 text-sm text-muted">{t("signup.successHint")}</p>
       </div>
     );
   }
@@ -114,7 +114,7 @@ export function SignupForm({ initialEmail = "" }: { initialEmail?: string }) {
               key={g}
               className={cn(
                 "flex min-h-[50px] cursor-pointer items-center gap-3 rounded-2xl border bg-surface px-4 py-2.5 text-[15px] font-normal leading-tight transition-colors has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-lilac",
-                gender === g ? "border-coral" : "border-line hover:border-lilac/50",
+                gender === g ? "border-coral" : "border-edge hover:border-lilac/50",
               )}
             >
               <input
@@ -138,7 +138,7 @@ export function SignupForm({ initialEmail = "" }: { initialEmail?: string }) {
           <input
             type="checkbox"
             name="terms"
-            className="mt-0.5 h-5 w-5 shrink-0 rounded border-line accent-coral"
+            className="mt-0.5 h-5 w-5 shrink-0 rounded border-edge accent-coral"
             aria-invalid={Boolean(fe.terms)}
           />
           <span>

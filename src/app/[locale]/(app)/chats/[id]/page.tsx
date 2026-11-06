@@ -20,9 +20,11 @@ async function loadHeader(id: string) {
 }
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/chats/[id]">): Promise<Metadata> {
+  const locale = await resolveLocale(params);
+  const tCommon = await getTranslations({ locale, namespace: "common" });
   const { id } = await params;
   const header = await loadHeader(id);
-  return { title: header?.other.display_name ?? "Sohby", robots: { index: false } };
+  return { title: header?.other.display_name ?? tCommon("brandName"), robots: { index: false } };
 }
 
 export default async function ConversationPage({ params }: PageProps<"/[locale]/chats/[id]">) {

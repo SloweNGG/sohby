@@ -9,23 +9,19 @@
  * Yazı tipi: Sora (başlıklar kalın, metin hafif).
  */
 @theme {
-  --color-coral: #ff6b57;
-  --color-coral-strong: #f25744;
-  --color-coral-ink: #c8402e;
-  --color-lilac: #cdb8ff;
-  --color-surface: #2b1a4a;
-  --color-surface-hover: #35225a;
-  --color-moon: #f6f1ff;
-
-  --color-night: #1e1133;
-  --color-night-deep: #170d29;
-  --color-night-deeper: #130a22;
-  --color-line: #3b2965;
-  --color-line-soft: #2e1f4d;
-  --color-muted: #b5a6d3;
-  --color-subtle: #8c7cad;
-  --color-online: #7ee2a8;
-  --color-ink: #1e1133;
+  /* CLAUDE.md "Tasarım sistemi (Gece teması)" — yalnızca bu renkler kullanılır. */
+  --color-night: #1e1033;        /* gece: sayfa zemini */
+  --color-night-deep: #160b27;   /* gece-koyu: yan menü, paneller */
+  --color-surface: #2b1a4a;      /* yuzey: kartlar, giriş alanları */
+  --color-line: #3d2a63;         /* cizgi: ayırıcılar */
+  --color-edge: #4a3675;         /* cerceve: ikincil düğme ve alan kenarları */
+  --color-coral: #ff6b57;        /* mercan: ana düğmeler, seçili öğeler, rozetler */
+  --color-coral-text: #ff8a7a;   /* mercan-yazi: koyu zeminde mercan tonlu yazı, tehlike */
+  --color-lilac: #cdb8ff;        /* lila: ikincil vurgu, bağlantılar, avatarlar */
+  --color-moon: #f6f1ff;         /* ay-isigi: ana yazı */
+  --color-muted: #b9aed6;        /* soluk-yazi: ikincil yazı */
+  --color-online: #8fe3b0;       /* cevrimici: YALNIZCA çevrimiçi göstergesi */
+  --color-ink: #1e1033;          /* mercan üzerindeki yazı her zaman gece rengidir */
 
   --font-sans: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
 
@@ -42,13 +38,13 @@
     background: var(--color-night);
     color: var(--color-moon);
     font-family: var(--font-sans);
-    font-weight: 300;
+    font-weight: 400;
   }
 
   h1,
   h2,
   h3 {
-    font-weight: 700;
+    font-weight: 800;
     letter-spacing: -0.03em;
   }
 
@@ -58,7 +54,7 @@
   }
 
   ::placeholder {
-    color: var(--color-subtle);
+    color: var(--color-muted);
   }
 }
 

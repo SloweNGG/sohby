@@ -1,14 +1,16 @@
 /**
- * Fotoğraf yokken kullanılan siluet/baş harf avatarlarının renkleri
- * (tasarim/06-kesfet.png'deki tonlar). Kullanıcı kimliğinden kararlı seçilir.
+ * Fotoğraf yokken kullanılan siluet ve baş harf avatarlarının renkleri.
+ * Yalnızca CLAUDE.md paletinden türetilir (lila avatarlar için ana renktir).
+ * Kullanıcı kimliğinden kararlı seçilir.
  */
 const PALETTE = [
-  { bg: "#3a2563", fg: "#7c63ba", soft: "#cdb8ff" },
-  { bg: "#47273f", fg: "#a5637f", soft: "#ffb98f" },
-  { bg: "#22334f", fg: "#5c84b0", soft: "#a9c8ff" },
-  { bg: "#3e3320", fg: "#a88d5a", soft: "#f4f1ff" },
-  { bg: "#1f3e34", fg: "#5ca38b", soft: "#a9c8ff" },
-  { bg: "#47243c", fg: "#b0628a", soft: "#ffb98f" },
+  // zemin (palet yüzeyleri)   siluet (palet vurgusu)   baş harf avatarı
+  { bg: "#2b1a4a", fg: "#cdb8ff", soft: "#cdb8ff" }, // yuzey + lila
+  { bg: "#3d2a63", fg: "#cdb8ff", soft: "#cdb8ff" }, // cizgi + lila
+  { bg: "#2b1a4a", fg: "#ff8a7a", soft: "#f6f1ff" }, // yuzey + mercan-yazi
+  { bg: "#4a3675", fg: "#f6f1ff", soft: "#cdb8ff" }, // cerceve + ay-isigi
+  { bg: "#160b27", fg: "#cdb8ff", soft: "#f6f1ff" }, // gece-koyu + lila
+  { bg: "#3d2a63", fg: "#ff8a7a", soft: "#cdb8ff" }, // cizgi + mercan-yazi
 ] as const;
 
 export function avatarColors(id: string) {

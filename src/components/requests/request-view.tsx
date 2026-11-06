@@ -47,17 +47,17 @@ export async function RequestView({
 
         {(common.length > 0 || request.is_flirt) && (
           <div className="mt-5 flex flex-wrap items-center gap-2">
-            {request.is_flirt && <Tag className="border-coral text-coral">{tl("flirt")}</Tag>}
+            {request.is_flirt && <Tag className="border-coral text-coral-text">{tl("flirt")}</Tag>}
             {common.map((h) => (
               <Tag key={h.slug} highlight>
                 {locale === "tr" ? h.name_tr : h.name_en}
               </Tag>
             ))}
-            {common.length > 0 && <span className="text-sm font-semibold text-coral">{t("commonHobbies")}</span>}
+            {common.length > 0 && <span className="text-sm font-semibold text-coral-text">{t("commonHobbies")}</span>}
           </div>
         )}
 
-        <div className="mt-6 rounded-[24px] bg-night-deeper p-4 md:p-5">
+        <div className="mt-6 rounded-[24px] bg-night-deep p-4 md:p-5">
           <p className="mb-3 text-xs text-muted">
             {t("sentAgo", { time: format.relativeTime(new Date(request.created_at), new Date()) })}
           </p>
@@ -67,7 +67,7 @@ export async function RequestView({
         </div>
 
         <p className="mt-5 flex items-start gap-2.5 text-sm leading-relaxed text-muted">
-          <Lock className="mt-0.5 h-4 w-4 shrink-0 text-coral" aria-hidden="true" />
+          <Lock className="mt-0.5 h-4 w-4 shrink-0 text-coral-text" aria-hidden="true" />
           {t("privacyNote", { name: s.display_name })}
         </p>
 

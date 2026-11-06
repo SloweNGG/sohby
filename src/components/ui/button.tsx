@@ -5,11 +5,11 @@ export type ButtonVariant = "primary" | "outline" | "ghost" | "danger" | "surfac
 export type ButtonSize = "sm" | "md" | "lg" | "icon" | "icon-lg";
 
 const variants: Record<ButtonVariant, string> = {
-  primary: "bg-coral text-ink hover:bg-coral-strong font-semibold",
-  outline: "border border-line text-moon hover:bg-surface font-medium",
+  primary: "bg-coral text-ink hover:bg-coral/90 font-semibold",
+  outline: "border border-edge text-moon hover:bg-surface font-medium",
   ghost: "text-muted hover:text-moon hover:bg-surface/60 font-medium",
-  danger: "border border-coral text-coral hover:bg-coral/10 font-medium",
-  surface: "bg-surface text-moon hover:bg-surface-hover font-medium",
+  danger: "border border-coral text-coral-text hover:bg-coral/10 font-medium",
+  surface: "bg-surface text-moon hover:bg-line font-medium",
 };
 
 const sizes: Record<ButtonSize, string> = {

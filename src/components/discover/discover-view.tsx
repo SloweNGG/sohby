@@ -34,7 +34,7 @@ export async function DiscoverView({
       <div className="mb-4 flex items-center justify-between md:hidden">
         <Logo className="text-[22px]" markClassName="h-7 w-8" />
         <details className="group">
-          <summary className="grid h-11 w-11 cursor-pointer list-none place-items-center rounded-full border border-line [&::-webkit-details-marker]:hidden">
+          <summary className="grid h-11 w-11 cursor-pointer list-none place-items-center rounded-full border border-edge [&::-webkit-details-marker]:hidden">
             <Search className="h-5 w-5" aria-hidden="true" />
             <span className="sr-only">{t("searchOpen")}</span>
           </summary>

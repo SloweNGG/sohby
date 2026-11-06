@@ -215,7 +215,7 @@ export function ChatRoom({
   return (
     <div className="flex h-dvh flex-col">
       {/* Başlık */}
-      <header className="flex items-center gap-3 border-b border-line-soft px-3 py-3 md:px-7 md:py-4">
+      <header className="flex items-center gap-3 border-b border-line px-3 py-3 md:px-7 md:py-4">
         <Link
           href="/chats"
           className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-moon hover:bg-surface md:hidden"
@@ -254,12 +254,12 @@ export function ChatRoom({
               type="button"
               onClick={loadOlder}
               disabled={loadingOlder}
-              className="mx-auto mb-2 rounded-full border border-line px-4 py-1.5 text-sm text-muted hover:text-moon disabled:opacity-60"
+              className="mx-auto mb-2 rounded-full border border-edge px-4 py-1.5 text-sm text-muted hover:text-moon disabled:opacity-60"
             >
               {t("loadOlder")}
             </button>
           ) : (
-            <p className="mx-auto mb-4 max-w-sm text-center text-xs leading-relaxed text-subtle">{t("start")}</p>
+            <p className="mx-auto mb-4 max-w-sm text-center text-xs leading-relaxed text-muted">{t("start")}</p>
           )}
 
           {messages.map((m, i) => {
@@ -287,7 +287,7 @@ export function ChatRoom({
                   </div>
                 </div>
                 {m.status === "failed" && (
-                  <p className="mt-1 flex items-center justify-end gap-2 text-xs text-coral">
+                  <p className="mt-1 flex items-center justify-end gap-2 text-xs text-coral-text">
                     {t(`errors.${m.error ?? "generic"}`)}
                     {m.error !== "not_allowed" && (
                       <button
@@ -308,7 +308,7 @@ export function ChatRoom({
       </div>
 
       {/* Yazma alanı */}
-      <div className="border-t border-line-soft px-3 pb-[max(12px,env(safe-area-inset-bottom))] pt-3 md:border-t-0 md:px-7 md:pb-6">
+      <div className="border-t border-line px-3 pb-[max(12px,env(safe-area-inset-bottom))] pt-3 md:border-t-0 md:px-7 md:pb-6">
         {header.can_send ? (
           <form
             className="mx-auto flex max-w-[920px] items-end gap-2.5"
@@ -332,7 +332,7 @@ export function ChatRoom({
                 }}
                 placeholder={t("placeholder")}
                 className={cn(
-                  "block max-h-40 min-h-[52px] w-full resize-none rounded-[26px] border border-line bg-surface px-5 py-[14px] text-[15px] leading-snug outline-none placeholder:text-subtle focus:border-lilac/80",
+                  "block max-h-40 min-h-[52px] w-full resize-none rounded-2xl border border-edge bg-surface px-5 py-[14px] text-[15px] leading-snug outline-none placeholder:text-muted focus:border-lilac/80",
                   tooLong && "border-coral",
                 )}
                 aria-invalid={tooLong}
@@ -341,18 +341,18 @@ export function ChatRoom({
             <button
               type="submit"
               disabled={!draft.trim() || tooLong}
-              className="grid h-[52px] w-[52px] shrink-0 place-items-center rounded-full bg-coral text-ink transition-colors hover:bg-coral-strong disabled:opacity-50"
+              className="grid h-[52px] w-[52px] shrink-0 place-items-center rounded-full bg-coral text-ink transition-colors hover:bg-coral/90 disabled:opacity-50"
               aria-label={t("send")}
             >
               <ArrowUp className="h-5 w-5" strokeWidth={2.5} aria-hidden="true" />
             </button>
           </form>
         ) : (
-          <p className="mx-auto max-w-[920px] rounded-2xl border border-line bg-surface px-4 py-3 text-center text-sm text-muted">
+          <p className="mx-auto max-w-[920px] rounded-2xl border border-edge bg-surface px-4 py-3 text-center text-sm text-muted">
             {t("cannotSend")}
           </p>
         )}
-        {tooLong && <p className="mx-auto mt-2 max-w-[920px] text-xs text-coral">{t("errors.too_long")}</p>}
+        {tooLong && <p className="mx-auto mt-2 max-w-[920px] text-xs text-coral-text">{t("errors.too_long")}</p>}
       </div>
     </div>
   );

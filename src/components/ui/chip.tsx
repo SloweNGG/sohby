@@ -18,7 +18,7 @@ export function Tag({
       className={cn(
         "inline-flex items-center rounded-full border font-normal",
         size === "sm" ? "h-6 px-2.5 text-xs" : "h-[30px] px-3 text-sm",
-        highlight ? "border-coral bg-coral font-medium text-ink" : "border-line text-moon",
+        highlight ? "border-coral bg-coral font-medium text-ink" : "border-edge text-moon",
         className,
       )}
     >
@@ -42,7 +42,7 @@ export function ToggleChip({
         "inline-flex h-10 items-center gap-2 rounded-full border px-4 text-sm transition-colors",
         selected
           ? "border-coral bg-coral font-medium text-ink"
-          : "border-line text-moon hover:border-lilac/60 hover:bg-surface",
+          : "border-edge text-moon hover:border-lilac/60 hover:bg-surface",
         "disabled:cursor-not-allowed disabled:opacity-50",
         className,
       )}

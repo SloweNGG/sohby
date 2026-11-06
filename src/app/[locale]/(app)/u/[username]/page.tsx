@@ -12,10 +12,12 @@ async function loadProfile(username: string) {
 }
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/u/[username]">): Promise<Metadata> {
+  const locale = await resolveLocale(params);
+  const tCommon = await getTranslations({ locale, namespace: "common" });
   const { username } = await params;
   const profile = await loadProfile(username);
   // Profiller arama motorlarına kapalı (yalnızca giriş yapmış kullanıcılar görür).
-  return { title: profile?.display_name ?? "Sohby", robots: { index: false, follow: false } };
+  return { title: profile?.display_name ?? tCommon("brandName"), robots: { index: false, follow: false } };
 }
 
 export default async function ProfilePage({ params, searchParams }: PageProps<"/[locale]/u/[username]">) {

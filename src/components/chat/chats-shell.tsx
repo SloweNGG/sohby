@@ -103,7 +103,7 @@ export function ChatsShell({
       <div className="md:grid md:h-dvh md:grid-cols-[396px_minmax(0,1fr)]">
         <aside
           className={cn(
-            "min-h-dvh flex-col border-line-soft pb-24 md:flex md:min-h-0 md:border-r md:bg-night-deep md:pb-0",
+            "min-h-dvh flex-col border-edge pb-24 md:flex md:min-h-0 md:border-r md:bg-night-deep md:pb-0",
             showListOnMobile ? "flex" : "hidden",
           )}
         >
@@ -132,7 +132,7 @@ function ChatsSidebar() {
     <>
       <div className="px-4 pt-5 md:px-6 md:pt-6">
         <h1 className="text-[32px] font-extrabold tracking-[-0.05em]">{t("title")}</h1>
-        <nav className="mt-4 flex rounded-full bg-night-deeper p-1" aria-label={t("title")}>
+        <nav className="mt-4 flex rounded-full bg-night-deep p-1" aria-label={t("title")}>
           <Link href="/chats" className={tab(!onRequests)} aria-current={!onRequests ? "page" : undefined}>
             {t("tabChats")}
           </Link>
@@ -148,13 +148,13 @@ function ChatsSidebar() {
         {!onRequests && (
           <label className="relative mt-4 block">
             <span className="sr-only">{t("search")}</span>
-            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" aria-hidden="true" />
+            <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" aria-hidden="true" />
             <input
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder={t("search")}
-              className="h-12 w-full rounded-full border border-line bg-surface pl-11 pr-4 text-[15px] outline-none placeholder:text-subtle focus:border-lilac/80"
+              className="h-12 w-full rounded-2xl border border-edge bg-surface pl-11 pr-4 text-[15px] outline-none placeholder:text-muted focus:border-lilac/80"
             />
           </label>
         )}
@@ -196,7 +196,7 @@ function ConversationList({ query }: { query: string }) {
   if (items.length === 0) return <p className="px-4 py-6 text-sm text-muted">{t("noMatch")}</p>;
 
   return (
-    <ul className="divide-y divide-line-soft md:divide-y-0">
+    <ul className="divide-y divide-line md:divide-y-0">
       {items.map((c) => {
         const active = pathname === `/chats/${c.id}`;
         const unread = c.unread_count > 0;
@@ -215,7 +215,7 @@ function ConversationList({ query }: { query: string }) {
                 <span className="flex items-baseline justify-between gap-2">
                   <span className="truncate text-[16px] font-semibold">{c.other.display_name}</span>
                   {c.last_message && (
-                    <span className={cn("shrink-0 text-xs md:hidden", unread ? "text-coral" : "text-muted")}>
+                    <span className={cn("shrink-0 text-xs md:hidden", unread ? "text-coral-text" : "text-muted")}>
                       {listTime(c.last_message.created_at)}
                     </span>
                   )}
@@ -274,7 +274,7 @@ function RequestList() {
                     <span className="flex items-center gap-2">
                       <span className="truncate font-semibold">{r.sender.display_name}</span>
                       {r.is_flirt && (
-                        <span className="shrink-0 rounded-full border border-coral px-2 py-px text-[11px] font-semibold text-coral">
+                        <span className="shrink-0 rounded-full border border-coral px-2 py-px text-[11px] font-semibold text-coral-text">
                           {tl("flirt")}
                         </span>
                       )}

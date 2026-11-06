@@ -11,7 +11,7 @@ export async function BlockedNotice({ withSignOut = false }: { withSignOut?: boo
   return (
     <main className="mx-auto flex min-h-dvh max-w-lg flex-col items-center justify-center px-4 text-center">
       <Logo className="mb-10 text-2xl" />
-      <ShieldAlert className="mb-4 h-10 w-10 text-coral" aria-hidden="true" />
+      <ShieldAlert className="mb-4 h-10 w-10 text-coral-text" aria-hidden="true" />
       <h1 className="text-3xl">{t("title")}</h1>
       <p className="mt-3 leading-relaxed text-muted">{t("body")}</p>
       {withSignOut ? (

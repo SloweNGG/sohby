@@ -342,6 +342,7 @@ CLAUDE.md eklendi; 15 güvenlik kuralı migration'larla tek tek karşılaştır�
 | # | İş | Durum |
 | --- | --- | --- |
 | 1 | 3 kararın uygulanması + migration'ların uzak veritabanına uygulanması | ✅ |
+| 2 | CLAUDE.md farkları: renkler, gömülü metinler, EN çeviriler | ✅ |
 
 ## İş 1 — Kararlar ve uzak veritabanı ✅
 
@@ -390,3 +391,24 @@ Salt okunur kontroller (uzakta):
 - `supabase migration list --remote`: yerel ve uzak 5/5 eşleşiyor.
 
 Testler: 57/57 (veritabanı, saklama, Edge Function, birim).
+
+## İş 2 — CLAUDE.md tasarım ve metin farkları ✅
+
+- **Renkler** birebir CLAUDE.md paletine çekildi (`src/app/globals.css`, açıklamalı). Palet dışı 6 ton
+  kaldırıldı (eski "gece" #1E1133, daha koyu panel, yumuşak çizgi, soluk-ötesi gri, koyu mercan, hover mercanı).
+  - Alan ve ikincil düğme kenarları artık **cerceve** (#4A3675), ayırıcılar **cizgi** (#3D2A63).
+  - Koyu zemindeki mercan tonlu yazılar (Şikâyet et, hata, adım etiketi…) **mercan-yazi** (#FF8A7A).
+  - **Yeşil yalnızca çevrimiçi**: "gönderildi/şikâyet alındı" ikonları ve başarı kutusu lilaya çevrildi.
+  - Avatarlar ve siluetler paletten türetiliyor (lila ağırlıklı).
+  - Yazı ağırlıkları: gövde 400 (önce 300'dü), başlıklar 800.
+  - Giriş alanları 16px köşe (arama kutuları ve mesaj yazma alanı tam yuvarlaktı).
+- **Koda gömülü metinler** `messages/*.json`'a taşındı (marka adı, logo yazısı, "Sohby ana sayfa"
+  bağlantı etiketleri, tarih yer tutucusu, "Türkiye", tanıtım sayfasındaki örnek profiller, TR/EN kodları).
+  EN karşılıkları eksiksiz.
+- **Kalıcı korumalar (testler):** `.tsx` içinde düz metin / Türkçe dize / metinli öznitelik yakalayan test,
+  TR-EN anahtar eşitliği + boş değer testi, palet dışı renk testi. `npm test` → 60/60.
+
+### Kararlar
+- Tanıtım sayfasının açık bölümündeki "01-02-03" numaraları tasarımda mercan; ama mercan açık zeminde
+  kontrastı 2.5:1 (CLAUDE.md en az 4.5:1 istiyor) → **gece renginde** gösteriliyor.
+- Arama kutuları tasarımda tam yuvarlak; CLAUDE.md "giriş alanları 16px" dediği için 16px yapıldı.

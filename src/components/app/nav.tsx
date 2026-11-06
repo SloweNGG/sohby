@@ -36,6 +36,7 @@ function Badge({ count, className }: { count: number; className?: string }) {
 /** Masaüstü sol kenar çubuğu (tasarim/06–09). */
 export function Sidebar({ me }: { me: Me }) {
   const t = useTranslations("app");
+  const tCommon = useTranslations("common");
   const locale = useLocale();
   const section = useSection();
   const { unread_messages, pending_requests } = useBadges();
@@ -49,9 +50,9 @@ export function Sidebar({ me }: { me: Me }) {
   return (
     <nav
       aria-label={t("mainNav")}
-      className="fixed inset-y-0 left-0 z-30 hidden w-[76px] flex-col items-center bg-night-deeper py-5 md:flex"
+      className="fixed inset-y-0 left-0 z-30 hidden w-[76px] flex-col items-center bg-night-deep py-5 md:flex"
     >
-      <Link href="/discover" aria-label="Sohby" className="mb-8">
+      <Link href="/discover" aria-label={tCommon("homeLink")} className="mb-8">
         <LogoMark className="h-8 w-9" />
       </Link>
       <div className="flex flex-col items-center gap-3">
@@ -77,13 +78,13 @@ export function Sidebar({ me }: { me: Me }) {
           >
             {initial(me.displayName, locale)}
           </summary>
-          <div className="absolute bottom-0 left-14 z-40 w-48 rounded-2xl border border-line bg-surface p-1.5 shadow-xl">
-            <Link href={`/u/${me.username}`} className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-surface-hover">
+          <div className="absolute bottom-0 left-14 z-40 w-48 rounded-2xl border border-edge bg-surface p-1.5 shadow-xl">
+            <Link href={`/u/${me.username}`} className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm hover:bg-line">
               <UserRound className="h-4 w-4" aria-hidden="true" />
               {t("myProfile")}
             </Link>
             <form action={signOutAction}>
-              <button type="submit" className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm hover:bg-surface-hover">
+              <button type="submit" className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm hover:bg-line">
                 <LogOut className="h-4 w-4" aria-hidden="true" />
                 {t("signOut")}
               </button>
@@ -114,7 +115,7 @@ export function BottomNav({ me }: { me: Me }) {
   return (
     <nav
       aria-label={t("mainNav")}
-      className="fixed inset-x-0 bottom-0 z-30 border-t border-line-soft bg-night-deep/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
+      className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-night-deep/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
     >
       <ul className="mx-auto flex h-[76px] max-w-md items-center justify-around">
         {items.map(({ key, href, icon: Icon, label, count }) => {
@@ -126,7 +127,7 @@ export function BottomNav({ me }: { me: Me }) {
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "relative flex w-20 flex-col items-center gap-1 text-xs font-semibold",
-                  active ? "text-coral" : "text-moon",
+                  active ? "text-coral-text" : "text-moon",
                 )}
               >
                 <Icon className="h-[22px] w-[22px]" strokeWidth={1.75} aria-hidden="true" />

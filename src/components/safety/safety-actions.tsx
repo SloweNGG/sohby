@@ -62,7 +62,7 @@ export function SafetyActions({
           <button type="button" onClick={openBlock} className="text-muted hover:text-moon">
             {t("block")}
           </button>
-          <button type="button" onClick={openReport} className="text-coral hover:underline">
+          <button type="button" onClick={openReport} className="text-coral-text hover:underline">
             {t("report")}
           </button>
         </div>
@@ -85,19 +85,19 @@ export function SafetyActions({
         <details ref={menuRef} className="relative">
           <summary
             className={cn(
-              "grid h-11 w-11 cursor-pointer list-none place-items-center rounded-full border border-line [&::-webkit-details-marker]:hidden",
+              "grid h-11 w-11 cursor-pointer list-none place-items-center rounded-full border border-edge [&::-webkit-details-marker]:hidden",
               menuClassName,
             )}
             aria-label={t("more")}
           >
             <MoreHorizontal className="h-5 w-5" aria-hidden="true" />
           </summary>
-          <div className="absolute right-0 top-12 z-40 w-48 rounded-2xl border border-line bg-surface p-1.5 shadow-xl">
-            <button type="button" onClick={openBlock} className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm hover:bg-surface-hover">
+          <div className="absolute right-0 top-12 z-40 w-48 rounded-2xl border border-edge bg-surface p-1.5 shadow-xl">
+            <button type="button" onClick={openBlock} className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm hover:bg-line">
               <Ban className="h-4 w-4" aria-hidden="true" />
               {t("block")}
             </button>
-            <button type="button" onClick={openReport} className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm text-coral hover:bg-surface-hover">
+            <button type="button" onClick={openReport} className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm text-coral-text hover:bg-line">
               <Flag className="h-4 w-4" aria-hidden="true" />
               {t("report")}
             </button>
@@ -119,7 +119,7 @@ export function SafetyActions({
 }
 
 const dialogClass =
-  "m-auto w-[calc(100%-2rem)] max-w-md rounded-[var(--radius-card)] border border-line bg-surface p-0 text-moon backdrop:bg-black/60";
+  "m-auto w-[calc(100%-2rem)] max-w-md rounded-[var(--radius-card)] border border-edge bg-surface p-0 text-moon backdrop:bg-black/60";
 
 function DialogHeader({ title, onClose, closeLabel, id }: { title: string; onClose: () => void; closeLabel: string; id: string }) {
   return (
@@ -273,7 +273,7 @@ function ReportDialog({
         {done ? (
           <>
             <p className="flex items-start gap-3 leading-relaxed text-muted">
-              <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-online" aria-hidden="true" />
+              <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-lilac" aria-hidden="true" />
               {done.blocked ? t("reportDoneBlocked", { name }) : t("reportDone")}
             </p>
             <div className="mt-6 flex justify-end">
@@ -297,7 +297,7 @@ function ReportDialog({
                     key={r}
                     className={cn(
                       "flex cursor-pointer items-center gap-3 rounded-2xl border px-4 py-3 text-[15px] has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-lilac",
-                      reason === r ? "border-coral bg-surface-hover" : "border-line bg-night-deep",
+                      reason === r ? "border-coral bg-line" : "border-edge bg-night-deep",
                     )}
                   >
                     <input

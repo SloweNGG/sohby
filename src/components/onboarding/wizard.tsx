@@ -92,6 +92,8 @@ export function OnboardingWizard({
   const t = useTranslations("onboarding");
   const tl = useTranslations("lookingFor");
   const td = useTranslations("lookingForDesc");
+  const tCommon = useTranslations("common");
+  const tSignup = useTranslations("auth.signup");
   const locale = useLocale();
 
   const [v, setV] = useState(initial);
@@ -240,7 +242,7 @@ export function OnboardingWizard({
     <div className="min-h-dvh">
       {/* Üst çubuk + ilerleme */}
       <header className="flex items-center justify-between gap-6 px-4 pt-5 sm:px-10 sm:pt-7">
-        <Link href="/" aria-label="Sohby">
+        <Link href="/" aria-label={tCommon("homeLink")}>
           <Logo className="text-[22px]" markClassName="h-7 w-8" />
         </Link>
         <div className="flex items-center gap-4">
@@ -263,7 +265,7 @@ export function OnboardingWizard({
 
       <div className="mx-auto grid max-w-[1070px] gap-12 px-4 pb-16 pt-8 sm:px-6 sm:pt-14 lg:grid-cols-[minmax(0,680px)_340px]">
         <main>
-          <p className="mb-2 text-sm font-semibold text-coral">{t("stepLabel", { current: index + 1 })}</p>
+          <p className="mb-2 text-sm font-semibold text-coral-text">{t("stepLabel", { current: index + 1 })}</p>
 
           {step === "looking_for" && (
             <StepHeader title={t("lookingFor.title")} subtitle={t("lookingFor.subtitle")}>
@@ -281,7 +283,7 @@ export function OnboardingWizard({
                         "flex min-h-[132px] flex-col items-start rounded-[var(--radius-card)] border-2 p-4 text-left transition-colors sm:min-h-[146px] sm:p-5",
                         selected
                           ? "border-coral bg-coral text-ink"
-                          : "border-line bg-surface hover:border-lilac/50",
+                          : "border-edge bg-surface hover:border-lilac/50",
                       )}
                     >
                       <Icon className="mb-auto h-6 w-6" strokeWidth={1.75} aria-hidden="true" />
@@ -294,7 +296,7 @@ export function OnboardingWizard({
                 })}
               </div>
               <p className="mt-5 flex items-start gap-2 text-sm leading-relaxed text-muted">
-                <Lock className="mt-0.5 h-4 w-4 shrink-0 text-coral" aria-hidden="true" />
+                <Lock className="mt-0.5 h-4 w-4 shrink-0 text-coral-text" aria-hidden="true" />
                 {t("lookingFor.flirtNote")}
               </p>
             </StepHeader>
@@ -316,9 +318,9 @@ export function OnboardingWizard({
                   ))}
                 </div>
               </fieldset>
-              <div className="mt-8 rounded-[var(--radius-card)] border border-line bg-night-deep p-5">
+              <div className="mt-8 rounded-[var(--radius-card)] border border-edge bg-night-deep p-5">
                 <p className="mb-3 flex items-center gap-2 text-sm font-semibold">
-                  <Lock className="h-4 w-4 text-coral" aria-hidden="true" />
+                  <Lock className="h-4 w-4 text-coral-text" aria-hidden="true" />
                   {t("dating.consentTitle")}
                 </p>
                 <label className="flex cursor-pointer items-start gap-3 text-sm leading-relaxed text-muted">
@@ -382,7 +384,7 @@ export function OnboardingWizard({
                       id="birthDate"
                       inputMode="numeric"
                       autoComplete="bday"
-                      placeholder="GG.AA.YYYY"
+                      placeholder={tSignup("birthDatePlaceholder")}
                       value={birthDate}
                       onChange={(e) => {
                         setBirthDate(formatDateInput(e.target.value));
@@ -400,7 +402,7 @@ export function OnboardingWizard({
                         key={g}
                         className={cn(
                           "flex min-h-[50px] cursor-pointer items-center gap-3 rounded-2xl border bg-surface px-4 py-2.5 text-[15px] leading-tight has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-lilac",
-                          v.gender === g ? "border-coral" : "border-line",
+                          v.gender === g ? "border-coral" : "border-edge",
                         )}
                       >
                         <input
@@ -458,7 +460,7 @@ export function OnboardingWizard({
           {step === "hobbies" && (
             <StepHeader title={t("hobbies.title")} subtitle={t("hobbies.subtitle")}>
               <div className="relative mb-4">
-                <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-subtle" aria-hidden="true" />
+                <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" aria-hidden="true" />
                 <Input
                   type="search"
                   className="pl-11"
@@ -540,7 +542,7 @@ export function OnboardingWizard({
 
           {step === "privacy" && (
             <StepHeader title={t("privacy.title")} subtitle={t("privacy.subtitle")}>
-              <div className="divide-y divide-line-soft border-y border-line-soft">
+              <div className="divide-y divide-line border-y border-line">
                 <ToggleRow
                   label={t("privacy.showInDiscover")}
                   hint={t("privacy.showInDiscoverHint")}
@@ -583,7 +585,7 @@ export function OnboardingWizard({
                     key={p}
                     className={cn(
                       "flex cursor-pointer items-start gap-4 rounded-2xl border px-5 py-4 has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-lilac",
-                      v.messagePolicy === p ? "border-coral bg-surface" : "border-line bg-night-deep",
+                      v.messagePolicy === p ? "border-coral bg-surface" : "border-edge bg-night-deep",
                     )}
                   >
                     <input
@@ -612,7 +614,7 @@ export function OnboardingWizard({
             </div>
           )}
 
-          <div className="mt-8 flex items-center justify-between gap-3 border-t border-line-soft pt-6">
+          <div className="mt-8 flex items-center justify-between gap-3 border-t border-line pt-6">
             {index > 0 ? (
               <Button variant="ghost" onClick={back} disabled={pending}>
                 {t("back")}
@@ -645,12 +647,12 @@ export function OnboardingWizard({
             {v.city && (
               <p className="mt-5 flex items-center gap-2 text-[15px]">
                 <MapPin className="h-4 w-4 shrink-0" aria-hidden="true" />
-                {[v.showDistrict ? v.district : "", v.city, "Türkiye"]
+                {[v.showDistrict ? v.district : "", v.city, t("country")]
                   .filter(Boolean)
                   .join(", ")}
               </p>
             )}
-            <p className={cn("mt-4 text-sm leading-relaxed", v.bio ? "text-moon" : "text-subtle")}>
+            <p className={cn("mt-4 text-sm leading-relaxed", v.bio ? "text-moon" : "text-muted")}>
               {v.bio || t("previewBio")}
             </p>
             {v.hobbyIds.length > 0 && (
@@ -658,7 +660,7 @@ export function OnboardingWizard({
                 {hobbies
                   .filter((h) => v.hobbyIds.includes(h.id))
                   .map((h) => (
-                    <span key={h.id} className="rounded-full border border-line px-3 py-1 text-sm">
+                    <span key={h.id} className="rounded-full border border-edge px-3 py-1 text-sm">
                       {hobbyName(h)}
                     </span>
                   ))}
@@ -671,12 +673,12 @@ export function OnboardingWizard({
                   {v.lookingFor
                     .filter((x) => x !== "flirt")
                     .map((x) => tl(x))
-                    .join(", ") || "—"}
+                    .join(", ") || t("previewNone")}
                 </span>
               </p>
               <p>
                 <span className="font-semibold">{t("previewLanguages")}</span>{" "}
-                <span className="text-muted">{v.languages.map(languageName).join(", ") || "—"}</span>
+                <span className="text-muted">{v.languages.map(languageName).join(", ") || t("previewNone")}</span>
               </p>
             </div>
           </div>

@@ -19,7 +19,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
       role="group"
       aria-label={t("language")}
       className={cn(
-        "inline-flex items-center gap-1 rounded-full border border-line p-1 pl-3",
+        "inline-flex items-center gap-1 rounded-full border border-edge p-1 pl-3",
         pending && "opacity-70",
         className,
       )}
@@ -41,7 +41,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
             l === locale ? "bg-moon text-ink" : "text-moon hover:bg-surface",
           )}
         >
-          {l}
+          {t(`localeShort.${l}`)}
         </button>
       ))}
     </div>

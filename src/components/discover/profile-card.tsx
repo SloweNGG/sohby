@@ -61,7 +61,7 @@ export function DiscoverCard({ p }: { p: ProfileCard }) {
         <div className="sm:mt-auto sm:flex sm:justify-end sm:pt-4">
           <Link
             href={`/u/${p.username}?compose=1`}
-            className="relative z-20 grid h-10 w-10 place-items-center rounded-full bg-coral text-ink transition-colors hover:bg-coral-strong sm:h-[52px] sm:w-[52px]"
+            className="relative z-20 grid h-10 w-10 place-items-center rounded-full bg-coral text-ink transition-colors hover:bg-coral/90 sm:h-[52px] sm:w-[52px]"
             aria-label={t("messageTo", { name: p.display_name })}
           >
             <MessageSquare className="h-[18px] w-[18px] sm:h-5 sm:w-5" strokeWidth={2.25} aria-hidden="true" />

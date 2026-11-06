@@ -37,8 +37,8 @@ export function Silhouette({ id, className }: { id: string; className?: string }
   return (
     <div className={cn("relative overflow-hidden", className)} style={{ background: bg }} aria-hidden="true">
       <svg viewBox="0 0 200 250" preserveAspectRatio="xMidYMax meet" className="absolute inset-x-0 bottom-0 h-full w-full">
-        <circle cx="100" cy="100" r="44" fill={fg} />
-        <path d="M24 250c0-60 34-100 76-100s76 40 76 100z" fill={fg} />
+        <circle cx="100" cy="100" r="44" fill={fg} fillOpacity={0.55} />
+        <path d="M24 250c0-60 34-100 76-100s76 40 76 100z" fill={fg} fillOpacity={0.55} />
       </svg>
     </div>
   );

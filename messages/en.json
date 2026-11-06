@@ -16,7 +16,14 @@
     "hide": "Hide",
     "close": "Close",
     "genericError": "Something went wrong. Please try again.",
-    "configError": "Server configuration is missing. Please try again later."
+    "configError": "Server configuration is missing. Please try again later.",
+    "brandName": "Sohby",
+    "brandWordmark": "sohby",
+    "homeLink": "Sohby home",
+    "localeShort": {
+      "tr": "TR",
+      "en": "EN"
+    }
   },
   "auth": {
     "aside": {
@@ -256,7 +263,9 @@
       "languages_required": "Pick at least one language.",
       "bio_too_long": "About can be at most 500 characters.",
       "occupation_too_long": "School or work can be at most 80 characters."
-    }
+    },
+    "country": "Türkiye",
+    "previewNone": "—"
   },
   "blocked": {
     "metaTitle": "Account unavailable",
@@ -523,6 +532,24 @@
       "privacy": "Privacy policy",
       "kvkk": "Privacy notice (KVKK)",
       "contact": "Contact"
+    },
+    "examples": {
+      "elif": {
+        "name": "Elif",
+        "place": "Çankaya, chess"
+      },
+      "mert": {
+        "name": "Mert",
+        "place": "Beşiktaş, basketball"
+      },
+      "zeynep": {
+        "name": "Zeynep",
+        "place": "Kadıköy, photography"
+      },
+      "can": {
+        "name": "Can",
+        "place": "Bornova, music"
+      }
     }
   }
 }

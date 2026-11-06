@@ -80,7 +80,7 @@ export function ComposeProvider({
       <dialog
         ref={dialogRef}
         onClose={() => sent && router.refresh()}
-        className="m-auto w-[calc(100%-2rem)] max-w-lg rounded-[var(--radius-card)] border border-line bg-surface p-0 text-moon backdrop:bg-black/60"
+        className="m-auto w-[calc(100%-2rem)] max-w-lg rounded-[var(--radius-card)] border border-edge bg-surface p-0 text-moon backdrop:bg-black/60"
         aria-labelledby="compose-title"
       >
         <div className="p-5 sm:p-6">
@@ -96,7 +96,7 @@ export function ComposeProvider({
           {sent ? (
             <div>
               <p className="flex items-start gap-3 leading-relaxed text-muted">
-                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-online" aria-hidden="true" />
+                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-lilac" aria-hidden="true" />
                 {t("compose.sentBody", { name })}
               </p>
               <div className="mt-6 flex justify-end">
