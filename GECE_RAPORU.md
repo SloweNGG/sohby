@@ -756,3 +756,49 @@ Migration 14 (`declined_requests`) uzağa uygulandı (dry-run → push).
 - Aranızda zaten bir sohbet varsa (ör. sonradan anonim sohbette kimlik açıldıysa) eski ret listede görünmez.
 - Anonim listede süzgeçler mevcut anonim sohbet listesiyle aynı; yeni bir "kim kayboldu" yan kanalı açılmadı.
 - Reddedilen isteklerin metni kalıcılık için saklanıyor (hesap silinirse 90 gün kuralıyla birlikte siliniyor).
+
+## İş C — Yaş doğrulama belgesi ✅ (şifreleme anahtarını senin girmen gerekiyor)
+
+Migration 15 (`age_verification`) uzağa uygulandı (dry-run → push); `age-documents` Edge Function'ı yayında.
+
+**Kullanıcı tarafı:** "Yaşını doğrulaman gerekiyor" ekranında belge yükleme formu var. Durumlar: inceleniyor /
+reddedildi (gerekçesiyle, yeniden yükleyebilir) / süresi doldu (yeniden yükler). İtiraz formu yedek olarak duruyor.
+
+**Yönetim paneli → "Yaş doğrulama":** bekleyen belgeler; profildeki doğum tarihi ve yaş yanında. "Belgeyi göster"
+→ belge yalnızca istenince açılır. Onayla → hesap yeniden açılır. Reddet → gerekçe kullanıcıya gösterilir.
+
+**Güvenlik (CLAUDE.md kural 15 + kararların):**
+- **Şifreli:** dosya AES-256-GCM ile şifrelenip yazılıyor. Anahtar veritabanında değil, yalnızca fonksiyonun
+  ortamında (`AGE_DOC_KEY`). Dosya başka bir kaydın adıyla çözülemiyor. Fotoğraftaki GPS/üst veriler önce siliniyor.
+- **Ayrı, gizli bucket:** `age-documents`. Hiçbir erişim kuralı yok, yani yönetici dahil kimse depolamadan
+  doğrudan okuyamıyor. Tek yol fonksiyon. Kayıtlar API'ye kapalı tabloda; kullanıcı yalnızca kendi durumunu görüyor.
+- **Kısa ömürlü bağlantı + kayıt:** her "Belgeyi göster" işlem kaydına yazılıyor (kim, hangi belge, ne zaman) ve
+  60 saniye geçerli bir bağlantı üretiyor. Bağlantının kendisi saklanmıyor, yalnızca özeti. Önbelleğe alınmıyor.
+- **30 gün:** belge yüklendikten 30 gün sonra (incelenmiş olsun olmasın) veritabanı onu hemen görüntülenemez
+  yapıyor. Saatlik görev de dosyayı Storage API ile fiziksel olarak siliyor; Supabase dosyaların veritabanından
+  doğrudan silinmesine izin vermiyor. Ek güvenlik ağı: bucket'ta 30 günden eski her dosya, kaydı olmasa bile siliniyor.
+- Aynı anda tek bekleyen belge, 24 saatte en çok 3 yükleme, yalnızca JPEG/PNG/WebP, en çok 5 MB.
+- Canlıda denendi: oturumsuz yükleme 401; sahte/boş görüntüleme bağlantısı 404; sahte silme görevi 403; anonim
+  API çağrıları reddediliyor; bucket gizli ve kuralsız. Silme görevi gerçek belirteçle bir kez tetiklendi → 200
+  (silinecek belge yoktu).
+- Testler: 10 veritabanı + 10 fonksiyon testi. `npm test` → 154/154.
+
+### Kararlar
+- **30 gün yüklemeden itibaren sayılıyor.** Bu hem senin "30 gün sonra silinsin" kararını hem CLAUDE.md'deki
+  "inceleme bittikten sonra en geç 30 gün" kuralını karşılıyor. 30 gün içinde incelenmeyen belge "süresi doldu"
+  olur ve kullanıcı yeniden yükler.
+- Yalnızca fotoğraf kabul ediliyor, PDF yok. PDF'lerdeki gizli verileri güvenle temizlemek zor.
+- Ret hesabı kapatmıyor; kullanıcı yeni belge yükleyebilir. Belge 18 yaş altını gösteriyorsa hesap
+  "Kullanıcılar" ekranından kalıcı kapatılmalı (panelde not olarak yazıyor).
+- Saatlik görevin fonksiyonu çağırması için gereken adres migration'a yazılmadı (proje kodu repoda olmasın diye).
+  Fonksiyon adresini ilk belge yüklendiğinde kendisi kaydediyor; ondan önce silinecek dosya da olmuyor. Görev
+  belirteci migration dosyasında değil, uygulama anında veritabanında rastgele üretildi.
+
+### ⚠️ Senden gereken: şifreleme anahtarı
+Anahtarı Supabase'e kendim yazmak istedim, ama otomatik izin denetimi bu işlemi engelledi. Anahtar girilene
+kadar belge yükleme **güvenli biçimde kapalı**: kullanıcı "Belge yüklenemedi" görür, şifresiz hiçbir dosya yazılmaz.
+1. Terminalde: `openssl rand -base64 32` → çıkan değeri kopyala (hiçbir dosyaya kaydetme).
+2. Supabase paneli → **Edge Functions → Secrets** → *Add new secret*: ad `AGE_DOC_KEY`, değer: kopyaladığın.
+   (Ya da terminalde: `npx supabase secrets set AGE_DOC_KEY=<değer>`.)
+3. Anahtarı değiştirirsen o ana kadar yüklenmiş belgeler açılamaz; belgeler en çok 30 gün yaşadığı için bu
+   kalıcı bir kayıp yaratmaz.

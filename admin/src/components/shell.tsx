@@ -21,6 +21,7 @@ export async function AdminShell({ children }: { children: React.ReactNode }) {
   const links = [
     ["/reports", t("nav.reports")],
     ["/photos", t("nav.photos")],
+    ["/age-documents", t("nav.ageDocuments")],
     ["/users", t("nav.users")],
     ["/appeals", t("nav.appeals")],
     ["/audit", t("nav.audit")],
@@ -54,7 +55,4 @@ export function Badge({ children }: { children: React.ReactNode }) {
   return <span className="rounded-full border border-edge px-2 py-0.5 text-xs">{children}</span>;
 }
 
-export const btn = "rounded-full border border-edge px-3 py-1.5 text-sm hover:bg-surface";
-export const btnPrimary = "rounded-full bg-coral px-3 py-1.5 text-sm font-semibold text-ink hover:bg-coral/90";
-export const btnDanger = "rounded-full border border-coral-text px-3 py-1.5 text-sm text-coral-text hover:bg-coral/10";
-export const input = "h-10 rounded-2xl border border-edge bg-surface px-3 text-sm outline-none focus:border-lilac";
+export { btn, btnPrimary, btnDanger, input } from "./shell-classes";

@@ -484,6 +484,7 @@ test("anon/authenticated'ın beklenmedik fonksiyon yetkisi yok", async () => {
       "get_anon_conversations", "get_anon_conversation",
       "hide_conversation", "hide_all_conversations", "mark_all_read", "submit_appeal",
       "hide_anon_conversation", "get_declined_requests", "undo_decline", "undo_anon_decline",
+      "get_my_age_verification", "admin_list_age_documents", "admin_open_age_document", "admin_review_age_document",
       "admin_whoami", "admin_list_reports", "admin_get_report", "admin_resolve_report",
       "admin_list_pending_photos", "admin_review_photo", "admin_get_settings", "admin_set_photo_auto_approve",
       "admin_list_users", "admin_set_user_status", "admin_list_appeals", "admin_review_appeal", "admin_list_audit",

@@ -6,6 +6,12 @@ import { signOutAction } from "@/lib/auth/actions";
 import { createClient } from "@/lib/supabase/server";
 import type { BlockingStatus } from "@/lib/account/status";
 import { AppealForm } from "./appeal-form";
+import { AgeDocumentForm } from "./age-document-form";
+
+type AgeVerification = {
+  required: boolean;
+  latest: { status: "pending" | "approved" | "rejected" | "expired"; review_note: string | null } | null;
+};
 
 /**
  * Yaş doğrulaması istendi / askıya alındı / kalıcı kapatıldı / hesap silindi.
@@ -23,8 +29,13 @@ export async function AccountStatusScreen({
   const t = await getTranslations("accountStatus");
   const format = await getFormatter();
   let appealState: "open" | "rejected" | null = null;
+  let ageDoc: AgeVerification | null = null;
   if (status !== "deleted") {
     const supabase = await createClient();
+    if (status === "age_verification_required") {
+      const { data: v } = await supabase.rpc("get_my_age_verification");
+      ageDoc = (v as AgeVerification | null) ?? null;
+    }
     const { data } = await supabase
       .from("appeals")
       .select("status")
@@ -45,8 +56,30 @@ export async function AccountStatusScreen({
       )}
       {reason && <p className="mt-3 rounded-2xl border border-edge bg-surface p-4 text-sm">{t("reason", { reason })}</p>}
 
+      {ageDoc && (
+        <div className="mt-8 space-y-3">
+          {ageDoc.latest?.status === "pending" ? (
+            <FormAlertBox>{t("ageDoc.pending")}</FormAlertBox>
+          ) : (
+            <>
+              {ageDoc.latest?.status === "rejected" && (
+                <FormAlertBox>
+                  {t("ageDoc.rejected")}
+                  {ageDoc.latest.review_note && (
+                    <span className="mt-1 block">{t("ageDoc.rejectedReason", { reason: ageDoc.latest.review_note })}</span>
+                  )}
+                </FormAlertBox>
+              )}
+              {ageDoc.latest?.status === "expired" && <FormAlertBox>{t("ageDoc.expired")}</FormAlertBox>}
+              <AgeDocumentForm />
+            </>
+          )}
+        </div>
+      )}
+
       {status !== "deleted" && (
         <div className="mt-8">
+          {ageDoc && <p className="mb-3 text-sm text-muted">{t("ageDoc.otherHelp")}</p>}
           {appealState === "open" ? (
             <p className="rounded-2xl border border-edge bg-surface p-4 text-sm text-muted">{t("appealOpen")}</p>
           ) : (
@@ -65,4 +98,8 @@ export async function AccountStatusScreen({
       </form>
     </main>
   );
+}
+
+function FormAlertBox({ children }: { children: React.ReactNode }) {
+  return <p className="rounded-2xl border border-edge bg-surface p-4 text-sm leading-relaxed text-muted">{children}</p>;
 }

@@ -757,7 +757,7 @@
     "metaTitle": "Hesap durumu",
     "age_verification_required": {
       "title": "Yaşını doğrulaman gerekiyor",
-      "body": "Hesabının 18 yaş ve üzerine ait olduğunu doğrulayana kadar Sohby’yi kullanamazsın. Aşağıdan bize yazabilirsin; ekibimiz seninle doğrulama adımları için iletişime geçecek."
+      "body": "Hesabının 18 yaş ve üzerine ait olduğunu doğrulayana kadar Sohby’yi kullanamazsın. Aşağıdan kimlik belgenin bir fotoğrafını yükle; ekibimiz inceleyecek."
     },
     "suspended": {
       "title": "Hesabın askıya alındı",
@@ -786,6 +786,28 @@
       "rate_limited": "Çok fazla itiraz gönderdin. Lütfen birkaç gün bekle.",
       "generic": "İtiraz gönderilemedi. Lütfen tekrar dene."
     },
-    "signOut": "Çıkış yap"
+    "signOut": "Çıkış yap",
+    "ageDoc": {
+      "title": "Kimlik belgesi yükle",
+      "hint": "Doğum tarihinin ve yüzünün göründüğü bir kimlik belgesinin fotoğrafı (JPEG, PNG ya da WebP, en çok 5 MB). Kimlik numarası gibi diğer bilgileri kapatabilirsin.",
+      "privacy": "Belgen şifrelenerek ayrı bir alanda saklanır. Yalnızca yöneticilerimiz görebilir ve her görüntüleme kayda geçer. Belge 30 gün sonra otomatik olarak silinir.",
+      "fileLabel": "Belge fotoğrafı",
+      "submit": "Belgeyi gönder",
+      "pending": "Belgen alındı ve inceleniyor. Sonuç çıkınca bu ekran güncellenecek.",
+      "rejected": "Gönderdiğin belge kabul edilmedi. Yeni bir belge yükleyebilirsin.",
+      "rejectedReason": "Gerekçe: {reason}",
+      "expired": "Önceki belgen incelenemeden süresi doldu ve silindi. Lütfen yeniden yükle.",
+      "otherHelp": "Belge yükleyemiyorsan bize yaz:",
+      "errors": {
+        "unauthorized": "Oturumun sona ermiş. Lütfen yeniden giriş yap.",
+        "too_large": "Dosya 5 MB'tan büyük olamaz.",
+        "unsupported_type": "Yalnızca JPEG, PNG ya da WebP fotoğraf yükleyebilirsin.",
+        "invalid_image": "Bu fotoğraf okunamadı. Başka bir fotoğraf dene.",
+        "not_allowed": "Şu anda belge yükleyemezsin.",
+        "already_pending": "İncelenmeyi bekleyen bir belgen zaten var.",
+        "rate_limited": "Bugün çok fazla belge yükledin. Lütfen yarın tekrar dene.",
+        "failed": "Belge yüklenemedi. Lütfen tekrar dene."
+      }
+    }
   }
 }

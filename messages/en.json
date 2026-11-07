@@ -757,7 +757,7 @@
     "metaTitle": "Account status",
     "age_verification_required": {
       "title": "You need to verify your age",
-      "body": "You can't use Sohby until you confirm that this account belongs to someone aged 18 or over. Write to us below and our team will contact you about the verification steps."
+      "body": "You can't use Sohby until you confirm that this account belongs to someone 18 or older. Upload a photo of an ID document below and our team will review it."
     },
     "suspended": {
       "title": "Your account is suspended",
@@ -786,6 +786,28 @@
       "rate_limited": "You've sent too many appeals. Please wait a few days.",
       "generic": "Couldn't send the appeal. Please try again."
     },
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "ageDoc": {
+      "title": "Upload an ID document",
+      "hint": "A photo of an ID that shows your date of birth and your face (JPEG, PNG or WebP, up to 5 MB). You can cover other details such as your ID number.",
+      "privacy": "Your document is encrypted and stored separately. Only our admins can see it, and every view is logged. It is deleted automatically after 30 days.",
+      "fileLabel": "Document photo",
+      "submit": "Send document",
+      "pending": "We received your document and it's being reviewed. This screen will update once there's a decision.",
+      "rejected": "The document you sent wasn't accepted. You can upload a new one.",
+      "rejectedReason": "Reason: {reason}",
+      "expired": "Your previous document expired before it was reviewed and has been deleted. Please upload it again.",
+      "otherHelp": "Can't upload a document? Write to us:",
+      "errors": {
+        "unauthorized": "Your session has expired. Please sign in again.",
+        "too_large": "The file can't be larger than 5 MB.",
+        "unsupported_type": "You can only upload a JPEG, PNG or WebP photo.",
+        "invalid_image": "We couldn't read this photo. Try another one.",
+        "not_allowed": "You can't upload a document right now.",
+        "already_pending": "You already have a document waiting for review.",
+        "rate_limited": "You've uploaded too many documents today. Please try again tomorrow.",
+        "failed": "The document couldn't be uploaded. Please try again."
+      }
+    }
   }
 }

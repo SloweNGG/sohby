@@ -32,7 +32,7 @@ npm run dev                  # http://localhost:3000
 - `tasarim/` — ekran tasarımları (referans PNG'ler)
 - `supabase/migrations/` — veritabanı şeması ve erişim kuralları
 - `supabase/tests/` — RLS / iş kuralı / CLAUDE.md kuralı testleri
-- `supabase/functions/` — Edge Function'lar (fotoğraf yükleme, 18 yaş altı silme)
+- `supabase/functions/` — Edge Function'lar (fotoğraf yükleme, yaş belgesi, 18 yaş altı silme)
 - `admin/` — yönetim paneli (ayrı Next.js uygulaması, admin.sohbyapp.com)
 - `messages/` — çeviri dosyaları
 - `src/app/[locale]/` — sayfalar

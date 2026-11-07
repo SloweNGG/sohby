@@ -3,7 +3,7 @@
 import { z } from "zod";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { createClient } from "./supabase";
+import { createClient, supabaseEnv } from "./supabase";
 
 export type ActionState = { error?: string; done?: boolean };
 
@@ -70,4 +70,27 @@ export async function setAutoApproveAction(form: FormData) {
 
 export async function reviewAppealAction(form: FormData) {
   await rpc("admin_review_appeal", { p_appeal: id.parse(form.get("id")), p_accept: form.get("accept") === "1" }, "/appeals");
+}
+
+/**
+ * Yaş belgesini aç: veritabanı işlemi kayda yazar ve 60 saniye geçerli bir
+ * belirteç döndürür. Belge, şifresini çözen Edge Function'dan gösterilir.
+ */
+export async function openAgeDocumentAction(documentId: string): Promise<{ url: string } | { error: string }> {
+  const parsed = id.safeParse(documentId);
+  if (!parsed.success) return { error: "not_found" };
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("admin_open_age_document", { p_document: parsed.data });
+  if (error || typeof data !== "string") return { error: error?.message.includes("not_found") ? "not_found" : "failed" };
+  const { url } = supabaseEnv();
+  return { url: `${url}/functions/v1/age-documents?token=${encodeURIComponent(data)}` };
+}
+
+export async function reviewAgeDocumentAction(form: FormData) {
+  const note = String(form.get("note") ?? "").trim().slice(0, 500);
+  await rpc(
+    "admin_review_age_document",
+    { p_document: id.parse(form.get("id")), p_approve: form.get("approve") === "1", p_note: note || null },
+    "/age-documents",
+  );
 }
