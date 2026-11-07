@@ -434,6 +434,7 @@ Would push these migrations:
  • 20261107000400_claude_md_security.sql
  • 20261107000500_retention_and_underage_purge.sql
 ```
+> Not: Bu çıktı eski (Mumbai) projeye aitti. Proje 7 Kasım'da yeni projeye taşındı; bkz. "Taşıma" bölümü.
 Sorun yoktu → `npx supabase db push --remote --yes` ile uygulandı (CLI ajan modunda `--yes` istiyor;
 onayın mesajındaydı). 5 migration da başarılı.
 
@@ -662,3 +663,52 @@ Migration 12 uzağa uygulandı (dry-run → push). **Yayına alınmadı.**
    `NEXT_PUBLIC_SENTRY_DSN`'e yaz. Kaynak haritası yükleme (gizli auth token gerektirir) yapılandırılmadı.
 3. Cloudflare'de yayına alırken bu `NEXT_PUBLIC_*` değerleri **derleme ortamına** da girilmeli (derleme
    sırasında koda gömülürler).
+
+---
+
+# Taşıma — yeni Supabase projesi (7 Kasım 2026)
+
+Eski proje (Mumbai, `vujwonanevmcmejwbseo`) yerine yeni boş proje: **sohbymain** (`skjibnltlwskndjfxqij`).
+
+## Yapılanlar
+1. `.env.local` (ana uygulama): Supabase adresi ve publishable anahtar yenilendi. `admin/.env.local` yoktu;
+   aynı iki değer ve `ADMIN_LOCALE=tr` ile **oluşturuldu**. İkisi de `.gitignore`'da (doğrulandı).
+2. `npx supabase projects list` → `skjibnltlwskndjfxqij` **linked: true**. ⚠️ Bölge `eu-west-1` (İrlanda)
+   görünüyor, Frankfurt (`eu-central-1`) değil.
+3. Migration'lar: `db push --dry-run --remote` → 12 migration uygulanacak; ardından `db push --remote --yes`
+   → **12/12 hatasız** uygulandı.
+4. Edge Function'lar yayınlandı: `purge-underage-accounts`, `upload-profile-photo`. Yalnızca Supabase'in
+   otomatik verdiği `SUPABASE_URL` / `SUPABASE_SERVICE_ROLE_KEY` kullanılıyor; ayrıca girilecek sır yok.
+5. Eski proje kodu: kod, ayar dosyaları ve README'de **iz yoktu** (adres hep `.env.local`'den okunuyor).
+   Tek iz bu rapordaki dünkü prova çıktısı; geçmiş kaydı değiştirmedim, altına not düştüm. Eski adresi
+   gömülü taşıyan derleme çıktıları (`.next`, `.open-next`, admin'deki eşleri) silinip yeniden derlendi.
+6. Salt okunur kontroller (yeni projede):
+   - RLS: `public` 13/13, `private` 6/6 tabloda açık; RLS'si kapalı tablo yok.
+   - Hobi kataloğu: 48 kayıt. Zamanlanmış görevler: `sohby-purge-underage`, `sohby-purge-expired`.
+   - `profile-photos` bucket gizli, 5 MB; tek depolama kuralı yalnızca giriş yapmışlara okuma.
+   - Giriş yapmamış ziyaretçi (yalnızca publishable anahtarla, gerçek API'ye): 12 kullanıcı tablosunun
+     hepsi `permission denied`; `private` şema API'de yok; `discover_profiles`, `get_conversations`,
+     `admin_*` vb. fonksiyonlar `permission denied`; Edge Function'lar 401/403. Açık olan tek şey hobi
+     adları kataloğu (kişisel veri değil).
+   - Realtime: `messages`, `message_requests`, `anon_messages`.
+7. `npm test` → **121/121**. İki uygulama `opennextjs-cloudflare build` ile derlendi; kısa çalıştırmada
+   `/`, `/en`, `/login`, `/signup` açılıyor, korumalı sayfalar girişe yönlendiriyor.
+
+## Yeni projede panelde yeniden yapılacaklar
+Eski projedeki kullanıcılar ve veriler **taşınmadı**; yeniden kayıt olman gerekiyor.
+1. **Authentication → Sign In / Providers → Email**: *Confirm email* açık olsun (kural 9).
+2. **Authentication → URL Configuration**: Site URL `https://sohbyapp.com`; Redirect URLs'e
+   `https://sohbyapp.com/**` ve `http://localhost:3000/**`.
+3. **Authentication → Emails → SMTP Settings** (Resend): host `smtp.resend.com`, port `465`, kullanıcı
+   `resend`, şifre = Resend API anahtarı (yalnızca panele). Gönderen adres `sohbyapp.com` alan adından.
+   Bu yapılmazsa Supabase'in yerleşik e-postası çok kısıtlı (saatte birkaç e-posta, yalnızca ekip üyelerine).
+4. **Authentication → Emails → Templates**: *Confirm signup* ve *Reset password* bağlantıları
+   (Gece 1, Adım 3 sonundaki şablonlar).
+5. **Authentication → Sign In / Providers → Google**: istemci kimliği ve gizli anahtar. Google Cloud'daki
+   OAuth istemcisinde *Authorized redirect URI* **yeni** adres olmalı:
+   `https://skjibnltlwskndjfxqij.supabase.co/auth/v1/callback`.
+6. **Authentication → Attack Protection**: Turnstile anahtarları hazır olunca CAPTCHA; istersen sızdırılmış
+   şifre koruması.
+7. Kayıt olduktan sonra **SQL Editor**'de kendini yönetici yap:
+   `insert into private.admins (user_id) select id from auth.users where email = 'SENİN-E-POSTAN';`
+8. Eski Mumbai projesi `projects list`'te görünmüyor; hâlâ duruyorsa içindeki deneme verileri için silmeyi düşün.
