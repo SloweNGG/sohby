@@ -13,7 +13,8 @@
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "test:db": "node --test supabase/tests/*.test.mjs",
     "test": "node --test \"supabase/tests/*.test.mjs\" \"supabase/functions/**/*.test.mjs\" \"src/**/*.test.mjs\" \"e2e/*.test.mjs\"",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "test-projesi": "node scripts/test-projesi-guncelle.mjs"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.20.16",

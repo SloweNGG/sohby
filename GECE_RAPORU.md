@@ -972,3 +972,27 @@ Migration 17 (`test_account_isolation`) uzağa uygulandı (dry-run → push).
 - Testler: 6 veritabanı testi (yalıtım, işaret, silme, iz kuralı, güvenlik ağı) ve 4 koruma testi (sabit parola
   yok, parola dosyaya yazılmıyor, temizlik ve doğrulama yerinde). `npm test` → 193/193.
 - `e2e/temizle.sql` artık yalnızca yedek yol (hepsini hemen silmek istersen).
+
+---
+
+# Yayın hazırlığı 1 — Uçtan uca testler için ayrı Supabase projesi (7 Kasım 2026)
+
+Neden: "Confirm email" açılınca `@example.com` test hesapları doğrulanamaz; testler gerçek projede çalışamaz.
+
+## Kod tarafı ✅
+- `e2e/test-ortami.ts`: testlerin Supabase değerleri artık `.env.test.local`'den (git'e girmez; örnek
+  `.env.test.example`). Adres gerçek projeyi (`skjibnltlwskndjfxqij` ya da `.env.local`'deki proje)
+  gösteriyorsa testler **hiç başlamaz**.
+- Playwright kendi test sunucusunu **3100** portunda, test projesinin değerleriyle başlatır; açık bir
+  sunucuyu yeniden kullanmaz. Test sunucusunda Turnstile ve Sentry kapalı. Ayrı derleme klasörü
+  (`.next-e2e`) sayesinde `npm run dev` açıkken de testler çalışır.
+- `npm run test-projesi` → test projesine neyin uygulanacağını gösterir; `-- --uygula` ile migration'ları
+  ve Edge Function'ları uygular. CLI'nin bağlı olduğu gerçek proje değişmez (betik bunu denetler).
+- `npm test` → 195/195 (test ortamı korumaları için 2 yeni test).
+
+## Panelde yapılacaklar (test projesi)
+1. Yeni proje: ad `sohby-test`, bölge İrlanda (`eu-west-1`).
+2. Authentication → Sign In / Providers → Email: *Confirm email* **kapalı**.
+3. Authentication → URL Configuration: Site URL `http://localhost:3100`.
+4. `.env.test.local`: test projesinin adresi ve publishable anahtarı.
+5. `npm run test-projesi -- --uygula`, ardından `npm run test:e2e`.

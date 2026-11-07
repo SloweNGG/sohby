@@ -15,6 +15,7 @@
 
 # next.js
 /.next/
+/.next-e2e/
 /out/
 
 # production
@@ -33,6 +34,7 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 !.env.example
+!.env.test.example
 
 # vercel
 .vercel
@@ -61,6 +63,7 @@ supabase/.branches/
 # yönetim paneli
 /admin/node_modules
 /admin/.next/
+/.next-e2e/
 /admin/.open-next
 /admin/.wrangler
 /admin/.env*

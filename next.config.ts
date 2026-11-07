@@ -8,6 +8,9 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 // oturuma bağlı (dinamik) ve OpenNext Cloudflare adaptörü bu özelliği henüz
 // resmi olarak belgelemiyor.
 const nextConfig: NextConfig = {
+  // Uçtan uca test sunucusu ayrı klasörde derlenir (NEXT_DIST_DIR=.next-e2e);
+  // böylece geliştirme sunucusuyla aynı anda çalışabilir. Normalde .next.
+  distDir: process.env.NEXT_DIST_DIR || ".next",
   poweredByHeader: false,
   experimental: {
     // Profil fotoğrafı yükleme (en çok 5 MB) Server Action üzerinden geçer.

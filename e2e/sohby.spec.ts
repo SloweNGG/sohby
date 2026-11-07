@@ -1,5 +1,6 @@
 /**
- * Sohby uçtan uca testleri — yerel uygulama (npm run dev) + GERÇEK Supabase.
+ * Sohby uçtan uca testleri — yerel test sunucusu (port 3100) + AYRI test Supabase projesi
+ * (.env.test.local; gerçek projeye bağlanmayı reddeder, bkz. e2e/test-ortami.ts).
  *
  * Üç test hesabı (ayrı tarayıcı bağlamları = ayrı kullanıcılar):
  *   A, B: kayıt → başlangıç → Keşfet → istek → mesajlaşma → çevrimdışı senaryoları
@@ -20,6 +21,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { randomBytes } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
+import { testSupabaseEnv } from "./test-ortami";
 
 const OUT = path.resolve("e2e-sonuclar");
 fs.mkdirSync(OUT, { recursive: true });
@@ -33,12 +35,8 @@ function T(key: string, vars: Record<string, string | number> = {}): string {
 }
 const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-/** .env.local'deki herkese açık Supabase değerleri (gizli anahtar kullanılmaz). */
-function supabaseEnv() {
-  const text = fs.readFileSync(path.resolve(".env.local"), "utf8");
-  const get = (k: string) => new RegExp(`^${k}=(.*)$`, "m").exec(text)?.[1]?.trim() ?? "";
-  return { url: get("NEXT_PUBLIC_SUPABASE_URL"), key: get("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY") };
-}
+/** AYRI test projesinin herkese açık değerleri (.env.test.local; gerçek projeyse durur). */
+const supabaseEnv = testSupabaseEnv;
 
 /** Her çalıştırmada rastgele, yalnızca bellekte duran parola (harf + rakam kuralını sağlar). */
 const newPassword = () => `${randomBytes(18).toString("base64url")}a1`;
