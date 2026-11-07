@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { CheckCheck, MoreHorizontal, Trash2 } from "lucide-react";
 import { useRouter } from "@/i18n/navigation";
 import { hideAllConversationsAction, hideConversationAction, markAllReadAction } from "@/lib/chat/actions";
+import { hideAnonConversationAction } from "@/lib/anon/actions";
 import { Button } from "@/components/ui/button";
 import { FormAlert } from "@/components/ui/field";
 import { useBadges } from "@/components/app/badges";
@@ -13,8 +14,11 @@ import { useChats } from "./chats-shell";
 const dialogClass =
   "m-auto w-[calc(100%-2rem)] max-w-md rounded-[var(--radius-card)] border border-edge bg-surface p-6 text-moon backdrop:bg-black/60";
 
-/** Sohbet başlığındaki çöp kutusu (tasarim/08): yalnızca kendi görünümünden siler. */
-export function DeleteConversationButton({ conversationId }: { conversationId: string }) {
+/**
+ * Sohbet başlığındaki çöp kutusu (tasarim/08): yalnızca kendi görünümünden siler.
+ * `anon` ile anonim sohbette de aynı şekilde çalışır.
+ */
+export function DeleteConversationButton({ conversationId, anon = false }: { conversationId: string; anon?: boolean }) {
   const t = useTranslations("chat");
   const router = useRouter();
   const { refresh } = useChats();
@@ -48,7 +52,7 @@ export function DeleteConversationButton({ conversationId }: { conversationId: s
             pending={pending}
             onClick={() =>
               startTransition(async () => {
-                const r = await hideConversationAction(conversationId);
+                const r = anon ? await hideAnonConversationAction(conversationId) : await hideConversationAction(conversationId);
                 if (!r.ok) return setError(true);
                 ref.current?.close();
                 refresh();

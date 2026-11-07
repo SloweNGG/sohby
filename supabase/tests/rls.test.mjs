@@ -470,6 +470,8 @@ test("anon/authenticated'ın beklenmedik fonksiyon yetkisi yok", async () => {
     "private.can_view_profile_photo:authenticated",
     "private.anon_role:authenticated",
     "private.anon_blocked:authenticated",
+    // RLS politikasında kullanılır; yalnızca sohbetin tarafına anlamlı değer döner.
+    "private.anon_cleared_for:authenticated",
     ...[
       "set_birth_date", "touch_presence", "discover_profiles", "get_profile",
       "start_conversation", "respond_message_request", "get_conversations",
@@ -481,6 +483,7 @@ test("anon/authenticated'ın beklenmedik fonksiyon yetkisi yok", async () => {
       "reveal_identity", "block_anonymous", "unblock_anonymous", "report_anonymous",
       "get_anon_conversations", "get_anon_conversation",
       "hide_conversation", "hide_all_conversations", "mark_all_read", "submit_appeal",
+      "hide_anon_conversation",
       "admin_whoami", "admin_list_reports", "admin_get_report", "admin_resolve_report",
       "admin_list_pending_photos", "admin_review_photo", "admin_get_settings", "admin_set_photo_auto_approve",
       "admin_list_users", "admin_set_user_status", "admin_list_appeals", "admin_review_appeal", "admin_list_audit",

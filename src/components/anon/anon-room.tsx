@@ -13,6 +13,7 @@ import { useChats } from "@/components/chat/chats-shell";
 import { useBadges } from "@/components/app/badges";
 import { useClock } from "@/components/chat/time";
 import { cn } from "@/lib/cn";
+import { DeleteConversationButton } from "@/components/chat/chat-menus";
 import { useAlias } from "./alias";
 import type { AnonConversationHeader, AnonMessage } from "@/lib/types";
 
@@ -50,6 +51,8 @@ export function AnonRoom({
   const myAlias = alias(header.alias_adjective, header.alias_animal);
   const title = isAnon && header.recipient ? header.recipient.display_name : myAlias;
   const mine = (m: AnonMessage) => m.from_anonymous === isAnon;
+  // Alıcı için bekleyen istek bir sohbet değildir (kabul/ret ile yanıtlanır).
+  const canDelete = isAnon ? header.status === "pending" || header.status === "active" : header.status === "active";
 
   const markRead = useCallback(async () => {
     if (document.visibilityState !== "visible") return;
@@ -165,6 +168,7 @@ export function AnonRoom({
             {t("requestReveal")}
           </Button>
         )}
+        {canDelete && <DeleteConversationButton conversationId={header.id} anon />}
         {safety}
       </header>
 

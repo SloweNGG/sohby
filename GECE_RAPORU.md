@@ -712,3 +712,25 @@ Eski projedeki kullanıcılar ve veriler **taşınmadı**; yeniden kayıt olman 
 7. Kayıt olduktan sonra **SQL Editor**'de kendini yönetici yap:
    `insert into private.admins (user_id) select id from auth.users where email = 'SENİN-E-POSTAN';`
 8. Eski Mumbai projesi `projects list`'te görünmüyor; hâlâ duruyorsa içindeki deneme verileri için silmeyi düşün.
+
+---
+
+# 7 Kasım — Kararların uygulanması
+
+## İş A — Anonim sohbetlerde "sohbeti sil" ✅
+
+Migration 13 (`anon_chat_deletion`) uzağa uygulandı (dry-run → push).
+
+- Anonim sohbet ekranında da çöp kutusu var; normal sohbetle **aynı** çalışıyor: yalnızca senin görünümünden
+  siler, silen kişi eski mesajları API'den de göremez, karşı taraf görmeye devam eder, yeni mesaj gelirse
+  sohbet yalnızca yeni mesajlarla geri gelir. "Tüm sohbetleri sil" artık anonim sohbetleri de kapsıyor.
+- Silme karşı tarafa hiçbir şey göstermez ve hiçbir yanıta kimlik eklemez (kural 10, testli).
+- Kimlik açılırsa ("Kimliğini aç") silinmiş mesajlar normal sohbette de geri gelmez.
+- 90 gün kuralı anonim sohbetlere de uygulanıyor: iki taraf da sildiyse ve süre dolduysa kalıcı silinir;
+  açık şikâyet varsa beklenir.
+- Testler: 7 yeni test (migration'sız çalıştırıldığında kırıldıkları doğrulandı). `npm test` → 128/128.
+
+### Kararlar
+- Alıcı, **bekleyen** anonim isteği silemez; o bir sohbet değil, kabul/ret ile yanıtlanıyor (normal
+  isteklerde de silme yok). Anonim taraf ise kendisine "bekliyor" görünen sohbeti silebilir; reddedilmiş
+  sohbette de aynı yanıtı alır, böylece silme reddi ele vermez.

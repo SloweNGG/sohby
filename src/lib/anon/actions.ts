@@ -61,6 +61,12 @@ export async function revealIdentityAction(id: string): Promise<{ ok: true; conv
   return r.ok ? { ok: true, conversationId: r.data as string } : { ok: false, error: r.error ?? "generic" };
 }
 
+/** Anonim sohbeti yalnızca kendi görünümünden siler (kural 13). */
+export async function hideAnonConversationAction(id: string) {
+  if (!uuid.safeParse(id).success) return { ok: false, error: "not_found" as const };
+  return simple("hide_anon_conversation", { p_conversation: id });
+}
+
 export async function blockAnonymousAction(id: string) {
   if (!uuid.safeParse(id).success) return { ok: false, error: "not_found" as const };
   return simple("block_anonymous", { p_conversation: id });
