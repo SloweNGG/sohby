@@ -463,7 +463,7 @@
     "privacyNote": "Until you accept, {name} won't know you've read the message and can't continue the chat.",
     "accept": "Accept",
     "decline": "Decline",
-    "declined": "Request declined. {name} won't be notified.",
+    "declined": "Request declined. {name} won't be told. If you change your mind, you can undo it in Settings > Declined requests.",
     "notFoundTitle": "Request not found",
     "notFoundBody": "This request may have been answered or removed.",
     "back": "Back to requests",
@@ -630,7 +630,8 @@
       "privacy": "Privacy",
       "blocked": "Blocked",
       "account": "Account",
-      "flirt": "Dating"
+      "flirt": "Dating",
+      "declined": "Declined"
     },
     "messagesTitle": "Who can message you?",
     "messagesHint": "Tighten this if unexpected messages bother you.",
@@ -683,7 +684,14 @@
     "flirtNeedConsent": "You need to give explicit consent to use dating.",
     "flirtSaved": "Your dating preferences were saved.",
     "flirtDisabled": "Dating turned off; your preference was deleted.",
-    "flirtError": "Couldn't complete the action. Please try again."
+    "flirtError": "Couldn't complete the action. Please try again.",
+    "declinedTitle": "Declined requests",
+    "declinedHint": "People you decline aren't told, and they can't send you another request. If you change your mind, undo the decline and the request goes back to Requests. You can also message them yourself.",
+    "declinedEmpty": "You haven't declined any requests.",
+    "undoDecline": "Undo decline",
+    "undoDeclineError": "Couldn't undo the decline. Please try again.",
+    "declinedFlirt": "Dating",
+    "viewProfile": "View profile"
   },
   "anon": {
     "alias": "{adjective} {animal}",

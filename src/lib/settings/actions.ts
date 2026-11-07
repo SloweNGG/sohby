@@ -58,6 +58,18 @@ export async function unblockUserAction(targetId: string): Promise<{ ok: boolean
   return { ok: !error };
 }
 
+/** Reddi geri al: istek yeniden bekleyen olur ve İstekler'e döner. */
+export async function undoDeclineAction(kind: "request" | "anonymous", id: string): Promise<{ ok: boolean }> {
+  if (!(await getCurrentUserId()) || !z.uuid().safeParse(id).success) return { ok: false };
+  const supabase = await createClient();
+  const { error } =
+    kind === "anonymous"
+      ? await supabase.rpc("undo_anon_decline", { p_conversation: id })
+      : await supabase.rpc("undo_decline", { p_request: id });
+  revalidatePath("/", "layout");
+  return { ok: !error };
+}
+
 /** Hesabı sil: hemen kapanır ve oturum kapatılır; veriler 90 gün sonra kalıcı silinir. */
 export async function deleteAccountAction(): Promise<{ ok: boolean }> {
   if (!(await getCurrentUserId())) return { ok: false };

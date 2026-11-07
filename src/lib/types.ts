@@ -125,6 +125,28 @@ export type BlockedUser = {
   alias_animal?: string | null;
 };
 
+/** get_declined_requests öğesi: benim reddettiğim istek (normal ya da anonim). */
+export type DeclinedRequest =
+  | {
+      kind: "request";
+      id: string;
+      sender: ProfileCard;
+      body: string;
+      is_flirt: boolean;
+      created_at: string;
+      declined_at: string | null;
+    }
+  | {
+      /** Anonim istek: gönderen hakkında yalnızca takma ad döner (kural 10). */
+      kind: "anonymous";
+      id: string;
+      alias_adjective: string;
+      alias_animal: string;
+      body: string | null;
+      created_at: string;
+      declined_at: string | null;
+    };
+
 export type Message = {
   id: string;
   conversation_id: string;

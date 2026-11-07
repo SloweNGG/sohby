@@ -463,7 +463,7 @@
     "privacyNote": "Kabul edene kadar {name} mesajını okuduğunu bilmez ve seninle sohbete devam edemez.",
     "accept": "Kabul et",
     "decline": "Reddet",
-    "declined": "İstek reddedildi. {name} bunu bilmeyecek.",
+    "declined": "İstek reddedildi. {name} bunu bilmeyecek. Fikrini değiştirirsen Ayarlar > Reddedilen istekler'den geri alabilirsin.",
     "notFoundTitle": "İstek bulunamadı",
     "notFoundBody": "Bu istek yanıtlanmış ya da kaldırılmış olabilir.",
     "back": "İsteklere dön",
@@ -630,7 +630,8 @@
       "privacy": "Gizlilik",
       "blocked": "Engellenenler",
       "account": "Hesap",
-      "flirt": "Flört"
+      "flirt": "Flört",
+      "declined": "Reddedilenler"
     },
     "messagesTitle": "Kimler sana mesaj atabilir?",
     "messagesHint": "Beklemediğin mesajlardan rahatsız oluyorsan sıkılaştır.",
@@ -683,7 +684,14 @@
     "flirtNeedConsent": "Flört için açık rıza vermelisin.",
     "flirtSaved": "Flört tercihlerin kaydedildi.",
     "flirtDisabled": "Flört kapatıldı; ilgi tercihin silindi.",
-    "flirtError": "İşlem tamamlanamadı. Lütfen tekrar dene."
+    "flirtError": "İşlem tamamlanamadı. Lütfen tekrar dene.",
+    "declinedTitle": "Reddedilen istekler",
+    "declinedHint": "Reddettiğin kişi bunu bilmez ve sana yeni istek gönderemez. Fikrini değiştirirsen reddi geri alabilirsin; istek İstekler'e geri döner. Ona kendin de yazabilirsin.",
+    "declinedEmpty": "Reddettiğin bir istek yok.",
+    "undoDecline": "Reddi geri al",
+    "undoDeclineError": "Ret geri alınamadı. Lütfen tekrar dene.",
+    "declinedFlirt": "Flört",
+    "viewProfile": "Profili gör"
   },
   "anon": {
     "alias": "{adjective} {animal}",

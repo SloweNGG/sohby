@@ -42,10 +42,12 @@ export function SettingsForm({
   initial,
   blocked,
   flirtSection,
+  declinedSection,
 }: {
   initial: SettingsInitial;
   blocked: BlockedUser[];
   flirtSection?: React.ReactNode;
+  declinedSection?: React.ReactNode;
 }) {
   const t = useTranslations("settings");
   const tp = useTranslations("onboarding.privacy.policy");
@@ -211,6 +213,8 @@ export function SettingsForm({
           </ul>
         )}
       </section>
+
+      {declinedSection}
 
       <section id="account" className="scroll-mt-6">
         <h2 className="text-xl">{t("accountTitle")}</h2>

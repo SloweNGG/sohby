@@ -734,3 +734,25 @@ Migration 13 (`anon_chat_deletion`) uzağa uygulandı (dry-run → push).
 - Alıcı, **bekleyen** anonim isteği silemez; o bir sohbet değil, kabul/ret ile yanıtlanıyor (normal
   isteklerde de silme yok). Anonim taraf ise kendisine "bekliyor" görünen sohbeti silebilir; reddedilmiş
   sohbette de aynı yanıtı alır, böylece silme reddi ele vermez.
+
+## İş B — Reddedilen istekler ✅
+
+Migration 14 (`declined_requests`) uzağa uygulandı (dry-run → push).
+
+- **Kalıcı:** reddedilen kişi aynı kişiye bir daha istek gönderemez (bir yıl sonra bile, testli). Reddi
+  öğrenmez; ona isteği hep "gönderildi / bekliyor" görünür. Anonim isteklerde de kalıcı (kişi başına tek
+  anonim sohbet zaten vardı).
+- **Reddeden kendisi yazabilir:** reddettiğin kişinin profilinde "Mesaj gönder" açık (onun mesaj ayarı ne
+  olursa olsun, çünkü sana o yazmıştı). Yazınca ret geri alınıp istek kabul edilmiş olur: onun ilk mesajı
+  ve seninki aynı sohbette. Bu, günlük "20 yeni kişi" sınırına sayılmaz.
+- **Ayarlar > Reddedilen istekler:** reddettiğin istekler (normal ve anonim) listeleniyor; "Reddi geri al"
+  → istek yeniden İstekler'e düşer ve rozet sayısına eklenir. Normal isteklerde "Profili gör" bağlantısı var;
+  anonim isteklerde yalnızca takma ad (kural 10, testli).
+- İstek reddedildiğinde çıkan mesaj artık geri alma yerini de söylüyor.
+- Testler: 6 yeni test. `npm test` → 134/134.
+
+### Kararlar
+- Engellediğin kişinin reddedilmiş isteği listede görünmez ve geri alınamaz (önce engeli kaldırman gerekir).
+- Aranızda zaten bir sohbet varsa (ör. sonradan anonim sohbette kimlik açıldıysa) eski ret listede görünmez.
+- Anonim listede süzgeçler mevcut anonim sohbet listesiyle aynı; yeni bir "kim kayboldu" yan kanalı açılmadı.
+- Reddedilen isteklerin metni kalıcılık için saklanıyor (hesap silinirse 90 gün kuralıyla birlikte siliniyor).

@@ -483,7 +483,7 @@ test("anon/authenticated'ın beklenmedik fonksiyon yetkisi yok", async () => {
       "reveal_identity", "block_anonymous", "unblock_anonymous", "report_anonymous",
       "get_anon_conversations", "get_anon_conversation",
       "hide_conversation", "hide_all_conversations", "mark_all_read", "submit_appeal",
-      "hide_anon_conversation",
+      "hide_anon_conversation", "get_declined_requests", "undo_decline", "undo_anon_decline",
       "admin_whoami", "admin_list_reports", "admin_get_report", "admin_resolve_report",
       "admin_list_pending_photos", "admin_review_photo", "admin_get_settings", "admin_set_photo_auto_approve",
       "admin_list_users", "admin_set_user_status", "admin_list_appeals", "admin_review_appeal", "admin_list_audit",
