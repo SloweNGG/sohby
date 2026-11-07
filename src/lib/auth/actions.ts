@@ -21,6 +21,7 @@ import {
   type Gender,
 } from "@/lib/validation/auth";
 import type { AuthErrorCode, AuthFormState } from "./types";
+import { signUpOutcome } from "./signup-outcome";
 
 // ---------------------------------------------------------------------------
 // Yardımcılar
@@ -107,7 +108,7 @@ export async function signUpAction(_prev: AuthFormState, formData: FormData): Pr
   const site = await getSiteUrl();
   const next = localizedPath(locale, "/onboarding");
 
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -135,8 +136,14 @@ export async function signUpAction(_prev: AuthFormState, formData: FormData): Pr
     return { status: "error", error: code, values };
   }
 
-  // Not: E-posta zaten kayıtlıysa Supabase (e-posta doğrulaması açıkken) hata
-  // döndürmez; biz de aynı başarı ekranını gösteririz → hesap varlığı sızmaz.
+  // "Confirm email" kapalıysa Supabase oturumu hemen açar (çerezler bu istekte
+  // yazıldı) → kullanıcı doğrudan başlangıç sorularına gider.
+  if (signUpOutcome(data) === "onboarding") {
+    redirect({ href: "/onboarding", locale });
+  }
+
+  // Oturum yok: e-posta doğrulaması gerekiyor. E-posta zaten kayıtlıysa da
+  // Supabase hata döndürmez; aynı ekranı gösteririz → hesap varlığı sızmaz.
   return { status: "success", values: { email } };
 }
 

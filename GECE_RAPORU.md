@@ -802,3 +802,17 @@ kadar belge yükleme **güvenli biçimde kapalı**: kullanıcı "Belge yüklenem
    (Ya da terminalde: `npx supabase secrets set AGE_DOC_KEY=<değer>`.)
 3. Anahtarı değiştirirsen o ana kadar yüklenmiş belgeler açılamaz; belgeler en çok 30 gün yaşadığı için bu
    kalıcı bir kayıp yaratmaz.
+
+## Düzeltme — "Confirm email" kapalıyken kayıt sonrası takılma ✅
+
+- Sorun: kayıt işlemi Supabase'in yanıtına bakmadan her zaman "e-postanı kontrol et" ekranını gösteriyordu.
+- Şimdi: yanıtta oturum geldiyse ("Confirm email" kapalı) kullanıcı doğrudan **başlangıç sorularına** gidiyor.
+  Oturum gelmediyse (doğrulama açık) "e-postanı kontrol et" ekranı çıkıyor. E-posta zaten kayıtlıysa da aynı
+  ekran çıkıyor; hesabın var olup olmadığı yine sızmıyor.
+- Test: 5 yeni test (iki ayarın gerçek yanıt biçimleri + kayıt işleminin bu kararı kullandığı). Eski kodda
+  kırıldığı doğrulandı. `npm test` → 159/159.
+
+### Not (CLAUDE.md kural 9)
+"Confirm email" kapalıyken Supabase her e-postayı doğrulanmış sayıyor. Yani "e-posta doğrulanmadan mesaj
+gönderilemez" kuralı fiilen devre dışı kalıyor: herkes, sahibi olmadığı bir adresle kayıt olup mesaj
+gönderebilir. Geliştirme için uygun; yayına çıkmadan önce yeniden açılmalı.
