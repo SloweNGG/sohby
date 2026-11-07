@@ -6,10 +6,20 @@
  *   C:    reddedilen istek (A'ya), anonim sohbet (B'ye), şikâyet edilen kişi
  * Hesaplar e2e-test-<harf>-<sonek>@example.com; liste e2e-sonuclar/hesaplar.json.
  * Her adımın ekran görüntüsü e2e-sonuclar/NN-*.png.
+ *
+ * Test hesapları:
+ *  - parolalar her çalıştırmada rastgele üretilir ve yalnızca bellekte tutulur;
+ *  - çalıştırmanın sonunda (başarılı ya da başarısız) her hesap kendi oturumuyla
+ *    `e2e_delete_my_test_account` çağırıp kendini ve verilerini siler, ardından
+ *    girişin artık mümkün olmadığı doğrulanır;
+ *  - veritabanı bu hesapları gerçek kullanıcılardan tamamen yalıtır (migration 17)
+ *    ve yarıda kalan çalıştırmaların hesaplarını 2 saat sonra kendisi siler.
  */
 import { test, expect, type Browser, type BrowserContext, type Locator, type Page, type WebSocketRoute } from "@playwright/test";
 import fs from "node:fs";
 import path from "node:path";
+import { randomBytes } from "node:crypto";
+import { createClient } from "@supabase/supabase-js";
 
 const OUT = path.resolve("e2e-sonuclar");
 fs.mkdirSync(OUT, { recursive: true });
@@ -22,6 +32,16 @@ function T(key: string, vars: Record<string, string | number> = {}): string {
   return value.replace(/\{(\w+)\}/g, (_, k) => String(vars[k] ?? ""));
 }
 const esc = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+/** .env.local'deki herkese açık Supabase değerleri (gizli anahtar kullanılmaz). */
+function supabaseEnv() {
+  const text = fs.readFileSync(path.resolve(".env.local"), "utf8");
+  const get = (k: string) => new RegExp(`^${k}=(.*)$`, "m").exec(text)?.[1]?.trim() ?? "";
+  return { url: get("NEXT_PUBLIC_SUPABASE_URL"), key: get("NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY") };
+}
+
+/** Her çalıştırmada rastgele, yalnızca bellekte duran parola (harf + rakam kuralını sağlar). */
+const newPassword = () => `${randomBytes(18).toString("base64url")}a1`;
 
 const RUN = (Date.now().toString(36).slice(-4) + Math.random().toString(36).slice(2, 5)).toLowerCase();
 
@@ -85,7 +105,7 @@ async function newUser(browser: Browser, key: User["key"], first: string): Promi
   return {
     key,
     email: `e2e-test-${key}-${RUN}@example.com`,
-    password: `E2e-${RUN}-parola1`,
+    password: newPassword(),
     username: `e2e_${key}_${RUN}`,
     displayName: `${first} E2E${RUN}`,
     ctx,
@@ -183,14 +203,55 @@ test.beforeAll(async ({ browser }) => {
   C = await newUser(browser, "c", "Cem");
 });
 
+/**
+ * Hesabı kendi oturumuyla siler ve artık giriş yapılamadığını doğrular.
+ * Hesap hiç oluşmadıysa (kayıt adımı başarısız) "yok" döner.
+ */
+async function deleteTestAccount(u: User): Promise<"silindi" | "yok"> {
+  const { url, key } = supabaseEnv();
+  const client = () => createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
+  const sb = client();
+  const { error: loginError } = await sb.auth.signInWithPassword({ email: u.email, password: u.password });
+  if (loginError) {
+    if (loginError.code === "invalid_credentials") return "yok";
+    throw new Error(`${u.email}: giriş yapılamadı (${loginError.message})`);
+  }
+  const { error } = await sb.rpc("e2e_delete_my_test_account");
+  if (error) throw new Error(`${u.email}: silinemedi (${error.message})`);
+  const { error: again } = await client().auth.signInWithPassword({ email: u.email, password: u.password });
+  if (!again) throw new Error(`${u.email}: silindi denildi ama hâlâ giriş yapılabiliyor`);
+  return "silindi";
+}
+
 test.afterAll(async () => {
   for (const u of [A, B, C]) {
     if (!u) continue;
     fs.writeFileSync(path.join(OUT, `konsol-${u.key}.log`), u.logs.join("\n"));
-    await u.ctx.close();
+    await u.ctx.close().catch(() => {});
   }
+  // Temizlik: testler başarılı da olsa başarısız da olsa çalışır.
+  const failures: string[] = [];
+  for (const u of [A, B, C]) {
+    if (!u) continue;
+    const row = accounts.find((a) => a.email === u.email) ?? { key: u.key, email: u.email, username: u.username };
+    try {
+      row.temizlik = await deleteTestAccount(u);
+    } catch (err) {
+      row.temizlik = "HATA";
+      failures.push(err instanceof Error ? err.message : String(err));
+    }
+    if (!accounts.includes(row)) accounts.push(row);
+  }
+  notes.push(`temizlik: ${accounts.map((a) => `${a.email} → ${a.temizlik}`).join(", ")}`);
   fs.writeFileSync(path.join(OUT, "hesaplar.json"), JSON.stringify(accounts, null, 2));
   fs.writeFileSync(path.join(OUT, "notlar.txt"), notes.join("\n"));
+  if (failures.length) throw new Error(`Test hesapları silinemedi:\n${failures.join("\n")}`);
+});
+
+// Temizliğin başarısız çalıştırmada da işlediğini sınamak için: E2E_FORCE_FAIL=<adım no>
+test.beforeEach(({}, info) => {
+  const n = process.env.E2E_FORCE_FAIL;
+  if (n && info.title.startsWith(`${n}. `)) throw new Error(`E2E_FORCE_FAIL=${n}: bilerek başarısız`);
 });
 
 test("1. iki hesapla kayıt ol ve başlangıç sorularını doldur", async () => {

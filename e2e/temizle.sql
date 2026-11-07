@@ -1,4 +1,7 @@
 -- =============================================================================
+-- YEDEK YOL. Normalde gerekmez: testler her çalıştırmanın sonunda kendi
+-- hesaplarını siler, kalanları da veritabanı 2 saat sonra kendisi siler
+-- (migration 17, saatlik görev). Hemen temizlemek istersen:
 -- Uçtan uca test hesaplarını ve tüm verilerini KALICI olarak siler.
 -- Yalnızca e-postası "e2e-test-…@example.com" olan hesaplar etkilenir.
 -- Kullanım: Supabase paneli → SQL Editor → bu dosyanın içeriğini yapıştır → Run.

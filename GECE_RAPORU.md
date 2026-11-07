@@ -910,7 +910,7 @@ doğrulanıyor. Kayıtlarda kanallar `CHANNEL_ERROR`/`CLOSED` oluyor, 1-2-4 sn b
 bağlantı gelince `SUBSCRIBED` ve "eksikler tamamlanıyor" görülüyor ve 3 mesaj birer kez geliyor.
 
 ### Test hesapları (gerçek projede, 7 çalıştırma × 3 = 21 hesap)
-Parola her hesapta `E2e-<sonek>-parola1` biçiminde (ör. `e2e-test-a-iugwxwb@example.com` → `E2e-iugwxwb-parola1`).
+(Bu hesaplar test hesabı olarak işaretlendi, gerçek kullanıcılara görünmüyor ve saatlik görevle otomatik siliniyor; aşağıya bakın.)
 
 | E-posta | Kullanıcı adı |
 | --- | --- |
@@ -943,3 +943,32 @@ Supabase paneli → **SQL Editor** → `e2e/temizle.sql` dosyasının içeriğin
   veritabanı testi var.
 - Yönetici işlem kaydı silinemez olduğu için oradaki satırlar kalır.
 - Testleri yeniden çalıştırmak yeni hesaplar açar. Temizliği tüm çalıştırmalardan sonra bir kez yapman yeterli.
+
+
+## Test hesapları: otomatik silme ve yalıtım ✅
+
+Migration 17 (`test_account_isolation`) uzağa uygulandı (dry-run → push).
+
+- **Her çalıştırmanın sonunda silme:** testler başarılı da olsa başarısız da olsa, her test hesabı kendi oturumuyla
+  `e2e_delete_my_test_account` çağırıp kendini ve verilerini siliyor. Ardından girişin artık mümkün olmadığı
+  doğrulanıyor; silinemezse çalıştırma başarısız sayılıyor.
+  - Denendi: normal çalıştırma 12/12 ve 3 hesap silindi.
+  - Bilerek 3. adımda başarısız yapılan çalıştırmada da (`E2E_FORCE_FAIL=3`) 3 hesap silindi.
+  - Uzakta bu hesaplardan kalan yok.
+- **Güvenlik ağı:** test yarıda kesilse bile (ör. bilgisayar kapandı), 2 saatten eski test hesapları saatlik görevle
+  (`sohby-purge-test-accounts`, her saat :53) siliniyor. Önceki çalıştırmalardan kalan 21 hesap bu yolla silinecek.
+- **Veritabanında yalıtım:** e-postası `e2e-test-…@example.com` olan hesaplar test hesabı olarak işaretleniyor.
+  Kullanıcı bu işareti değiştiremiyor; e-posta değişirse işaret yeniden hesaplanıyor. Test hesabı ile gerçek hesap
+  arasında engel kontrolü her zaman "engelli" dönüyor. Bu kontrol Keşfet, arama, tüm süzgeçler, profil, mesaj,
+  istek, sohbet listeleri, rozetler ve anonim sohbette kullanıldığı için iki taraf birbirini **hiçbir yerde göremiyor
+  ve birbirine yazamıyor**. Test hesapları yalnızca birbirini görüyor. Harita henüz yok; yapılırken aynı kontrol
+  kullanılmalı.
+- **Güvenlik kararı:** hızlı silme yalnızca test hesapları için ve yalnızca verileri başka test hesaplarıyla ilgiliyse
+  çalışıyor. Gerçek bir hesapla herhangi bir izi olan hesap bu yolla silinemiyor; normal 90 gün kuralı geçerli. Böylece
+  biri test adresiyle kayıt olup birini rahatsız ettikten sonra izini silemiyor (kural 13). Yalıtım zaten böyle bir
+  etkileşimi engelliyor; bu ikinci kat.
+- **Parolalar:** koddan çıkarıldı. Her çalıştırmada rastgele üretiliyor, yalnızca bellekte duruyor, hiçbir dosyaya
+  yazılmıyor.
+- Testler: 6 veritabanı testi (yalıtım, işaret, silme, iz kuralı, güvenlik ağı) ve 4 koruma testi (sabit parola
+  yok, parola dosyaya yazılmıyor, temizlik ve doğrulama yerinde). `npm test` → 193/193.
+- `e2e/temizle.sql` artık yalnızca yedek yol (hepsini hemen silmek istersen).

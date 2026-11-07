@@ -107,12 +107,12 @@ class TestDb {
   }
 
   /** auth.users'a kayıt ekler (Supabase signUp'ın yaptığı gibi). */
-  async signUp(meta = {}, { emailConfirmed = true } = {}) {
+  async signUp(meta = {}, { emailConfirmed = true, email } = {}) {
     const id = randomUUID();
     await this.db.query(
       `insert into auth.users (id, email, raw_user_meta_data, email_confirmed_at)
        values ($1, $2, $3, case when $4::boolean then now() end)`,
-      [id, `${id}@test.local`, JSON.stringify(meta), emailConfirmed],
+      [id, email ?? `${id}@test.local`, JSON.stringify(meta), emailConfirmed],
     );
     return id;
   }
@@ -138,10 +138,11 @@ class TestDb {
     lookingFor = ["friends"],
     settings = {},
     emailConfirmed = true,
+    email,
   }) {
     const id = await this.signUp(
       { username, birth_date: birthDate, gender, terms_accepted: true },
-      { emailConfirmed },
+      { emailConfirmed, email },
     );
     await this.as(
       id,

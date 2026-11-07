@@ -7,6 +7,8 @@ import { defineConfig } from "@playwright/test";
  */
 export default defineConfig({
   testDir: "./e2e",
+  // e2e/*.test.mjs dosyaları tarayıcısız koruma testleridir (npm test çalıştırır).
+  testMatch: "**/*.spec.ts",
   outputDir: "./e2e-sonuclar/artifacts",
   timeout: 120_000,
   expect: { timeout: 10_000 },

@@ -22,9 +22,9 @@ test("temizlik betiği yalnızca test hesaplarını siler, gerçek verilere doku
   const c = await db.activeUser({ username: "e2e_c_x" });
   const real1 = await db.activeUser({ username: "gercek_1", settings: everyone });
   const real2 = await db.activeUser({ username: "gercek_2", settings: everyone });
-  for (const [id, k] of [[a, "a"], [b, "b"], [c, "c"]]) await setEmail(id, `e2e-test-${k}-x1@example.com`);
-  await setEmail(real1, "gercek1@example.com");
-  await setEmail(real2, "e2e-test-degil@example.org");
+  // Duvar (migration 17) öncesinden kalmış olabilecek karışık veri: önce gerçek
+  // adreslerle etkileşim kurulur, sonra adresler test adresine çevrilir.
+  const { id: mixed } = await db.rpc(real1, "start_conversation", [a, "karışık"]);
 
   // Test hesapları arasında: sohbet, istek (reddedilmiş), anonim sohbet, şikâyet, engel
   const { id: convAB } = await db.rpc(b, "start_conversation", [a, "selam"]);
@@ -36,8 +36,9 @@ test("temizlik betiği yalnızca test hesaplarını siler, gerçek verilere doku
   await db.rpc(a, "send_anon_message", [anon, "anonim cevap"]);
   await db.rpc(a, "report_anonymous", [anon, "spam", null, false]);
   await db.rpc(b, "block_user", [c]);
-  // Gerçek kullanıcıyla test hesabı arasında sohbet (silinir)
-  const { id: mixed } = await db.rpc(real1, "start_conversation", [a, "karışık"]);
+  for (const [id, k] of [[a, "a"], [b, "b"], [c, "c"]]) await setEmail(id, `e2e-test-${k}-x1@example.com`);
+  await setEmail(real1, "gercek1@example.com");
+  await setEmail(real2, "e2e-test-degil@example.org");
   // Gerçek kullanıcılar arasında sohbet ve şikâyet (KALIR)
   const { id: realConv } = await db.rpc(real1, "start_conversation", [real2, "gerçek mesaj"]);
   await db.rpc(real2, "report_user", [real1, "spam", null, false, realConv, null]);
