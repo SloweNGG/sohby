@@ -67,3 +67,8 @@ supabase/.branches/
 !/admin/.env.example
 /admin/next-env.d.ts
 /admin/*.tsbuildinfo
+
+# Uçtan uca test çıktıları (ekran görüntüleri, izler, test hesapları)
+/e2e-sonuclar/
+/playwright-report/
+/test-results/

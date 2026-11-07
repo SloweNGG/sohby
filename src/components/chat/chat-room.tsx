@@ -59,7 +59,7 @@ export function ChatRoom({
   const t = useTranslations("chat");
   const locale = useLocale();
   const { refresh: refreshList } = useChats();
-  const badges = useBadges();
+  const { refresh: refreshBadges } = useBadges();
   const [messages, setMessages] = useState<UiMessage[]>(initialMessages);
   const [otherReadAt, setOtherReadAt] = useState<string | null>(header.other_read_at ?? null);
   const [hasMore, setHasMore] = useState(initialHasMore);
@@ -83,11 +83,11 @@ export function ChatRoom({
     try {
       await createClient().rpc("mark_conversation_read", { p_conversation: conversationId });
       refreshList();
-      badges.refresh();
+      refreshBadges();
     } catch {
       /* sessizce geç */
     }
-  }, [conversationId, refreshList, badges]);
+  }, [conversationId, refreshList, refreshBadges]);
 
   // Okundu bilgisi (iki taraf da açtıysa): sohbet açıkken periyodik tazelenir.
   useEffect(() => {

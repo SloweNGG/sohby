@@ -61,7 +61,9 @@ export function ChatsShell({
   const [conversations, setConversations] = useState(initialConversations);
   const [requests, setRequests] = useState(initialRequests);
   const [anon, setAnon] = useState(initialAnon);
-  const badges = useBadges();
+  // Yalnızca kararlı `refresh` alınır: rozet nesnesine bağlanmak, okundu
+  // işaretleme ↔ rozet tazeleme arasında sonsuz bir döngü yaratıyordu.
+  const { refresh: refreshBadges } = useBadges();
   const timer = useRef<number | undefined>(undefined);
   const pathname = usePathname();
 
@@ -85,9 +87,9 @@ export function ChatsShell({
     window.clearTimeout(timer.current);
     timer.current = window.setTimeout(() => {
       void load();
-      badges.refresh();
+      refreshBadges();
     }, 250);
-  }, [load, badges]);
+  }, [load, refreshBadges]);
 
   // Yeni mesaj / istek olayında liste tazelenir. Kopukluktan sonra (yeniden
   // abone olunca, sekme görünür olunca, internet gelince) liste baştan çekilir:

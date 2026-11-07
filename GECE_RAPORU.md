@@ -858,3 +858,88 @@ gönderebilir. Geliştirme için uygun; yayına çıkmadan önce yeniden açılm
 
 ### Denenmedi
 Gerçek iki hesapla tarayıcıda (ör. Wi-Fi'yi kapatıp açarak) denenmedi.
+
+
+## Uçtan uca testler (Playwright, gerçek Supabase) ✅ 12/12
+
+`npm run test:e2e`: yerelde çalışan uygulama (`npm run dev`, 3000) + gerçek Supabase projesi. Bilgisayardaki
+Chrome kullanılıyor (tarayıcı indirilmiyor). Üç ayrı tarayıcı bağlamı = üç ayrı kullanıcı (A, B, C). Her adımın
+ekran görüntüsü `e2e-sonuclar/` klasöründe, numaralı (git'e girmiyor). Konsol kayıtları ve ölçümler de orada.
+
+**Sonuç: 12 adımın 12'si geçti; son iki tam çalıştırma üst üste yeşil.**
+
+| # | Adım | Sonuç |
+| --- | --- | --- |
+| 1 | Kayıt + başlangıç soruları (3 hesap) | ✅ "Confirm email" kapalı → doğrudan başlangıç sorularına |
+| 2 | Keşfet'te arama + "ortak hobi" süzgeci, profil sayfası | ✅ |
+| 3 | Mesaj isteği → alıcıda görünür → kabul → sohbet | ✅ |
+| 4 | İki yönlü mesajlaşma, yenilemeden ≤ 3 sn | ✅ ölçülen 0,3–0,9 sn |
+| 5 | Alıcı çevrimdışı, 3 mesaj → çevrimiçi olunca birer kez | ✅ bağlantı gerçekten koptu (aşağıya bakın) |
+| 6 | Çevrimdışı gönderim → "tekrar dene" → karşıda bir kez | ✅ |
+| 7 | Okunmamış rozeti ve sohbet listesi | ✅ (hata bulundu, düzeltildi) |
+| 8 | Reddet → Ayarlar > Reddedilen istekler → geri al → İstekler'e döner | ✅ |
+| 9 | Anonim: alıcının hiçbir sayfasının HTML'inde gerçek ad/kullanıcı adı/e-posta yok; kimlik açılınca ad görünür | ✅ |
+| 10 | Engelle: engellenen yazamaz, engelleyeni Keşfet'te ve profilde göremez | ✅ |
+| 11 | Şikâyet kaydedilir | ✅ |
+| 12 | Masaüstü (1440) ve telefon (390): tanıtım, Keşfet, profil, sohbetler, sohbet, istekler, ayarlar, profilim | ✅ yatay taşma yok |
+
+### Bulunan ve düzeltilen hatalar
+1. **Sohbet açıkken sonsuz istek döngüsü (ciddi; ilk günden beri vardı).** Bir sohbet açık durduğu sürece
+   tarayıcı saniyede ~20 "okundu işaretle" ve ~20 "rozet sayısı" isteği gönderiyordu, hiç durmadan.
+   - Nasıl oluyordu: okundu işaretleme rozetleri tazeliyordu. Rozet bileşeni, değerler aynı olsa bile her
+     seferinde yeni bir nesne üretiyordu. Okundu işaretleme fonksiyonu bu nesneye bağlı olduğu için yeniden
+     oluşuyor, "sohbet açılınca okundu işaretle" yeniden çalışıyor ve döngü başa dönüyordu.
+   - Yan etkisi: liste yenilemesi 250 ms bekletiliyordu ve döngü bu beklemeyi sürekli sıfırladığı için
+     **sohbet listesindeki okunmamış sayısı hiç sıfırlanmıyordu** (7. adımda yakalandı). Anonim sohbet
+     ekranında da aynısı vardı.
+   - Düzeltme: bileşenler yalnızca rozetlerin kararlı "tazele" fonksiyonuna bağlanıyor; rozet değeri
+     değişmediyse aynı nesne kalıyor.
+   - Koruma: e2e testi sohbet açıkken 5 sn boşta istek sayıyor (şimdi 0, önceden ~200). Bir kod testi de
+     bu bağımlılık hatasının geri gelmesini engelliyor.
+2. **Erişilebilirlik:** gezinmedeki "Sohbetler" bağlantısı ekran okuyucuda "1 Sohbetler (1)" diye
+   okunuyordu (rozet sayısı iki kez). Görsel rozet ekran okuyuculardan gizlendi.
+
+Test kodundaki seçici düzeltmeleri (ör. "Selam ver" ile "Bu soruyla selam ver"in karışması) uygulama hatası
+değildi.
+
+### Çevrimdışı testleri hakkında
+Playwright'ın `setOffline`'ı açık WebSocket bağlantılarını kesmiyor; ilk denemede mesajlar kopmadan gelmişti,
+yani eksik tamamlama aslında sınanmamıştı. Test bu yüzden Realtime bağlantısını Playwright üzerinden geçiriyor:
+çevrimdışıyken açık bağlantılar kapatılıyor, yenileri reddediliyor ve **mesajların çevrimdışıyken gelmediği**
+doğrulanıyor. Kayıtlarda kanallar `CHANNEL_ERROR`/`CLOSED` oluyor, 1-2-4 sn beklemeyle yeniden deniyor;
+bağlantı gelince `SUBSCRIBED` ve "eksikler tamamlanıyor" görülüyor ve 3 mesaj birer kez geliyor.
+
+### Test hesapları (gerçek projede, 7 çalıştırma × 3 = 21 hesap)
+Parola her hesapta `E2e-<sonek>-parola1` biçiminde (ör. `e2e-test-a-iugwxwb@example.com` → `E2e-iugwxwb-parola1`).
+
+| E-posta | Kullanıcı adı |
+| --- | --- |
+| e2e-test-a-2z1nzge@example.com | `e2e_a_2z1nzge` |
+| e2e-test-b-2z1nzge@example.com | `e2e_b_2z1nzge` |
+| e2e-test-c-2z1nzge@example.com | `e2e_c_2z1nzge` |
+| e2e-test-a-3ng2irb@example.com | `e2e_a_3ng2irb` |
+| e2e-test-b-3ng2irb@example.com | `e2e_b_3ng2irb` |
+| e2e-test-c-3ng2irb@example.com | `e2e_c_3ng2irb` |
+| e2e-test-a-5vbsjtu@example.com | `e2e_a_5vbsjtu` |
+| e2e-test-b-5vbsjtu@example.com | `e2e_b_5vbsjtu` |
+| e2e-test-c-5vbsjtu@example.com | `e2e_c_5vbsjtu` |
+| e2e-test-a-a2k7j8i@example.com | `e2e_a_a2k7j8i` |
+| e2e-test-b-a2k7j8i@example.com | `e2e_b_a2k7j8i` |
+| e2e-test-c-a2k7j8i@example.com | `e2e_c_a2k7j8i` |
+| e2e-test-a-bz91p1i@example.com | `e2e_a_bz91p1i` |
+| e2e-test-b-bz91p1i@example.com | `e2e_b_bz91p1i` |
+| e2e-test-c-bz91p1i@example.com | `e2e_c_bz91p1i` |
+| e2e-test-a-ea2wnd5@example.com | `e2e_a_ea2wnd5` |
+| e2e-test-b-ea2wnd5@example.com | `e2e_b_ea2wnd5` |
+| e2e-test-c-ea2wnd5@example.com | `e2e_c_ea2wnd5` |
+| e2e-test-a-iugwxwb@example.com | `e2e_a_iugwxwb` |
+| e2e-test-b-iugwxwb@example.com | `e2e_b_iugwxwb` |
+| e2e-test-c-iugwxwb@example.com | `e2e_c_iugwxwb` |
+
+### Test hesaplarını silmek
+Supabase paneli → **SQL Editor** → `e2e/temizle.sql` dosyasının içeriğini yapıştır → **Run**.
+- Betik yalnızca e-postası `e2e-test-…@example.com` olan hesapları, sohbetlerini, isteklerini, anonim
+  sohbetlerini ve şikâyetlerini kalıcı siler. Gerçek kullanıcıların verilerine dokunmaz; bunu sınayan bir
+  veritabanı testi var.
+- Yönetici işlem kaydı silinemez olduğu için oradaki satırlar kalır.
+- Testleri yeniden çalıştırmak yeni hesaplar açar. Temizliği tüm çalıştırmalardan sonra bir kez yapman yeterli.

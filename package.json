@@ -12,7 +12,8 @@
     "cf:build": "opennextjs-cloudflare build",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
     "test:db": "node --test supabase/tests/*.test.mjs",
-    "test": "node --test \"supabase/tests/*.test.mjs\" \"supabase/functions/**/*.test.mjs\" \"src/**/*.test.mjs\""
+    "test": "node --test \"supabase/tests/*.test.mjs\" \"supabase/functions/**/*.test.mjs\" \"src/**/*.test.mjs\"",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.20.16",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.5.15",
+    "@playwright/test": "^1.65.0",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

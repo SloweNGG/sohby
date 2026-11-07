@@ -40,3 +40,7 @@ npm run dev                  # http://localhost:3000
 - `scripts/merge-messages.mjs` — çeviri dosyalarına toplu anahtar ekleme
 
 Gece çalışmasının ayrıntılı raporu ve açık sorular: `GECE_RAPORU.md`.
+
+## Uçtan uca testler
+
+`npm run dev` açıkken `npm run test:e2e` → gerçek Supabase projesine karşı Playwright (bilgisayardaki Chrome). Sonuçlar ve ekran görüntüleri `e2e-sonuclar/` (git dışı). Test hesaplarını silmek: `e2e/temizle.sql` (Supabase SQL Editor).

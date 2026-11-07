@@ -43,3 +43,13 @@ test("tarayıcı istemcisi tekil ve Realtime sinyali worker ile gönderilir", as
   ).length;
   assert.equal(count, 1, "createBrowserClient yalnızca bir yerde");
 });
+
+test("hiçbir efekt/callback rozet bağlamının tamamına bağlanmaz (okundu ↔ rozet sonsuz döngüsü geri gelmesin)", async () => {
+  const offenders = [];
+  for await (const f of files(src)) {
+    const text = await readFile(f, "utf8");
+    // Bağımlılık dizisinde çıplak `badges` (ör. [x, badges]) yasak; kararlı `refresh` kullanılmalı.
+    if (/\[[^\]\n]*\bbadges\b(?!\.)[^\]\n]*\]\s*\)/.test(text)) offenders.push(path.relative(src, f));
+  }
+  assert.deepEqual(offenders, []);
+});

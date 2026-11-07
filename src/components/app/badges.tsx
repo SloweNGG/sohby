@@ -33,7 +33,13 @@ export function BadgeProvider({ initial, userId, children }: { initial: BadgeCou
   const refresh = useCallback(async () => {
     try {
       const { data } = await createClient().rpc("get_badge_counts");
-      if (data) setCounts(data as BadgeCounts);
+      // Değer değişmediyse aynı nesne kalır: tüketiciler boşuna yeniden çizilmez.
+      if (data) {
+        const next = data as BadgeCounts;
+        setCounts((prev) =>
+          prev.unread_messages === next.unread_messages && prev.pending_requests === next.pending_requests ? prev : next,
+        );
+      }
     } catch {
       /* ağ hatası: bir sonraki olayda tekrar denenir */
     }

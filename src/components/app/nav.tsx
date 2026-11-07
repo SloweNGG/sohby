@@ -18,10 +18,12 @@ function useSection(username: string) {
   return activeSection(usePathname(), username);
 }
 
+/** Görsel rozet. Sayı ekran okuyuculara bağlantının gizli metninde bir kez okunur. */
 function Badge({ count, className }: { count: number; className?: string }) {
   if (count <= 0) return null;
   return (
     <span
+      aria-hidden="true"
       className={cn(
         "absolute grid h-[18px] min-w-[18px] place-items-center rounded-full bg-coral px-1 text-[10px] font-bold text-ink",
         className,

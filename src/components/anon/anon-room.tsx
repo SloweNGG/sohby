@@ -47,7 +47,7 @@ export function AnonRoom({
   const router = useRouter();
   const clock = useClock();
   const { refresh } = useChats();
-  const badges = useBadges();
+  const { refresh: refreshBadges } = useBadges();
   const [messages, setMessages] = useState<UiAnonMessage[]>(initialMessages);
   const messagesRef = useRef(messages);
   useEffect(() => {
@@ -72,11 +72,11 @@ export function AnonRoom({
     try {
       await createClient().rpc("mark_anon_read", { p_conversation: header.id });
       refresh();
-      badges.refresh();
+      refreshBadges();
     } catch {
       /* sessizce geç */
     }
-  }, [header.id, refresh, badges]);
+  }, [header.id, refresh, refreshBadges]);
 
   useEffect(() => {
     if (header.status === "active") void markRead();
