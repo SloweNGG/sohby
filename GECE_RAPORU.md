@@ -366,7 +366,7 @@ Veritabanı mantığı gerçek Postgres'te test edildi; uzakta salt okunur kontr
 | 12 | Konum yalnızca semt; GPS yok | ✅ (fotoğraflardaki GPS de siliniyor) |
 | 13 | Sohbet silme yalnızca kendi görünümünden; mesajlar saklanır | ✅ (90 gün kararıyla) |
 | 14 | Yönetici işlemleri ve sohbet görüntüleme silinemez kayıtta | ✅ |
-| 15 | Yaş doğrulama belgeleri şifreli, 30 gün | ⏭ belge yükleme henüz yok |
+| 15 | Yaş doğrulama belgeleri şifreli, 30 gün | ✅ 7 Kasım'da eklendi (İş C), `AGE_DOC_KEY` girilince açılır |
 
 ### Sabah senden gerekenler (öncelik sırasıyla)
 1. **Kendini yönetici yap** (SQL Editor): `insert into private.admins (user_id) select id from auth.users where email = 'SENİN-E-POSTAN';`
