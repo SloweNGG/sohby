@@ -2,9 +2,11 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, useTransition, type ReactNode } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { ArrowUp, ChevronLeft, Lock, VenetianMask } from "lucide-react";
+import { ArrowUp, ChevronLeft, Lock, RotateCw, VenetianMask } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useRealtime } from "@/lib/realtime/use-realtime";
+import { isDuplicateKey, markFailed, mergeById, resyncCursor } from "@/lib/realtime/messages";
 import { requestRevealAction, respondAnonymousAction, revealIdentityAction } from "@/lib/anon/actions";
 import { Button } from "@/components/ui/button";
 import { FormAlert } from "@/components/ui/field";
@@ -17,10 +19,17 @@ import { DeleteConversationButton } from "@/components/chat/chat-menus";
 import { useAlias } from "./alias";
 import type { AnonConversationHeader, AnonMessage } from "@/lib/types";
 
+type SendError = "rate_limited" | "not_allowed" | "generic";
+type UiAnonMessage = AnonMessage & { status?: "sending" | "failed"; error?: SendError };
+const SELECT = "id, conversation_id, from_anonymous, body, created_at";
+const RESYNC_PAGE = 200;
+
 /**
  * Anonim sohbet ekranı. Alıcı tarafında gönderen hakkında yalnızca takma ad
  * gösterilir (sunucu zaten başka bir şey döndürmez). Mesajlar `from_anonymous`
  * alanıyla taraflara ayrılır; hiçbir yükte kişi kimliği yoktur.
+ * Anlık iletim normal sohbetle aynı: yeniden abone olma, eksik tamamlama,
+ * kimliğe göre tekilleştirme, iyimser gönderim + "tekrar dene" (lib/realtime).
  */
 export function AnonRoom({
   header,
@@ -39,7 +48,11 @@ export function AnonRoom({
   const clock = useClock();
   const { refresh } = useChats();
   const badges = useBadges();
-  const [messages, setMessages] = useState(initialMessages);
+  const [messages, setMessages] = useState<UiAnonMessage[]>(initialMessages);
+  const messagesRef = useRef(messages);
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [revealRequested, setRevealRequested] = useState(header.reveal_requested);
@@ -50,7 +63,7 @@ export function AnonRoom({
   const isAnon = header.role === "anonymous";
   const myAlias = alias(header.alias_adjective, header.alias_animal);
   const title = isAnon && header.recipient ? header.recipient.display_name : myAlias;
-  const mine = (m: AnonMessage) => m.from_anonymous === isAnon;
+  const mine = (m: UiAnonMessage) => m.from_anonymous === isAnon;
   // Alıcı için bekleyen istek bir sohbet değildir (kabul/ret ile yanıtlanır).
   const canDelete = isAnon ? header.status === "pending" || header.status === "active" : header.status === "active";
 
@@ -69,49 +82,73 @@ export function AnonRoom({
     if (header.status === "active") void markRead();
   }, [header.status, markRead]);
 
-  useEffect(() => {
-    let supabase: ReturnType<typeof createClient>;
-    try {
-      supabase = createClient();
-    } catch {
-      return;
+  const receive = useCallback(
+    (incoming: AnonMessage[]) => {
+      if (incoming.length === 0) return;
+      setMessages((prev) => mergeById(prev, incoming));
+      const known = new Set(messagesRef.current.map((m) => m.id));
+      if (incoming.some((m) => m.from_anonymous !== isAnon && !known.has(m.id))) void markRead();
+    },
+    [isAnon, markRead],
+  );
+
+  const resync = useCallback(async () => {
+    const supabase = createClient();
+    let from = resyncCursor(messagesRef.current);
+    for (let page = 0; page < 5; page += 1) {
+      let q = supabase.from("anon_messages").select(SELECT).eq("conversation_id", header.id);
+      if (from) q = q.gte("created_at", from);
+      const { data, error } = await q.order("created_at", { ascending: true }).limit(RESYNC_PAGE);
+      if (error || !data) return;
+      receive(data as AnonMessage[]);
+      if (data.length < RESYNC_PAGE) return;
+      from = (data[data.length - 1] as AnonMessage).created_at;
     }
-    const channel = supabase
-      .channel(`anon:${header.id}`)
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "anon_messages", filter: `conversation_id=eq.${header.id}` },
-        (payload: { new: Record<string, unknown> }) => {
-          const m = payload.new as unknown as AnonMessage;
-          setMessages((prev) => (prev.some((x) => x.id === m.id) ? prev : [...prev, m]));
-          if (m.from_anonymous !== isAnon) void markRead();
-        },
-      )
-      .subscribe();
-    return () => {
-      void supabase.removeChannel(channel);
-    };
-  }, [header.id, isAnon, markRead]);
+  }, [header.id, receive]);
+
+  useRealtime({
+    name: `anon:${header.id}`,
+    bindings: [{ event: "INSERT", table: "anon_messages", filter: `conversation_id=eq.${header.id}` }],
+    onEvent: (payload) => receive([payload.new as unknown as AnonMessage]),
+    onResync: () => void resync().catch(() => {}),
+  });
 
   useLayoutEffect(() => {
     const el = listRef.current;
     if (el) el.scrollTop = el.scrollHeight;
   }, [messages]);
 
-  const send = async () => {
-    const text = draft.trim();
+  const send = async (body: string, retryId?: string) => {
+    const text = body.trim();
     if (!text) return;
-    setDraft("");
     setError(null);
-    const { data, error: e } = await createClient().rpc("send_anon_message", { p_conversation: header.id, p_body: text });
-    if (e) {
-      setDraft(text);
-      setError(e.message.includes("rate_limited") ? tc("errors.rate_limited") : tc("errors.not_allowed"));
+    // Kimliği biz üretiriz; tekrar denemede aynı kimlik (iki kez yazılmaz).
+    const id = retryId ?? crypto.randomUUID();
+    const optimistic: UiAnonMessage = {
+      id,
+      conversation_id: header.id,
+      from_anonymous: isAnon,
+      body: text,
+      created_at: new Date().toISOString(),
+      status: "sending",
+    };
+    setMessages((prev) => (retryId ? prev.map((m) => (m.id === retryId ? optimistic : m)) : [...prev, optimistic]));
+    const { data, error: e } = await createClient().rpc("send_anon_message", { p_conversation: header.id, p_body: text, p_id: id });
+    if (e && !isDuplicateKey(e)) {
+      const code: SendError = e.message.includes("rate_limited") ? "rate_limited" : e.message.includes("not_allowed") ? "not_allowed" : "generic";
+      setMessages((prev) => markFailed(prev, id, code));
       return;
     }
-    const row = data as AnonMessage;
-    setMessages((prev) => (prev.some((x) => x.id === row.id) ? prev : [...prev, row]));
+    if (data) setMessages((prev) => mergeById(prev, [data as AnonMessage]));
+    else void resync();
     refresh();
+  };
+
+  const submit = () => {
+    const text = draft;
+    if (!text.trim()) return;
+    setDraft("");
+    void send(text);
   };
 
   const respond = (accept: boolean) =>
@@ -191,16 +228,35 @@ export function AnonRoom({
             </div>
           )}
           {messages.map((m) => (
-            <div key={m.id} className={cn("flex", mine(m) ? "justify-end" : "justify-start")}>
-              <p
-                title={clock(m.created_at)}
-                className={cn(
-                  "max-w-[85%] whitespace-pre-wrap break-words rounded-[22px] px-[18px] py-3 text-[15px] md:max-w-[65%] md:text-base",
-                  mine(m) ? "bg-coral text-ink" : "bg-surface",
-                )}
-              >
-                {m.body}
-              </p>
+            <div key={m.id} className="flex flex-col">
+              <div className={cn("flex", mine(m) ? "justify-end" : "justify-start")}>
+                <p
+                  title={clock(m.created_at)}
+                  className={cn(
+                    "max-w-[85%] whitespace-pre-wrap break-words rounded-[22px] px-[18px] py-3 text-[15px] md:max-w-[65%] md:text-base",
+                    mine(m) ? "bg-coral text-ink" : "bg-surface",
+                    m.status === "sending" && "opacity-70",
+                    m.status === "failed" && "ring-2 ring-coral/60",
+                  )}
+                >
+                  {m.body}
+                </p>
+              </div>
+              {m.status === "failed" && (
+                <p className="mt-1 flex items-center justify-end gap-2 text-xs text-coral-text">
+                  {tc(`errors.${m.error ?? "generic"}`)}
+                  {m.error !== "not_allowed" && (
+                    <button
+                      type="button"
+                      onClick={() => void send(m.body, m.id)}
+                      className="inline-flex items-center gap-1 font-semibold underline underline-offset-2"
+                    >
+                      <RotateCw className="h-3 w-3" aria-hidden="true" />
+                      {tc("retry")}
+                    </button>
+                  )}
+                </p>
+              )}
             </div>
           ))}
           {header.status === "pending" && isAnon && <p className="mt-3 text-center text-sm text-muted">{t("waiting")}</p>}
@@ -227,7 +283,7 @@ export function AnonRoom({
             className="mx-auto flex max-w-[920px] items-end gap-2.5"
             onSubmit={(e) => {
               e.preventDefault();
-              void send();
+              submit();
             }}
           >
             <label className="flex-1">
@@ -240,7 +296,7 @@ export function AnonRoom({
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
                     e.preventDefault();
-                    void send();
+                    submit();
                   }
                 }}
                 placeholder={tc("placeholder")}

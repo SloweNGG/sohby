@@ -4,7 +4,6 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useMemo,
   useRef,
   useState,
@@ -14,6 +13,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { Search } from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useRealtime } from "@/lib/realtime/use-realtime";
+import type { Binding } from "@/lib/realtime/keeper";
 import { cn } from "@/lib/cn";
 import { InitialAvatar } from "@/components/profile/avatar";
 import { useBadges } from "@/components/app/badges";
@@ -22,6 +23,12 @@ import type { AnonConversationItem, ConversationListItem, MessageRequestItem } f
 import { VenetianMask } from "lucide-react";
 import { useAlias } from "@/components/anon/alias";
 import { ChatsMenu } from "./chat-menus";
+
+const LIST_BINDINGS: Binding[] = [
+  { event: "INSERT", table: "messages" },
+  { event: "*", table: "message_requests" },
+  { event: "INSERT", table: "anon_messages" },
+];
 
 type ChatsContextValue = {
   conversations: ConversationListItem[];
@@ -82,23 +89,15 @@ export function ChatsShell({
     }, 250);
   }, [load, badges]);
 
-  useEffect(() => {
-    let supabase: ReturnType<typeof createClient>;
-    try {
-      supabase = createClient();
-    } catch {
-      return;
-    }
-    const channel = supabase
-      .channel(`chat-list:${userId}`)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, () => refresh())
-      .on("postgres_changes", { event: "*", schema: "public", table: "message_requests" }, () => refresh())
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "anon_messages" }, () => refresh())
-      .subscribe();
-    return () => {
-      void supabase.removeChannel(channel);
-    };
-  }, [userId, refresh]);
+  // Yeni mesaj / istek olayında liste tazelenir. Kopukluktan sonra (yeniden
+  // abone olunca, sekme görünür olunca, internet gelince) liste baştan çekilir:
+  // kaçırılan olay olsa bile liste ve istekler eksiksiz olur.
+  useRealtime({
+    name: `chat-list:${userId}`,
+    bindings: LIST_BINDINGS,
+    onEvent: () => refresh(),
+    onResync: () => refresh(),
+  });
 
   // Sunucudan yeni ilk veri geldiğinde (router.refresh) eşitle.
   const [seen, setSeen] = useState({ initialConversations, initialRequests, initialAnon });

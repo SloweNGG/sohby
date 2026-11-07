@@ -816,3 +816,45 @@ kadar belge yükleme **güvenli biçimde kapalı**: kullanıcı "Belge yüklenem
 "Confirm email" kapalıyken Supabase her e-postayı doğrulanmış sayıyor. Yani "e-posta doğrulanmadan mesaj
 gönderilemez" kuralı fiilen devre dışı kalıyor: herkes, sahibi olmadığı bir adresle kayıt olup mesaj
 gönderebilir. Geliştirme için uygun; yayına çıkmadan önce yeniden açılmalı.
+
+## Düzeltme — Anlık mesajların kopması ✅
+
+### Neden
+1. **Aynı adlı kanal yarışı (asıl neden).** supabase-js, aynı adlı bir kanal zaten varsa yenisini açmıyor,
+   eskisini veriyor. Kanal kapatma ise sunucunun yanıtını beklediği için gecikmeli; bu sırada eski kanal
+   listede "ayrılıyor" durumunda duruyor. Bileşen hızla yeniden kurulunca (geliştirme modunda React her
+   efekti iki kez çalıştırır; yayında da sayfa geçişlerinde olur) yeni abonelik bu ölmek üzere olan kanala
+   bağlanıyordu. `subscribe()` kapalı olmayan kanalda hiçbir şey yapmıyor, kanal az sonra siliniyordu.
+   Sayfa hata vermeden mesaj almayı bırakıyordu. Testte birebir yeniden üretildi.
+2. **Kopukluktan sonra eksik tamamlama yoktu.** Ağ kesintisi ya da arka plandaki sekme (tarayıcı oradaki
+   zamanlayıcıları yavaşlatır, bağlantıyı canlı tutan sinyal gecikir) yüzünden bağlantı düşünce araya giren
+   mesajlar Realtime'dan bir daha gelmiyordu. Sayfanın açılışıyla kanalın kurulması arasındaki mesajlar da
+   kayboluyordu.
+3. Oturum yenileme sorunsuzdu: supabase-js 2.119 her sinyalde güncel belirteci veriyor, yenilemeyi de
+   Realtime'a iletiyor. Yine de her (yeniden) abonelikten önce yetki ayrıca tazeleniyor.
+
+### Düzeltmeler
+- `src/lib/realtime/` tüm aboneliklerin geçtiği tek yer:
+  - her açılışta benzersiz kanal adı;
+  - geliştirme modunda durumlar konsolda (`[realtime] conversation:…: SUBSCRIBED` vb.);
+  - kopunca 1, 2, 4 … en çok 30 saniye beklemeyle yeniden abonelik;
+  - abone olmadan önce yetki tazeleme.
+- **Eksik tamamlama:** abone olunca (ilk açılış dahil), sekme görünür olunca ve internet geri gelince son
+  onaylı mesajdan (10 sn payla) sonrası veritabanından çekiliyor. Kopuksa beklemeden yeniden bağlanılıyor.
+- Tarayıcıda **tek Supabase istemcisi** (zaten öyleydi, testle korunuyor). Realtime sinyali artık ayrı bir iş
+  parçacığından (worker) gönderiliyor; arka plandaki sekmede de bağlantı canlı kalıyor.
+- **Mesaj kimliğini gönderen üretiyor** (migration 16). Ekranda hemen görünen mesaj, gerçek kayıtla kimliğinden
+  eşleşiyor; Realtime, eksik tamamlama ve sunucu yanıtı aynı mesajı getirse de bir kez görünüyor. "Tekrar dene"
+  aynı kimlikle gönderiyor; ilk deneme aslında yazıldıysa ikinci kayıt oluşmuyor. Gönderen, zaman ve sohbet yine
+  sunucuda belirleniyor (testli; uzakta da doğrulandı).
+- **İyimser gönderim** normal ve anonim sohbette: mesaj hemen görünüyor, gönderilemezse "tekrar dene" çıkıyor.
+- Sohbet listesi, istekler ve okunmamış rozetleri aynı mekanizmayı kullanıyor; yeniden bağlanınca, sekme
+  görünür olunca ve internet gelince baştan hesaplanıyor.
+- Testler: 22 yeni. `npm test` → 181/181.
+  - Kanal yöneticisi: gerçek kütüphaneyi taklit eden sahte Realtime ile; eski hata bu sahtede yeniden üretiliyor.
+  - Mesaj birleştirme.
+  - Veritabanında istemci kimliği ve çift yazım.
+  - Hiçbir bileşenin kanalı doğrudan açmadığını denetleyen koruma testi.
+
+### Denenmedi
+Gerçek iki hesapla tarayıcıda (ör. Wi-Fi'yi kapatıp açarak) denenmedi.

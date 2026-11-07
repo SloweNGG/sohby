@@ -5,6 +5,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { ArrowUp, ChevronLeft, RotateCw } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { useRealtime } from "@/lib/realtime/use-realtime";
+import { isDuplicateKey, markFailed, mergeById, resyncCursor } from "@/lib/realtime/messages";
 import { cn } from "@/lib/cn";
 import { InitialAvatar } from "@/components/profile/avatar";
 import { useBadges } from "@/components/app/badges";
@@ -13,6 +15,8 @@ import { useClock, useDayKey, useDayLabel } from "./time";
 import type { ConversationHeader, Message } from "@/lib/types";
 
 const PAGE = 50;
+const RESYNC_PAGE = 200;
+const SELECT = "id, conversation_id, sender_id, body, created_at";
 const MAX_LENGTH = 2000;
 
 type UiMessage = Message & { status?: "sending" | "failed"; error?: SendError };
@@ -29,8 +33,12 @@ function toSendError(error: { message?: string; code?: string } | null): SendErr
 /**
  * Birebir sohbet ekranı (masaüstü: tasarim/08, telefon: tasarim/14).
  * - Yeni mesajlar Supabase Realtime ile anında gelir (yalnızca bu sohbet,
- *   RLS ile yetkilendirilmiş).
- * - Gönderim iyimserdir: mesaj hemen görünür, hata olursa "tekrar dene".
+ *   RLS ile yetkilendirilmiş). Kanal koparsa yeniden abone olunur; abone
+ *   olunca, sekme görünür olunca ve internet geri gelince son mesajdan
+ *   sonrası veritabanından tamamlanır (bkz. lib/realtime).
+ * - Mesajlar kimliğe göre tekilleştirilir; kimliği gönderen üretir.
+ * - Gönderim iyimserdir: mesaj hemen görünür, hata olursa "tekrar dene"
+ *   (aynı kimlikle; mesaj iki kez yazılamaz).
  * - Sohbet açıkken ve sekme görünürken okundu olarak işaretlenir.
  */
 export function ChatRoom({
@@ -65,6 +73,10 @@ export function ChatRoom({
   const dayLabel = useDayLabel();
   const conversationId = header.id;
   const other = header.other;
+  const messagesRef = useRef(messages);
+  useEffect(() => {
+    messagesRef.current = messages;
+  }, [messages]);
 
   const markRead = useCallback(async () => {
     if (document.visibilityState !== "visible") return;
@@ -104,42 +116,39 @@ export function ChatRoom({
     return () => document.removeEventListener("visibilitychange", onVisible);
   }, [markRead]);
 
-  // Realtime: bu sohbete gelen yeni mesajlar.
-  useEffect(() => {
-    let supabase: ReturnType<typeof createClient>;
-    try {
-      supabase = createClient();
-    } catch {
-      return;
+  // Realtime: bu sohbete gelen yeni mesajlar (kimliğe göre tekilleştirilir).
+  const receive = useCallback(
+    (incoming: Message[]) => {
+      if (incoming.length === 0) return;
+      setMessages((prev) => mergeById(prev, incoming));
+      const known = new Set(messagesRef.current.map((m) => m.id));
+      if (incoming.some((m) => m.sender_id !== me && !known.has(m.id))) void markRead();
+    },
+    [me, markRead],
+  );
+
+  // Eksik tamamlama: son onaylı mesajdan (küçük bir payla) sonrasını çek.
+  const resync = useCallback(async () => {
+    const cursor = resyncCursor(messagesRef.current);
+    const supabase = createClient();
+    let from = cursor;
+    for (let page = 0; page < 5; page += 1) {
+      let q = supabase.from("messages").select(SELECT).eq("conversation_id", conversationId);
+      if (from) q = q.gte("created_at", from);
+      const { data, error } = await q.order("created_at", { ascending: true }).limit(RESYNC_PAGE);
+      if (error || !data) return;
+      receive(data as Message[]);
+      if (data.length < RESYNC_PAGE) return;
+      from = (data[data.length - 1] as Message).created_at;
     }
-    const channel = supabase
-      .channel(`conversation:${conversationId}`)
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "messages", filter: `conversation_id=eq.${conversationId}` },
-        (payload: { new: Record<string, unknown> }) => {
-          const incoming = payload.new as unknown as Message;
-          setMessages((prev) => {
-            if (prev.some((m) => m.id === incoming.id)) return prev;
-            // Kendi iyimser mesajımız: geçici kaydı gerçek kayıtla değiştir.
-            if (incoming.sender_id === me) {
-              const idx = prev.findIndex((m) => m.status === "sending" && m.body === incoming.body);
-              if (idx !== -1) {
-                const next = [...prev];
-                next[idx] = incoming;
-                return next;
-              }
-            }
-            return [...prev, incoming];
-          });
-          if (incoming.sender_id !== me) void markRead();
-        },
-      )
-      .subscribe();
-    return () => {
-      void supabase.removeChannel(channel);
-    };
-  }, [conversationId, me, markRead]);
+  }, [conversationId, receive]);
+
+  useRealtime({
+    name: `conversation:${conversationId}`,
+    bindings: [{ event: "INSERT", table: "messages", filter: `conversation_id=eq.${conversationId}` }],
+    onEvent: (payload) => receive([payload.new as unknown as Message]),
+    onResync: () => void resync().catch(() => {}),
+  });
 
   // Yeni mesajda en alta kaydır (kullanıcı yukarıda geçmişi okumuyorsa).
   useLayoutEffect(() => {
@@ -162,7 +171,7 @@ export function ChatRoom({
     try {
       const { data } = await createClient()
         .from("messages")
-        .select("id, conversation_id, sender_id, body, created_at")
+        .select(SELECT)
         .eq("conversation_id", conversationId)
         .lt("created_at", oldest.created_at)
         .order("created_at", { ascending: false })
@@ -170,7 +179,7 @@ export function ChatRoom({
       const older = ((data ?? []) as Message[]).reverse();
       setHasMore(older.length === PAGE);
       stickToBottom.current = false;
-      setMessages((prev) => [...older.filter((o) => !prev.some((p) => p.id === o.id)), ...prev]);
+      setMessages((prev) => mergeById(prev, older));
       requestAnimationFrame(() => {
         if (el) el.scrollTop = el.scrollHeight - prevHeight;
       });
@@ -183,9 +192,11 @@ export function ChatRoom({
     const text = body.trim();
     if (!text) return;
     if (text.length > MAX_LENGTH) return;
-    const tempId = retryId ?? `temp-${crypto.randomUUID()}`;
+    // Kimliği biz üretiriz: Realtime / eksik tamamlama / sunucu yanıtı aynı
+    // kaydı getirir ve tekilleşir. Tekrar denemede aynı kimlik kullanılır.
+    const id = retryId ?? crypto.randomUUID();
     const optimistic: UiMessage = {
-      id: tempId,
+      id,
       conversation_id: conversationId,
       sender_id: me,
       body: text,
@@ -195,22 +206,22 @@ export function ChatRoom({
     stickToBottom.current = true;
     setMessages((prev) => (retryId ? prev.map((m) => (m.id === retryId ? optimistic : m)) : [...prev, optimistic]));
 
-    const { data, error } = await createClient()
+    const supabase = createClient();
+    let { data, error } = await supabase
       .from("messages")
-      .insert({ conversation_id: conversationId, body: text })
-      .select("id, conversation_id, sender_id, body, created_at")
+      .insert({ id, conversation_id: conversationId, body: text })
+      .select(SELECT)
       .single();
-
-    setMessages((prev) => {
-      if (error || !data) {
-        return prev.map((m) => (m.id === tempId ? { ...m, status: "failed", error: toSendError(error) } : m));
-      }
-      const saved = data as Message;
-      // Realtime olayı daha önce geldiyse geçici kaydı kaldır.
-      if (prev.some((m) => m.id === saved.id)) return prev.filter((m) => m.id !== tempId);
-      return prev.map((m) => (m.id === tempId ? saved : m));
-    });
-    if (!error) refreshList();
+    if (isDuplicateKey(error)) {
+      // Önceki deneme aslında yazılmış (yanıt yolda kaybolmuş): kaydı getir.
+      ({ data, error } = await supabase.from("messages").select(SELECT).eq("id", id).single());
+    }
+    if (error || !data) {
+      setMessages((prev) => markFailed(prev, id, toSendError(error)));
+      return;
+    }
+    setMessages((prev) => mergeById(prev, [data as Message]));
+    refreshList();
   }
 
   function submit() {

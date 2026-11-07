@@ -2,6 +2,14 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useRealtime } from "@/lib/realtime/use-realtime";
+import type { Binding } from "@/lib/realtime/keeper";
+
+const BADGE_BINDINGS: Binding[] = [
+  { event: "INSERT", table: "messages" },
+  { event: "*", table: "message_requests" },
+  { event: "INSERT", table: "anon_messages" },
+];
 import type { BadgeCounts } from "@/lib/types";
 
 type BadgeContextValue = BadgeCounts & { refresh: () => void };
@@ -14,7 +22,8 @@ const BadgeContext = createContext<BadgeContextValue>({
 
 /**
  * Gezinme rozetleri (okunmamış mesaj + bekleyen istek). Yeni mesaj/istek
- * geldiğinde Supabase Realtime ile tazelenir. Realtime olayları RLS'e tabidir:
+ * geldiğinde Supabase Realtime ile tazelenir; kopukluktan sonra yeniden
+ * hesaplanır (lib/realtime). Realtime olayları RLS'e tabidir:
  * kullanıcı yalnızca kendi sohbetlerindeki mesajların ve kendisine gelen
  * isteklerin bildirimini alır.
  */
@@ -30,21 +39,18 @@ export function BadgeProvider({ initial, userId, children }: { initial: BadgeCou
     }
   }, []);
 
+  // Kopukluktan sonra sayılar veritabanından yeniden hesaplanır (eksik tamamlama).
+  useRealtime({
+    name: `badges:${userId}`,
+    bindings: BADGE_BINDINGS,
+    onEvent: (payload, binding) => {
+      if (binding.table === "messages" && (payload.new as { sender_id?: string }).sender_id === userId) return;
+      void refresh();
+    },
+    onResync: () => void refresh(),
+  });
+
   useEffect(() => {
-    let supabase: ReturnType<typeof createClient>;
-    try {
-      supabase = createClient();
-    } catch {
-      return;
-    }
-    const channel = supabase
-      .channel(`badges:${userId}`)
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, (payload: { new: Record<string, unknown> }) => {
-        if ((payload.new as { sender_id?: string }).sender_id !== userId) void refresh();
-      })
-      .on("postgres_changes", { event: "*", schema: "public", table: "message_requests" }, () => void refresh())
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "anon_messages" }, () => void refresh())
-      .subscribe();
     const onFocus = () => void refresh();
     window.addEventListener("focus", onFocus);
     // Yeni anonim istekler Realtime ile gelmez (kimlik taşıyan satır yayınlanmaz); dakikada bir yoklanır.
@@ -52,9 +58,8 @@ export function BadgeProvider({ initial, userId, children }: { initial: BadgeCou
     return () => {
       window.clearInterval(timer);
       window.removeEventListener("focus", onFocus);
-      void supabase.removeChannel(channel);
     };
-  }, [userId, refresh]);
+  }, [refresh]);
 
   const value = useMemo(() => ({ ...counts, refresh }), [counts, refresh]);
   return <BadgeContext.Provider value={value}>{children}</BadgeContext.Provider>;
