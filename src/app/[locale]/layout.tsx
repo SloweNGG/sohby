@@ -25,6 +25,11 @@ export async function generateMetadata({
   return {
     title: { default: t("title"), template: "%s · Sohby" },
     description: t("description"),
+    // Site zaten koyu temalı. Dark Reader eklentisinin renkleri değiştirmesini
+    // (mercanı koyu kırmızıya çevirmesini) ve hydration uyarısını engeller.
+    // Değer boş olursa Next.js etiketi hiç basmaz; Dark Reader yalnızca
+    // etiketin varlığına bakar.
+    other: { "darkreader-lock": "true" },
   };
 }
 
