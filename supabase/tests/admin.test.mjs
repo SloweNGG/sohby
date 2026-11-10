@@ -34,6 +34,7 @@ const ADMIN_CALLS = [
   ["admin_list_pending_photos", []],
   ["admin_get_settings", []],
   ["admin_set_photo_auto_approve", [false]],
+  ["admin_set_chat_photos", [true]],
   ["admin_list_users", [null, null, 50, 0]],
   ["admin_set_user_status", () => [user, "suspended", "x", null]],
   ["admin_list_appeals", ["open"]],

@@ -9,6 +9,11 @@ verify_jwt = false
 # Kullanıcı belirteci fonksiyon içinde Supabase Auth ile doğrulanır.
 verify_jwt = false
 
+[functions.chat-photos]
+# İki giriş noktası, her biri kendi doğrulamasını yapar: gönderim (kullanıcı
+# belirteci Supabase Auth ile), silme görevi (veritabanında üretilen görev belirteci).
+verify_jwt = false
+
 [functions.age-documents]
 # Üç giriş noktası, her biri kendi doğrulamasını yapar: yükleme (kullanıcı
 # belirteci Supabase Auth ile), görüntüleme (60 saniye geçerli belirteç),

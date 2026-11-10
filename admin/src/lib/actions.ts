@@ -68,6 +68,10 @@ export async function setAutoApproveAction(form: FormData) {
   await rpc("admin_set_photo_auto_approve", { p_enabled: form.get("enabled") === "1" }, "/photos");
 }
 
+export async function setChatPhotosAction(form: FormData) {
+  await rpc("admin_set_chat_photos", { p_enabled: form.get("enabled") === "1" }, "/photos");
+}
+
 export async function reviewAppealAction(form: FormData) {
   await rpc("admin_review_appeal", { p_appeal: id.parse(form.get("id")), p_accept: form.get("accept") === "1" }, "/appeals");
 }

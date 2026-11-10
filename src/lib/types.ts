@@ -45,6 +45,7 @@ export type MyProfileRow = {
   show_read_receipts: boolean;
   accept_anonymous: boolean;
   preferred_locale: "tr" | "en";
+  photo_permission: PhotoPermission;
   photo_id: string | null;
   deleted_at: string | null;
   account_status: "active" | "age_verification_required" | "suspended" | "closed";
@@ -102,7 +103,7 @@ export type ProfileDetail = ProfileCard & {
 export type ConversationListItem = {
   id: string;
   other: ProfileCard;
-  last_message: { body: string; created_at: string; from_me: boolean } | null;
+  last_message: { body: string; kind?: MessageKind; created_at: string; from_me: boolean } | null;
   unread_count: number;
 };
 
@@ -110,6 +111,8 @@ export type ConversationHeader = {
   id: string;
   other: ProfileCard;
   can_send: boolean;
+  /** Fotoğraf düğmesinin durumu ('disabled' → düğme hiç görünmez). */
+  photo?: PhotoStatus;
   /** Karşı tarafın okuma zamanı — yalnızca iki taraf da okundu bilgisini açtıysa. */
   other_read_at?: string | null;
 };
@@ -147,13 +150,25 @@ export type DeclinedRequest =
       declined_at: string | null;
     };
 
+export type MessageKind = "text" | "photo";
+
 export type Message = {
   id: string;
   conversation_id: string;
   sender_id: string;
   body: string;
   created_at: string;
+  /** Eski kayıtlarda/Realtime'da yoksa 'text' sayılır. */
+  kind?: MessageKind;
+  photo_path?: string | null;
 };
+
+/** Kimler sana fotoğraf gönderebilir? */
+export const PHOTO_PERMISSIONS = ["accepted_chats", "nobody"] as const;
+export type PhotoPermission = (typeof PHOTO_PERMISSIONS)[number];
+
+/** private.chat_photo_status sonucu. */
+export type PhotoStatus = "ok" | "disabled" | "not_found" | "not_allowed" | "recipient_off" | "not_accepted" | "rate_limited";
 
 export type MessageRequestItem = {
   id: string;

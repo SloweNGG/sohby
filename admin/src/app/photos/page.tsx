@@ -1,6 +1,6 @@
 import { getT } from "@/lib/i18n";
 import { createClient } from "@/lib/supabase";
-import { reviewPhotoAction, setAutoApproveAction } from "@/lib/actions";
+import { reviewPhotoAction, setAutoApproveAction, setChatPhotosAction } from "@/lib/actions";
 import { AdminShell, btn, btnDanger, btnPrimary } from "@/components/shell";
 
 type Pending = { id: string; storage_path: string; created_at: string; user: { username: string } | null };
@@ -20,7 +20,9 @@ async function Photos() {
     supabase.rpc("admin_get_settings"),
     supabase.rpc("admin_list_pending_photos"),
   ]);
-  const auto = (settings as { photo_auto_approve: boolean } | null)?.photo_auto_approve ?? true;
+  const s = settings as { photo_auto_approve: boolean; chat_photos_enabled?: boolean } | null;
+  const auto = s?.photo_auto_approve ?? true;
+  const chatPhotos = s?.chat_photos_enabled ?? false;
   const rows = (pending ?? []) as Pending[];
   // Gizli bucket: yönetici oturumuyla 5 dakikalık imzalı bağlantı (storage RLS yöneticiye izin verir).
   const { data: signed } = rows.length
@@ -37,6 +39,13 @@ async function Photos() {
         <input type="hidden" name="enabled" value={auto ? "0" : "1"} />
         <button className={btn}>{auto ? t("photos.off") : t("photos.on")}</button>
         <p className="w-full text-sm text-muted">{t("photos.autoApproveHint")}</p>
+      </form>
+      <form action={setChatPhotosAction} className="mt-3 flex flex-wrap items-center gap-3 rounded-2xl border border-edge p-4">
+        <span className="font-semibold">{t("photos.chatPhotos")}:</span>
+        <span>{chatPhotos ? t("photos.on") : t("photos.off")}</span>
+        <input type="hidden" name="enabled" value={chatPhotos ? "0" : "1"} />
+        <button className={btn}>{chatPhotos ? t("photos.off") : t("photos.on")}</button>
+        <p className="w-full text-sm text-muted">{t("photos.chatPhotosHint")}</p>
       </form>
       {rows.length === 0 ? (
         <p className="mt-6 text-muted">{t("photos.empty")}</p>

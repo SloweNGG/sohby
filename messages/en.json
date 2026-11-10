@@ -417,7 +417,8 @@
     "deleteAllTitle": "Delete all chats?",
     "deleteAllBody": "Chats are only removed from your view; the other person can still see the messages. A chat reappears if a new message arrives.",
     "confirmDelete": "Delete",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "photoPreview": "Photo"
   },
   "chat": {
     "back": "Back to chats",
@@ -440,7 +441,14 @@
       "rate_limited": "You're sending messages too fast. Slow down a bit.",
       "not_allowed": "You can't send messages in this chat. If you haven't verified your email, please do so first.",
       "too_long": "Messages can be at most 2000 characters.",
-      "generic": "Couldn't send the message."
+      "generic": "Couldn't send the message.",
+      "too_large": "Photos can be up to 10 MB.",
+      "unsupported_type": "Only JPG, PNG and WEBP photos can be sent.",
+      "invalid_image": "This file couldn't be opened. Try another photo.",
+      "disabled": "Photos in chat are currently turned off.",
+      "recipient_off": "This person has turned off receiving photos.",
+      "not_accepted": "You can send photos once they've replied to you.",
+      "rate_limited_photo": "You've reached today's photo limit (50 a day)."
     },
     "read": "Read",
     "delete": "Delete chat",
@@ -448,7 +456,23 @@
     "deleteBody": "The chat is only removed from your view; the other person can still see the messages. It reappears if a new message arrives.",
     "confirmDelete": "Delete",
     "cancel": "Cancel",
-    "deleteError": "Couldn't delete the chat. Please try again."
+    "deleteError": "Couldn't delete the chat. Please try again.",
+    "photo": {
+      "button": "Send a photo",
+      "buttonLocked": "Can't send photos, see why",
+      "show": "Show photo",
+      "alt": "Received photo",
+      "hiddenAlt": "Blurred photo",
+      "mineAlt": "Photo you sent",
+      "loading": "Loading photo",
+      "unavailable": "Couldn't open photo",
+      "locked": {
+        "not_accepted": "You can send photos once they've replied to you.",
+        "recipient_off": "This person has turned off receiving photos.",
+        "rate_limited": "You've reached today's photo limit (50 a day). You can send more tomorrow.",
+        "not_allowed": "You can't send photos to this chat right now."
+      }
+    }
   },
   "requests": {
     "metaTitle": "Message requests",
@@ -691,7 +715,15 @@
     "undoDecline": "Undo decline",
     "undoDeclineError": "Couldn't undo the decline. Please try again.",
     "declinedFlirt": "Dating",
-    "viewProfile": "View profile"
+    "viewProfile": "View profile",
+    "photosTitle": "Who can send you photos?",
+    "photosHint": "Photos always arrive blurred and stay hidden until you open them.",
+    "photoPermission": {
+      "accepted_chats": "Anyone in chats I've accepted",
+      "accepted_chatsHint": "Chats you started, requests you accepted, or chats you've replied to.",
+      "nobody": "Nobody",
+      "nobodyHint": "No one can send you photos."
+    }
   },
   "anon": {
     "alias": "{adjective} {animal}",

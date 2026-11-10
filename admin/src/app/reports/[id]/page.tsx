@@ -7,7 +7,8 @@ import { AdminShell, Badge, btn, btnDanger, btnPrimary } from "@/components/shel
 type Brief = { id: string; username: string; display_name: string | null; account_status: string } | null;
 type Report = {
   id: string; reason: string; note: string | null; status: string; created_at: string; is_anonymous: boolean;
-  reporter: Brief; reported: Brief; messages: Array<{ sender_id: string; body: string; created_at: string }>;
+  reporter: Brief; reported: Brief;
+  messages: Array<{ sender_id: string; body: string; created_at: string; kind?: "text" | "photo"; photo_path?: string | null }>;
 };
 
 export default async function ReportPage({ params }: { params: Promise<{ id: string }> }) {
@@ -26,6 +27,13 @@ async function ReportDetail({ id }: { id: string }) {
   const { data } = await supabase.rpc("admin_get_report", { p_report: id });
   const r = data as Report | null;
   if (!r) return <p className="text-muted">{t("common.none")}</p>;
+  // Sohbet fotoğrafları: gizli bucket'tan 5 dakikalık imzalı bağlantı. Storage RLS,
+  // yöneticiye yalnızca bu sohbeti az önce (kayda geçerek) açtıysa izin verir.
+  const photoPaths = r.messages.filter((m) => m.kind === "photo" && m.photo_path).map((m) => m.photo_path as string);
+  const { data: signed } = photoPaths.length
+    ? await supabase.storage.from("chat-photos").createSignedUrls(photoPaths, 300)
+    : { data: [] };
+  const photoUrl = new Map((signed ?? []).filter((x) => x.signedUrl && !x.error).map((x) => [x.path, x.signedUrl]));
   const who = (senderId: string) =>
     senderId === r.reported?.id ? `@${r.reported.username}` : senderId === r.reporter?.id ? `@${r.reporter.username}` : senderId;
 
@@ -52,7 +60,22 @@ async function ReportDetail({ id }: { id: string }) {
             {r.messages.map((m, i) => (
               <li key={i}>
                 <span className="text-muted">{new Date(m.created_at).toLocaleString()} · {who(m.sender_id)}:</span>{" "}
-                <span className="whitespace-pre-wrap">{m.body}</span>
+                {m.kind === "photo" ? (
+                  m.photo_path && photoUrl.get(m.photo_path) ? (
+                    <a href={photoUrl.get(m.photo_path)!} target="_blank" rel="noopener noreferrer" className="mt-1 block w-fit">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={photoUrl.get(m.photo_path)!}
+                        alt={`${t("reports.photo")} · ${who(m.sender_id)}`}
+                        className="max-h-56 max-w-[240px] rounded-xl border border-edge object-cover"
+                      />
+                    </a>
+                  ) : (
+                    <span className="text-muted">[{t("reports.photoUnavailable")}]</span>
+                  )
+                ) : (
+                  <span className="whitespace-pre-wrap">{m.body}</span>
+                )}
               </li>
             ))}
           </ol>

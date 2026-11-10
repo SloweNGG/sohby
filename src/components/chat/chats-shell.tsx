@@ -256,7 +256,9 @@ function ConversationList({ query }: { query: string }) {
                 </span>
                 <span className="mt-0.5 flex items-center justify-between gap-2">
                   <span className={cn("truncate text-[14px]", unread ? "font-semibold text-moon" : "text-muted")}>
-                    {c.last_message ? (c.last_message.from_me ? `${t("you")} ${c.last_message.body}` : c.last_message.body) : ""}
+                    {c.last_message
+                      ? `${c.last_message.from_me ? `${t("you")} ` : ""}${c.last_message.kind === "photo" ? t("photoPreview") : c.last_message.body}`
+                      : ""}
                   </span>
                   {unread && (
                     <span

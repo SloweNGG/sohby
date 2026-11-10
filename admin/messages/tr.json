@@ -48,7 +48,9 @@
     "dismiss": "Geçersiz",
     "suspend7": "7 gün askıya al",
     "close": "Hesabı kapat",
-    "viewLogged": "Bu sohbet görüntülemesi kayda yazıldı."
+    "viewLogged": "Bu sohbet görüntülemesi kayda yazıldı.",
+    "photo": "Fotoğraf",
+    "photoUnavailable": "Fotoğraf açılamadı"
   },
   "reasons": {
     "spam": "Spam",
@@ -74,7 +76,9 @@
     "off": "Kapalı",
     "approve": "Onayla",
     "reject": "Reddet",
-    "empty": "Onay bekleyen fotoğraf yok."
+    "empty": "Onay bekleyen fotoğraf yok.",
+    "chatPhotos": "Sohbette fotoğraf",
+    "chatPhotosHint": "Açıkken kullanıcılar kabul edilmiş sohbetlerde fotoğraf gönderebilir. Kapalıyken fotoğraf düğmesi görünmez ve sunucu yüklemeyi reddeder."
   },
   "users": {
     "title": "Kullanıcılar",

@@ -25,9 +25,10 @@ export default async function SettingsPage({ params }: PageProps<"/[locale]/sett
   }
   const { profile, private: priv } = account;
   const supabase = await createClient();
-  const [{ data: blocked }, { data: declined }] = await Promise.all([
+  const [{ data: blocked }, { data: declined }, { data: photosEnabled }] = await Promise.all([
     supabase.rpc("get_blocked_users"),
     supabase.rpc("get_declined_requests"),
+    supabase.rpc("chat_photos_enabled"),
   ]);
 
   return (
@@ -53,6 +54,7 @@ export default async function SettingsPage({ params }: PageProps<"/[locale]/sett
       <SettingsForm
         flirtSection={<FlirtSettings enabled={profile.looking_for.includes("flirt")} />}
         blocked={(blocked ?? []) as BlockedUser[]}
+        photosEnabled={photosEnabled === true}
         declinedSection={<DeclinedRequests initial={(declined ?? []) as DeclinedRequest[]} />}
         initial={{
           displayName: profile.display_name ?? profile.username,
@@ -65,6 +67,7 @@ export default async function SettingsPage({ params }: PageProps<"/[locale]/sett
           showOnline: profile.show_online,
           showReadReceipts: profile.show_read_receipts,
           acceptAnonymous: profile.accept_anonymous,
+          photoPermission: profile.photo_permission ?? "accepted_chats",
           locale: profile.preferred_locale,
         }}
       />

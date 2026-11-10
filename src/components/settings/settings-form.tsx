@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import { deleteAccountAction, saveSettingsAction, unblockUserAction } from "@/lib/settings/actions";
 import { unblockAnonymousAction } from "@/lib/anon/actions";
 import { useAlias } from "@/components/anon/alias";
-import { MESSAGE_POLICIES, type BlockedUser, type MessagePolicy } from "@/lib/types";
+import { MESSAGE_POLICIES, PHOTO_PERMISSIONS, type BlockedUser, type MessagePolicy, type PhotoPermission } from "@/lib/types";
 import type { Locale } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { FormAlert } from "@/components/ui/field";
@@ -25,6 +25,7 @@ export type SettingsInitial = {
   showOnline: boolean;
   showReadReceipts: boolean;
   acceptAnonymous: boolean;
+  photoPermission: PhotoPermission;
   locale: Locale;
 };
 
@@ -43,9 +44,12 @@ export function SettingsForm({
   blocked,
   flirtSection,
   declinedSection,
+  photosEnabled = false,
 }: {
   initial: SettingsInitial;
   blocked: BlockedUser[];
+  /** Sohbette fotoğraf özelliği açık mı? Kapalıyken seçenek gösterilmez. */
+  photosEnabled?: boolean;
   flirtSection?: React.ReactNode;
   declinedSection?: React.ReactNode;
 }) {
@@ -123,6 +127,33 @@ export function SettingsForm({
             ))}
           </div>
         </section>
+
+        {photosEnabled && (
+          <section>
+            <h2 className="text-xl">{t("photosTitle")}</h2>
+            <p className="mb-4 mt-1 text-sm text-muted">{t("photosHint")}</p>
+            <div className="space-y-2.5" role="radiogroup" aria-label={t("photosTitle")}>
+              {PHOTO_PERMISSIONS.map((p) => (
+                <label key={p} className={card(v.photoPermission === p)}>
+                  <input
+                    type="radio"
+                    name="photoPermission"
+                    className="sr-only"
+                    checked={v.photoPermission === p}
+                    onChange={() => set("photoPermission", p)}
+                  />
+                  <span className="mt-0.5">
+                    <RadioDot checked={v.photoPermission === p} />
+                  </span>
+                  <span>
+                    <span className="block font-semibold">{t(`photoPermission.${p}`)}</span>
+                    <span className="block text-[13px] text-muted">{t(`photoPermission.${p}Hint`)}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section>
           <h2 className="text-xl">{t("visibleTitle")}</h2>
