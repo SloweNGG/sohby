@@ -1,9 +1,13 @@
+import path from "node:path";
 import type { NextConfig } from "next";
 import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   turbopack: {
+    // Panel ayrı bir uygulama: kök kendi klasörü. Belirtilmezse Turbopack üst
+    // klasördeki ana uygulamayı kök sanıp onun src/instrumentation.ts dosyasını yükler.
+    root: path.resolve(__dirname),
     rules: { "*.css": { loaders: ["@tailwindcss/turbopack"], as: "*.css" } },
   },
   async headers() {
