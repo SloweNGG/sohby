@@ -130,10 +130,8 @@
   "legal": {
     "termsTitle": "Terms of use",
     "kvkkTitle": "Privacy notice (KVKK)",
-    "draft": "This text is being prepared. A legally reviewed version will be added here before launch.",
     "privacyPolicyTitle": "Privacy policy",
-    "contactTitle": "Contact",
-    "contactDraft": "Contact details will be available here soon."
+    "contactTitle": "Contact"
   },
   "lookingFor": {
     "chat": "Chat",
@@ -957,6 +955,293 @@
       "showOutsideHint": "If off, only students on campus see you in Discover.",
       "saved": "Saved.",
       "error": "Could not save. Try again."
+    }
+  },
+  "legalDocs": {
+    "updated": "Last updated: 11 November 2026",
+    "nav": {
+      "terms": "Terms of use",
+      "kvkk": "Personal data notice (KVKK)",
+      "privacy": "Privacy policy",
+      "contact": "Contact"
+    },
+    "terms": {
+      "title": "Terms of Use",
+      "intro": "These terms explain the rules for using Sohby (sohby.app and the app). By creating an account you accept these terms. The service is provided by wawedev.",
+      "sections": [
+        {
+          "h": "1. What is Sohby?",
+          "p": [
+            "Sohby is a chat and meeting service where people create profiles, discover each other and message one to one for friendship, activity partners and, optionally, dating. The Campus section is only open to students verified with a student ID.",
+            "The service is currently free. If paid features are added in the future, we will announce them in advance and ask for your consent."
+          ]
+        },
+        {
+          "h": "2. Who can use it?",
+          "p": [
+            "Only people aged 18 or over may use Sohby. We ask for your date of birth at sign-up; accounts found to belong to anyone under 18 are closed and their data deleted.",
+            "You may not create a new account if you are legally barred from using such a service or if your account was permanently closed for breaking the rules."
+          ]
+        },
+        {
+          "h": "3. Your account",
+          "p": [
+            "The information you give must be accurate. You may not create an account on someone else's behalf, with a fake identity or with another person's photos.",
+            "You are responsible for keeping your password safe. If you think your account is being used without permission, contact us immediately.",
+            "You can delete your account at any time in Settings > Account."
+          ]
+        },
+        {
+          "h": "4. Rules of conduct",
+          "p": [
+            "To keep Sohby safe for everyone, the following are not allowed:"
+          ],
+          "items": [
+            "Harassment, threats, bullying, persistent unwanted messages",
+            "Hate speech; demeaning people for their race, ethnicity, religion, gender, sexual orientation, disability or similar characteristics",
+            "Obscene, sexual or violent photos and messages; sending sexual content without the other person's consent",
+            "Any sexual content involving people under 18 (reported to the authorities)",
+            "Fraud, asking for money or gifts, investment and crypto scams, asking for IBAN or bank details",
+            "Advertising, spam, bulk messages, accounts that redirect people to other platforms",
+            "Sharing other people's personal information (address, phone, photos etc.) without permission",
+            "Trying to force someone to reveal their identity in anonymous chat or abusing anonymity",
+            "Uploading a fake student ID or fake documents",
+            "Trying to bypass the service's security, access other people's accounts or scrape data with automated tools"
+          ]
+        },
+        {
+          "h": "5. Your content",
+          "p": [
+            "Your photos, messages and profile information belong to you. By uploading them you allow us to use them only to provide the service (for example, to show your profile to others or deliver your message). We never use your content for advertising or any other purpose, and we never sell it.",
+            "You must own the content you upload or have the right to share it.",
+            "Location and device data (EXIF) inside your photos is removed before saving."
+          ]
+        },
+        {
+          "h": "6. Safety and moderation",
+          "p": [
+            "Profile photos may be reviewed. We may remove content that breaks the rules and warn, temporarily suspend or permanently close accounts. Suspended or closed accounts can use the appeal form in the app.",
+            "You can block and report anyone who makes you uncomfortable at any time. Reports are reviewed by our team; during a review the relevant chat may be viewed, and every view is logged.",
+            "Accounts whose age is in doubt may be asked for an age verification document."
+          ]
+        },
+        {
+          "h": "7. Meeting in person",
+          "p": [
+            "Sohby cannot fully guarantee users' identities or behaviour. If you decide to meet someone, meet in a busy public place, tell someone you trust where you will be, and never share money or personal documents. If you feel in danger, call the emergency services (112 in Türkiye)."
+          ]
+        },
+        {
+          "h": "8. Campus",
+          "p": [
+            "Only enrolled students may join the Campus section. Student verification is valid for 1 year from approval. Uploading a fake card or someone else's card will result in your account being closed."
+          ]
+        },
+        {
+          "h": "9. Limits of liability",
+          "p": [
+            "We provide the service as it is, without guaranteeing that it will always be available; it may sometimes be unavailable due to maintenance or technical issues. To the extent permitted by law, we are not responsible for how users behave towards each other, but we take the necessary measures against rule violations reported to us. This clause does not affect any liability that cannot be limited by law."
+          ]
+        },
+        {
+          "h": "10. Changes",
+          "p": [
+            "We may update these terms. We will announce important changes in the app or by email before they take effect. Continuing to use the service after a change means you accept the new terms."
+          ]
+        },
+        {
+          "h": "11. Governing law and contact",
+          "p": [
+            "These terms are governed by the laws of the Republic of Türkiye. Your statutory rights as a consumer (including applying to consumer arbitration committees and consumer courts) are reserved.",
+            "Questions: support@wawedev.com"
+          ]
+        }
+      ]
+    },
+    "kvkk": {
+      "title": "Personal Data Notice (KVKK)",
+      "intro": "Under Article 10 of the Turkish Personal Data Protection Law No. 6698 (KVKK), this notice explains how your personal data is processed when you use Sohby.",
+      "sections": [
+        {
+          "h": "1. Data controller",
+          "p": [
+            "Data controller: wawedev. Address: [ADDRESS — to be completed before launch]. Email: support@wawedev.com"
+          ]
+        },
+        {
+          "h": "2. Personal data we process",
+          "items": [
+            "Identity: display name, username, date of birth, gender",
+            "Contact: email address",
+            "Profile: photos, about text, school or job, hobbies, languages spoken, what you are looking for, country, city and (if you wish) neighbourhood",
+            "Messaging: messages, chat photos, message requests, anonymous chats",
+            "Security and activity: block and report records, session data, IP address and browser information at sign-in, last activity time",
+            "Verification: age verification document (only if requested) and student ID photo for Campus; we recommend covering any national ID number on these documents",
+            "Special category data: if you choose Dating, the gender you are interested in (data concerning sexual life). This is processed only with your explicit consent."
+          ]
+        },
+        {
+          "h": "3. Purposes",
+          "items": [
+            "Creating your account and providing the service (Discover, Campus, matching, messaging)",
+            "Enforcing the 18+ age limit and verifying age where necessary",
+            "Verifying that you are a student for Campus",
+            "Preventing fake accounts, spam, fraud and abuse; reviewing reports",
+            "Meeting legal obligations and responding to requests from competent authorities",
+            "Answering your questions and requests",
+            "Fixing errors and improving the service (no personal data is added to error logs)"
+          ]
+        },
+        {
+          "h": "4. Legal grounds",
+          "p": [
+            "Your personal data is processed under KVKK Art. 5/2 on the following grounds: establishing and performing the service contract (c), complying with our legal obligations (ç), establishing, exercising or protecting a right (e), and our legitimate interest provided it does not harm your fundamental rights and freedoms (f) — for example, security and abuse prevention.",
+            "For Dating, the gender you are interested in is processed under KVKK Art. 6 only on the basis of your explicit consent. You can withdraw your consent at any time by turning Dating off in Settings; this information is deleted immediately."
+          ]
+        },
+        {
+          "h": "5. How we collect data",
+          "p": [
+            "Data is collected electronically through sign-up, onboarding, profile and settings forms and while you use the app. If you sign in with Google, your email address is obtained from Google. Session, language and time zone are kept in strictly necessary cookies. The \"Find my location\" feature estimates your country and city from your connection; the estimate is not stored and GPS is never used."
+          ]
+        },
+        {
+          "h": "6. Who we share it with",
+          "p": [
+            "Your profile information is shown to other users according to your privacy settings. Only the other person in a chat sees your messages; during a report review, authorised team members may view them, and this is logged.",
+            "To provide the service, we transfer your data to the following service providers who process it on our behalf:"
+          ],
+          "items": [
+            "Supabase: database, authentication and file storage (servers in the European Union, Ireland)",
+            "Cloudflare: hosting, security and bot protection",
+            "Resend: sending account emails",
+            "Sentry: error tracking (no personal data is sent)",
+            "Google: only if you choose to sign in with Google"
+          ],
+          "p2": [
+            "Some of these providers are located abroad, so your data is transferred outside Türkiye. These transfers are carried out in accordance with KVKK Art. 9 with appropriate safeguards such as standard contracts. Data may also be disclosed to competent public authorities when legally required. We never sell your data or share it for advertising."
+          ]
+        },
+        {
+          "h": "7. Your rights and how to apply",
+          "p": [
+            "Under KVKK Art. 11 you have the right to:"
+          ],
+          "items": [
+            "Learn whether your personal data is processed and request information about it",
+            "Learn the purpose of processing and whether it is used accordingly",
+            "Know the third parties in Türkiye or abroad to whom it is transferred",
+            "Request correction if it is incomplete or inaccurate",
+            "Request deletion or destruction under the conditions of KVKK Art. 7",
+            "Request that corrections and deletions be notified to third parties to whom the data was transferred",
+            "Object to a result against you arising solely from automated analysis",
+            "Claim compensation if you suffer damage due to unlawful processing"
+          ],
+          "p2": [
+            "You can send your request from the email address registered with Sohby to support@wawedev.com, or in writing to [ADDRESS — to be completed before launch]. Your request will be answered free of charge within 30 days at the latest. If your request is rejected, the answer is insufficient or no answer is given in time, you may complain to the Turkish Personal Data Protection Board."
+          ]
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Privacy Policy",
+      "intro": "Sohby is built on trust. This policy explains in plain language how we collect, show, protect and keep your data. For legal details, see the personal data notice (KVKK).",
+      "sections": [
+        {
+          "h": "What others see",
+          "p": [
+            "Your profile is shown to other users according to your privacy settings. You can hide your age, neighbourhood, gender and online status, or choose not to appear in Discover at all. On Campus, showing your university and appearing in Discover outside Campus are also your choice.",
+            "Your dating preference and the gender you are interested in are never shown to anyone; they are only used to find people who match you."
+          ]
+        },
+        {
+          "h": "Location",
+          "p": [
+            "We only use your country, city and, if you wish, neighbourhood. Your exact location or GPS data is never collected. The \"Find my location\" feature estimates your approximate country and city from your internet connection; the estimate is not stored and only fills in the form."
+          ]
+        },
+        {
+          "h": "Photos and messages",
+          "items": [
+            "Photos are kept in private storage and shown only to people allowed to see them, via short-lived links.",
+            "Location and device data (EXIF) inside your photos is removed before saving.",
+            "Incoming photos in chats arrive blurred by default.",
+            "Only the two people in a chat can read the messages. During a report review, authorised team members may view the relevant chat; every view is written to a log that cannot be deleted.",
+            "In anonymous chat, your real identity is not shown to the other person unless you choose to reveal it.",
+            "Someone you block cannot see you anywhere or message you."
+          ]
+        },
+        {
+          "h": "Verification documents",
+          "p": [
+            "Age verification documents and student IDs are encrypted and kept in separate private storage. Only authorised team members can view them, through logged short-lived links. Student IDs are deleted automatically within 7 days after review; age documents 30 days after upload."
+          ]
+        },
+        {
+          "h": "How long we keep data",
+          "items": [
+            "Profile and account data: while your account is open",
+            "If you delete your account: it is closed immediately and nobody can see it; your data is permanently deleted after 90 days",
+            "Messages: if both people delete a chat, it is permanently deleted after 90 days; if only you delete it, it stays in the other person's view",
+            "Chats and accounts involved in a report: until the report is resolved",
+            "Dating interest: deleted as soon as you withdraw consent",
+            "Student ID: within 7 days after review, or 30 days if not reviewed",
+            "Age verification document: 30 days after upload",
+            "Accounts found to belong to someone under 18: within 24 hours at the latest",
+            "Administrator action logs: kept for security and audit purposes and cannot be deleted"
+          ]
+        },
+        {
+          "h": "Cookies",
+          "p": [
+            "We only use cookies that are strictly necessary for the service: keeping you signed in, your language, your time zone and bot protection. We do not use advertising or tracking cookies, so we do not ask for cookie consent. You can delete cookies in your browser; this will sign you out."
+          ]
+        },
+        {
+          "h": "Security",
+          "p": [
+            "Every table in our database has access rules; each user can only see the data they are allowed to see. Connections are encrypted. Administrator actions are logged. No system is perfect; if a security breach occurs, we will inform you and the relevant authorities as required by law."
+          ]
+        },
+        {
+          "h": "Users in the European Union",
+          "p": [
+            "If you live in the European Union, you also have rights under the General Data Protection Regulation (GDPR): to access, correct and delete your data, restrict or object to processing, receive your data in a portable format and withdraw consent. You may also complain to the data protection authority in your country. Your data is processed on the legal bases of contract performance, legal obligation, legitimate interest and (for Dating) explicit consent."
+          ]
+        },
+        {
+          "h": "Changes and contact",
+          "p": [
+            "We may update this policy; we will announce important changes in advance.",
+            "Questions and requests: support@wawedev.com"
+          ]
+        }
+      ]
+    },
+    "contact": {
+      "title": "Contact",
+      "intro": "Write to us with questions, suggestions or to report a problem.",
+      "sections": [
+        {
+          "h": "Support",
+          "p": [
+            "Email: support@wawedev.com",
+            "The fastest way to report a user is the \"Report\" button on their profile or in the chat."
+          ]
+        },
+        {
+          "h": "Personal data requests (KVKK)",
+          "p": [
+            "You can send requests about your personal data from the email address registered with Sohby to support@wawedev.com. We answer within 30 days at the latest."
+          ]
+        },
+        {
+          "h": "Data controller",
+          "p": [
+            "wawedev — [ADDRESS — to be completed before launch]"
+          ]
+        }
+      ]
     }
   },
   "countries": {

@@ -5,12 +5,11 @@ import { LegalPage } from "@/components/legal-page";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/legal/terms">): Promise<Metadata> {
   const locale = await resolveLocale(params);
-  const t = await getTranslations({ locale, namespace: "legal" });
-  return { title: t("termsTitle") };
+  const t = await getTranslations({ locale, namespace: "legalDocs" });
+  return { title: t("terms.title") };
 }
 
 export default async function Page({ params }: PageProps<"/[locale]/legal/terms">) {
-  const locale = await resolveLocale(params);
-  const t = await getTranslations({ locale, namespace: "legal" });
-  return <LegalPage title={t("termsTitle")} body={t("draft")} />;
+  await resolveLocale(params);
+  return <LegalPage doc="terms" />;
 }

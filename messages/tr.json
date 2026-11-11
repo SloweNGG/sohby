@@ -130,10 +130,8 @@
   "legal": {
     "termsTitle": "Kullanım koşulları",
     "kvkkTitle": "KVKK aydınlatma metni",
-    "draft": "Bu metin hazırlanıyor. Yayına almadan önce hukuki olarak onaylanmış metin buraya eklenecek.",
     "privacyPolicyTitle": "Gizlilik politikası",
-    "contactTitle": "İletişim",
-    "contactDraft": "İletişim bilgileri yakında burada olacak."
+    "contactTitle": "İletişim"
   },
   "lookingFor": {
     "chat": "Sohbet",
@@ -957,6 +955,293 @@
       "showOutsideHint": "Kapalıysa yalnızca kampüsteki öğrenciler seni Keşfet'te görür.",
       "saved": "Kaydedildi.",
       "error": "Kaydedilemedi. Tekrar dene."
+    }
+  },
+  "legalDocs": {
+    "updated": "Son güncelleme: 11 Kasım 2026",
+    "nav": {
+      "terms": "Kullanım koşulları",
+      "kvkk": "KVKK aydınlatma metni",
+      "privacy": "Gizlilik politikası",
+      "contact": "İletişim"
+    },
+    "terms": {
+      "title": "Kullanım Koşulları",
+      "intro": "Bu koşullar, Sohby'yi (sohby.app ve uygulama) kullanırken geçerli kuralları anlatır. Hesap oluşturarak bu koşulları kabul etmiş olursun. Hizmeti wawedev sunar.",
+      "sections": [
+        {
+          "h": "1. Sohby nedir?",
+          "p": [
+            "Sohby; insanların profil oluşturup birbirini keşfettiği, arkadaşlık, hobi arkadaşlığı ve isteğe bağlı olarak flört amacıyla birebir mesajlaştığı bir sohbet ve tanışma hizmetidir. Kampüs bölümü yalnızca öğrenci kartıyla doğrulanmış öğrencilere açıktır.",
+            "Hizmet şu anda ücretsizdir. İleride ücretli özellikler eklenirse önceden bildirilir ve ayrıca onayın alınır."
+          ]
+        },
+        {
+          "h": "2. Kimler kullanabilir?",
+          "p": [
+            "Sohby'yi yalnızca 18 yaşını doldurmuş kişiler kullanabilir. Kayıtta doğum tarihin sorulur; 18 yaşından küçük olduğu anlaşılan hesaplar kapatılır ve verileri silinir.",
+            "Yasal olarak bir hizmeti kullanman yasaklanmışsa ya da daha önce kurallara aykırılık nedeniyle hesabın kalıcı olarak kapatıldıysa yeni hesap açamazsın."
+          ]
+        },
+        {
+          "h": "3. Hesabın",
+          "p": [
+            "Kayıtta verdiğin bilgilerin doğru olması gerekir. Başkası adına, sahte kimlikle ya da başkasının fotoğrafıyla hesap açamazsın.",
+            "Şifrenin güvenliğinden sen sorumlusun. Hesabının izinsiz kullanıldığını düşünürsen bize hemen yaz.",
+            "Hesabını istediğin zaman Ayarlar > Hesap bölümünden silebilirsin."
+          ]
+        },
+        {
+          "h": "4. Davranış kuralları",
+          "p": [
+            "Sohby'nin herkes için güvenli kalması için aşağıdakiler yasaktır:"
+          ],
+          "items": [
+            "Taciz, tehdit, zorbalık, ısrarlı ve istenmeyen mesajlar",
+            "Nefret söylemi; ırk, etnik köken, din, cinsiyet, cinsel yönelim, engellilik gibi özelliklere dayalı aşağılama",
+            "Müstehcen, cinsel içerikli ya da şiddet içeren fotoğraf ve mesajlar; karşı tarafın rızası olmadan cinsel içerik göndermek",
+            "18 yaşından küçüklerle ilgili her türlü cinsel içerik (yetkili makamlara bildirilir)",
+            "Dolandırıcılık, para ya da hediye istemek, yatırım ve kripto tuzakları, IBAN ve banka bilgisi istemek",
+            "Reklam, spam, aynı mesajı toplu gönderme, başka platformlara yönlendirme amaçlı hesaplar",
+            "Başkasının kişisel bilgilerini (adres, telefon, fotoğraf vb.) izinsiz paylaşmak",
+            "Anonim sohbette karşı tarafın kimliğini zorla öğrenmeye çalışmak ya da anonimliği kötüye kullanmak",
+            "Sahte öğrenci kartı ya da sahte belge yüklemek",
+            "Hizmetin güvenliğini aşmaya, başkalarının hesaplarına erişmeye, otomatik araçlarla veri toplamaya çalışmak"
+          ]
+        },
+        {
+          "h": "5. Paylaştığın içerik",
+          "p": [
+            "Fotoğrafların, mesajların ve profil bilgilerin sana aittir. Bunları yükleyerek, yalnızca hizmeti sunmak (ör. profilini başkalarına göstermek, mesajını alıcıya iletmek) için kullanmamıza izin vermiş olursun. İçeriğini reklam ya da başka bir amaçla kullanmayız, satmayız.",
+            "Yüklediğin içeriğin sana ait olduğundan ya da paylaşma hakkın olduğundan emin olmalısın.",
+            "Fotoğrafların içindeki konum ve cihaz bilgileri (EXIF) kaydetmeden önce silinir."
+          ]
+        },
+        {
+          "h": "6. Güvenlik ve moderasyon",
+          "p": [
+            "Profil fotoğrafları onaydan geçebilir. Kuralları ihlal eden içerikleri kaldırabilir, hesapları uyarabilir, geçici olarak askıya alabilir ya da kalıcı olarak kapatabiliriz. Askıya alınan ya da kapatılan hesaplar uygulama içindeki itiraz formunu kullanabilir.",
+            "Rahatsız olduğun birini istediğin zaman engelleyebilir ve şikâyet edebilirsin. Şikâyetler ekibimiz tarafından incelenir; inceleme sırasında ilgili sohbet görüntülenebilir ve her görüntüleme kayıt altına alınır.",
+            "Yaşından şüphe edilen hesaplardan yaş doğrulama belgesi istenebilir."
+          ]
+        },
+        {
+          "h": "7. Yüz yüze buluşurken",
+          "p": [
+            "Sohby, kullanıcıların kimliğini ve davranışlarını tamamen garanti edemez. Biriyle buluşmaya karar verirsen kalabalık ve herkese açık bir yerde buluş, bir yakınına nerede olacağını söyle, para ya da kişisel belge paylaşma. Tehlikede olduğunu düşünürsen 112'yi ara."
+          ]
+        },
+        {
+          "h": "8. Kampüs",
+          "p": [
+            "Kampüs bölümüne yalnızca kayıtlı öğrenciler katılabilir. Öğrenci doğrulaması onaydan itibaren 1 yıl geçerlidir. Sahte ya da başkasına ait kart yüklemek hesabın kapatılmasına yol açar."
+          ]
+        },
+        {
+          "h": "9. Sorumluluğun sınırları",
+          "p": [
+            "Hizmeti olduğu gibi ve kesintisiz olacağını garanti etmeden sunarız; bakım ya da teknik sorunlar nedeniyle zaman zaman erişilemeyebilir. Kullanıcıların birbirine karşı davranışlarından, yasaların izin verdiği ölçüde sorumlu değiliz; ancak bize bildirilen kural ihlallerine karşı gerekli önlemleri alırız. Bu madde, yasaların sınırlanmasına izin vermediği sorumlulukları etkilemez."
+          ]
+        },
+        {
+          "h": "10. Değişiklikler",
+          "p": [
+            "Bu koşulları güncelleyebiliriz. Önemli değişiklikleri yürürlüğe girmeden önce uygulama içinden ya da e-postayla duyururuz. Değişiklikten sonra hizmeti kullanmaya devam etmen, yeni koşulları kabul ettiğin anlamına gelir."
+          ]
+        },
+        {
+          "h": "11. Uygulanacak hukuk ve iletişim",
+          "p": [
+            "Bu koşullara Türkiye Cumhuriyeti hukuku uygulanır. Tüketici olarak sahip olduğun yasal haklar (tüketici hakem heyetlerine ve tüketici mahkemelerine başvuru dahil) saklıdır.",
+            "Sorular için: support@wawedev.com"
+          ]
+        }
+      ]
+    },
+    "kvkk": {
+      "title": "KVKK Aydınlatma Metni",
+      "intro": "6698 sayılı Kişisel Verilerin Korunması Kanunu'nun (KVKK) 10. maddesi uyarınca, Sohby'yi kullanırken kişisel verilerinin nasıl işlendiğini bu metinde açıklıyoruz.",
+      "sections": [
+        {
+          "h": "1. Veri sorumlusu",
+          "p": [
+            "Veri sorumlusu: wawedev. Adres: [ADRES — yayına çıkmadan önce doldurulacak]. E-posta: support@wawedev.com"
+          ]
+        },
+        {
+          "h": "2. İşlenen kişisel veriler",
+          "items": [
+            "Kimlik: görünen ad, kullanıcı adı, doğum tarihi, cinsiyet",
+            "İletişim: e-posta adresi",
+            "Profil: fotoğraflar, hakkında yazısı, okul ya da iş, hobiler, konuşulan diller, ne aradığın, ülke, şehir ve (istersen) semt",
+            "Mesajlaşma: mesajlar, sohbet fotoğrafları, mesaj istekleri, anonim sohbetler",
+            "Güvenlik ve işlem: engelleme ve şikâyet kayıtları, oturum bilgileri, giriş sırasında IP adresi ve tarayıcı bilgisi, son etkinlik zamanı",
+            "Doğrulama: yaş doğrulama belgesi (yalnızca istenirse) ve Kampüs için öğrenci kartı fotoğrafı; bu belgelerde yer alabilecek T.C. kimlik numarasını kapatmanı öneririz",
+            "Özel nitelikli kişisel veri: Flört seçeneğini seçersen ilgi duyduğun cinsiyet (cinsel hayata ilişkin veri). Bu veri yalnızca açık rızanla işlenir."
+          ]
+        },
+        {
+          "h": "3. İşleme amaçları",
+          "items": [
+            "Hesabını oluşturmak ve hizmeti sunmak (Keşfet, Kampüs, eşleşme, mesajlaşma)",
+            "18 yaş sınırını uygulamak ve gerektiğinde yaşını doğrulamak",
+            "Kampüs için öğrenci olduğunu doğrulamak",
+            "Sahte hesap, spam, dolandırıcılık ve kötüye kullanımı önlemek; şikâyetleri incelemek",
+            "Yasal yükümlülükleri yerine getirmek ve yetkili makamların taleplerini karşılamak",
+            "Sorularına ve taleplerine yanıt vermek",
+            "Hataları gidermek ve hizmeti iyileştirmek (hata kayıtlarına kişisel veri eklenmez)"
+          ]
+        },
+        {
+          "h": "4. Hukuki sebepler",
+          "p": [
+            "Kişisel verilerin KVKK m. 5/2 uyarınca şu sebeplere dayanılarak işlenir: hizmet sözleşmesinin kurulması ve ifası (c), hukuki yükümlülüklerimizin yerine getirilmesi (ç), bir hakkın tesisi, kullanılması veya korunması (e) ve temel hak ve özgürlüklerine zarar vermemek kaydıyla meşru menfaatimiz (f) — örneğin güvenlik ve kötüye kullanımın önlenmesi.",
+            "Flört için ilgi duyduğun cinsiyet KVKK m. 6 uyarınca yalnızca açık rızana dayanılarak işlenir. Rızanı istediğin zaman Ayarlar'dan Flört'ü kapatarak geri çekebilirsin; bu bilgi o anda silinir."
+          ]
+        },
+        {
+          "h": "5. Toplama yöntemi",
+          "p": [
+            "Veriler; kayıt, başlangıç soruları, profil ve ayarlar formları ile uygulamayı kullanman sırasında elektronik ortamda toplanır. Google ile giriş yaparsan Google'dan e-posta adresin alınır. Oturum, dil ve saat dilimi gibi bilgiler zorunlu çerezlerle tutulur. \"Konumumu bul\" özelliği bağlantına göre tahmini ülke ve şehir verir; bu tahmin kaydedilmez ve GPS hiçbir zaman kullanılmaz."
+          ]
+        },
+        {
+          "h": "6. Kimlere aktarılır?",
+          "p": [
+            "Profil bilgilerin, gizlilik ayarlarına uygun şekilde diğer kullanıcılara gösterilir. Mesajlarını yalnızca sohbetteki diğer kişi görür; şikâyet incelemesinde yetkili ekip üyeleri kayıt altında görüntüleyebilir.",
+            "Hizmeti sunabilmek için verilerini, bizim adımıza işleyen şu hizmet sağlayıcılara aktarırız:"
+          ],
+          "items": [
+            "Supabase: veritabanı, kimlik doğrulama ve dosya depolama (sunucular Avrupa Birliği'nde, İrlanda)",
+            "Cloudflare: barındırma, güvenlik ve robot koruması",
+            "Resend: hesap e-postalarının gönderimi",
+            "Sentry: hata takibi (kişisel veri gönderilmez)",
+            "Google: yalnızca Google ile giriş yapmayı seçersen"
+          ],
+          "p2": [
+            "Bu sağlayıcıların bir kısmı yurt dışında bulunduğundan verilerin yurt dışına aktarılır. Bu aktarım KVKK m. 9'a uygun olarak, standart sözleşmeler gibi uygun güvenceler sağlanarak yapılır. Ayrıca yasal bir zorunluluk olduğunda yetkili kamu kurum ve kuruluşlarına aktarım yapılabilir. Verilerini hiçbir zaman satmayız ve reklam amacıyla paylaşmayız."
+          ]
+        },
+        {
+          "h": "7. Haklarına ve başvuruya dair",
+          "p": [
+            "KVKK m. 11 uyarınca şu haklara sahipsin:"
+          ],
+          "items": [
+            "Kişisel verilerinin işlenip işlenmediğini öğrenme ve işlenmişse buna ilişkin bilgi talep etme",
+            "İşlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme",
+            "Yurt içinde veya yurt dışında aktarıldığı üçüncü kişileri bilme",
+            "Eksik veya yanlış işlenmişse düzeltilmesini isteme",
+            "KVKK m. 7'de öngörülen şartlar çerçevesinde silinmesini veya yok edilmesini isteme",
+            "Düzeltme ve silme işlemlerinin, verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme",
+            "Münhasıran otomatik sistemlerle analiz edilmesi sonucu aleyhine bir sonucun ortaya çıkmasına itiraz etme",
+            "Kanuna aykırı işlenmesi sebebiyle zarara uğraman hâlinde zararın giderilmesini talep etme"
+          ],
+          "p2": [
+            "Başvurunu, Sohby'ye kayıtlı e-posta adresinden support@wawedev.com adresine ya da yazılı olarak [ADRES — yayına çıkmadan önce doldurulacak] adresine iletebilirsin. Başvurun en geç 30 gün içinde ücretsiz olarak yanıtlanır. Başvurunun reddedilmesi, yanıtın yetersiz bulunması ya da süresinde yanıt verilmemesi hâlinde Kişisel Verileri Koruma Kurulu'na şikâyette bulunabilirsin."
+          ]
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Gizlilik Politikası",
+      "intro": "Sohby güven üzerine kurulu bir hizmet. Bu politika, verilerini nasıl topladığımızı, gösterdiğimizi, koruduğumuzu ve ne kadar sakladığımızı sade bir dille anlatır. Yasal ayrıntılar için KVKK aydınlatma metnine bakabilirsin.",
+      "sections": [
+        {
+          "h": "Başkaları ne görür?",
+          "p": [
+            "Profilin, gizlilik ayarlarına göre diğer kullanıcılara gösterilir. Yaşını, semtini, cinsiyetini ve çevrimiçi durumunu gizleyebilir, Keşfet'te hiç görünmemeyi seçebilirsin. Kampüs'te üniversite adını göstermek ve kampüs dışındaki Keşfet'te görünmek de senin seçimindir.",
+            "Flört tercihin ve ilgi duyduğun cinsiyet kimseye gösterilmez; yalnızca sana uygun kişileri bulmak için kullanılır."
+          ]
+        },
+        {
+          "h": "Konum",
+          "p": [
+            "Yalnızca ülke, şehir ve istersen semt bilgisini kullanırız. Tam konumun ya da GPS bilgin hiçbir zaman alınmaz. \"Konumumu bul\" özelliği internet bağlantına göre yaklaşık ülke ve şehir tahmin eder; bu tahmin kaydedilmez, yalnızca formu doldurur."
+          ]
+        },
+        {
+          "h": "Fotoğraflar ve mesajlar",
+          "items": [
+            "Fotoğraflar, gizli depolarda tutulur ve yalnızca görmeye yetkili kişilere kısa ömürlü bağlantılarla gösterilir.",
+            "Fotoğrafların içindeki konum ve cihaz bilgileri (EXIF) kaydetmeden önce silinir.",
+            "Sohbetteki gelen fotoğraflar varsayılan olarak bulanık gelir.",
+            "Mesajlarını yalnızca sohbetin iki tarafı okuyabilir. Şikâyet incelemesinde yetkili ekip üyeleri ilgili sohbeti görebilir; her görüntüleme silinemez bir kayda yazılır.",
+            "Anonim sohbette gerçek kimliğin karşı tarafa gösterilmez; yalnızca sen açmayı seçersen açılır.",
+            "Engellediğin kişi seni hiçbir yerde göremez ve sana yazamaz."
+          ]
+        },
+        {
+          "h": "Doğrulama belgeleri",
+          "p": [
+            "Yaş doğrulama belgesi ve öğrenci kartı şifrelenerek ayrı ve gizli bir depoda tutulur. Yalnızca yetkili ekip üyeleri, kayıt altına alınan kısa ömürlü bağlantılarla görebilir. Öğrenci kartları inceleme bittikten sonra en geç 7 gün içinde, yaş belgeleri yüklendikten 30 gün sonra otomatik olarak silinir."
+          ]
+        },
+        {
+          "h": "Ne kadar saklıyoruz?",
+          "items": [
+            "Profil ve hesap bilgileri: hesabın açık olduğu sürece",
+            "Hesabını silersen: hesabın hemen kapanır ve kimse göremez; verilerin 90 gün sonra kalıcı olarak silinir",
+            "Mesajlar: sohbeti iki taraf da silerse 90 gün sonra kalıcı olarak silinir; yalnızca sen silersen karşı tarafın görünümünde kalır",
+            "Şikâyete konu olan sohbet ve hesaplar: şikâyet sonuçlanana kadar",
+            "Flört ilgi bilgisi: rızanı geri çektiğin anda silinir",
+            "Öğrenci kartı: inceleme bittikten sonra en geç 7 gün, incelenmezse 30 gün",
+            "Yaş doğrulama belgesi: yüklendikten 30 gün sonra",
+            "18 yaşından küçük olduğu anlaşılan hesaplar: en geç 24 saat içinde",
+            "Yönetici işlem kayıtları: güvenlik ve denetim amacıyla, silinemeyecek şekilde saklanır"
+          ]
+        },
+        {
+          "h": "Çerezler",
+          "p": [
+            "Yalnızca hizmetin çalışması için zorunlu çerezler kullanılır: oturumunun açık kalması, dil tercihin, saat dilimin ve robot koruması. Reklam ya da takip çerezi kullanmayız; bu nedenle çerez onayı istemeyiz. Tarayıcından çerezleri silebilirsin; bu durumda oturumun kapanır."
+          ]
+        },
+        {
+          "h": "Güvenlik",
+          "p": [
+            "Veritabanındaki her tabloda erişim kuralları vardır; her kullanıcı yalnızca görmeye yetkili olduğu veriyi görebilir. Bağlantılar şifrelidir. Yönetici işlemleri kayıt altına alınır. Hiçbir sistem kusursuz değildir; bir güvenlik ihlali olursa yasaların öngördüğü şekilde seni ve ilgili makamları bilgilendiririz."
+          ]
+        },
+        {
+          "h": "Avrupa Birliği'ndeki kullanıcılar",
+          "p": [
+            "Avrupa Birliği'nde yaşıyorsan Genel Veri Koruma Tüzüğü (GDPR) kapsamında da haklara sahipsin: verilerine erişme, düzeltme, silme, işlemeyi kısıtlama, itiraz etme, verilerini taşınabilir biçimde alma ve rızanı geri çekme. Ayrıca bulunduğun ülkenin veri koruma otoritesine şikâyette bulunabilirsin. Verilerin, sözleşmenin ifası, yasal yükümlülük, meşru menfaat ve (Flört için) açık rıza hukuki sebeplerine dayanılarak işlenir."
+          ]
+        },
+        {
+          "h": "Değişiklikler ve iletişim",
+          "p": [
+            "Bu politikayı güncelleyebiliriz; önemli değişiklikleri önceden duyururuz.",
+            "Sorular ve talepler için: support@wawedev.com"
+          ]
+        }
+      ]
+    },
+    "contact": {
+      "title": "İletişim",
+      "intro": "Soruların, önerilerin ya da bir sorun bildirmek için bize yazabilirsin.",
+      "sections": [
+        {
+          "h": "Destek",
+          "p": [
+            "E-posta: support@wawedev.com",
+            "Bir kullanıcıyı şikâyet etmek için en hızlı yol, profilindeki ya da sohbetteki \"Şikâyet et\" düğmesidir."
+          ]
+        },
+        {
+          "h": "Kişisel veri talepleri (KVKK)",
+          "p": [
+            "Kişisel verilerinle ilgili taleplerini Sohby'ye kayıtlı e-posta adresinden support@wawedev.com adresine gönderebilirsin. En geç 30 gün içinde yanıtlanır."
+          ]
+        },
+        {
+          "h": "Veri sorumlusu",
+          "p": [
+            "wawedev — [ADRES — yayına çıkmadan önce doldurulacak]"
+          ]
+        }
+      ]
     }
   },
   "countries": {
