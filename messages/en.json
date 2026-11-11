@@ -406,7 +406,14 @@
       "email_not_verified": "Please verify your email before sending messages. Click the link we sent you."
     },
     "photoAlt": "{name}'s profile photo",
-    "editProfile": "Edit profile"
+    "editProfile": "Edit profile",
+    "galleryRole": "photo gallery",
+    "galleryLabel": "Photos of {name}",
+    "galleryPhotoAlt": "{name}, photo {n} of {total}",
+    "galleryPrev": "Previous photo",
+    "galleryNext": "Next photo",
+    "galleryGoTo": "Photo {n} of {total}",
+    "galleryPosition": "Photo {n} of {total}"
   },
   "chats": {
     "metaTitle": "Chats",
@@ -622,13 +629,7 @@
   "profileEdit": {
     "metaTitle": "Edit your profile",
     "title": "Your profile",
-    "uploadPhoto": "Upload photo",
-    "changePhoto": "Change photo",
-    "removePhoto": "Remove photo",
     "uploading": "Uploading…",
-    "photoPending": "Your photo is being reviewed. It will appear on your profile once approved.",
-    "photoRejected": "Your last photo wasn't approved. You can try another one.",
-    "photoHint": "JPEG, PNG or WebP; up to 5 MB. Location data in the photo is removed before saving.",
     "displayName": "Display name",
     "city": "City",
     "district": "Neighbourhood",
@@ -661,8 +662,23 @@
       "photo_unsupported_type": "You can only upload JPEG, PNG or WebP.",
       "photo_invalid_image": "This file couldn't be read. Try another photo.",
       "photo_rate_limited": "You've uploaded too many photos today. Try again tomorrow.",
-      "photo_failed": "Couldn't upload the photo. Please try again."
-    }
+      "photo_failed": "Couldn't upload the photo. Please try again.",
+      "photo_too_many": "You can add up to 6 photos. Delete one to add a new one.",
+      "photo_order_failed": "Could not save the order. Try again."
+    },
+    "photosTitle": "Photos",
+    "photosCount": "{count}/{max}",
+    "photosHint": "Up to 6 photos. The first one is your main photo; it is shown in Discover. Drag or use the arrows to reorder. JPEG, PNG or WebP; up to 5 MB. Location data in photos is removed before saving.",
+    "addPhoto": "Add photo",
+    "mainPhoto": "Main photo",
+    "photoStatusPending": "In review",
+    "photoStatusRejected": "Not approved",
+    "photoAlt": "Your photo {n}",
+    "photoMoveLeft": "Move photo {n} earlier",
+    "photoMoveRight": "Move photo {n} later",
+    "photoRemove": "Delete photo {n}",
+    "photoMoved": "Photo moved from position {from} to {to}.",
+    "photoRemoved": "Photo {n} deleted."
   },
   "settings": {
     "metaTitle": "Settings",

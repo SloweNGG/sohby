@@ -111,6 +111,10 @@ export type ProfileCard = {
   looking_for: LookingFor[];
   is_online: boolean;
   member_since: string;
+  /** Galeri: onaylı fotoğrafların depolama yolları, sırasıyla (ilki ana fotoğraf). */
+  photo_paths?: string[];
+  /** Galeri için sunucuda üretilen imzalı bağlantılar. */
+  photo_urls?: string[];
   /** Onaylı profil fotoğrafının depolama yolu (yalnızca yetkili izleyenlere döner). */
   photo_path?: string | null;
   /** Sunucuda üretilen kısa ömürlü imzalı bağlantı. */

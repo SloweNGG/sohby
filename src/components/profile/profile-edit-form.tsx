@@ -2,20 +2,15 @@
 
 import { useMemo, useRef, useState, useTransition } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Camera, Plus, Search, Trash2, X } from "lucide-react";
+import { Plus, Search, X } from "lucide-react";
 import { useRouter } from "@/i18n/navigation";
-import {
-  removeProfilePhotoAction,
-  saveProfileAction,
-  uploadProfilePhotoAction,
-  type PhotoError,
-  type ProfileEditError,
-} from "@/lib/profile/actions";
+import { saveProfileAction, type ProfileEditError } from "@/lib/profile/actions";
+import { PhotoManager, type EditPhoto } from "@/components/profile/photo-manager";
 import { LocationFields } from "@/components/location/location-fields";
 import type { CountryCode } from "@/lib/data/countries";
 import { GENDERS } from "@/lib/validation/auth";
-import { Button, buttonClasses } from "@/components/ui/button";
-import { FormAlert, Hint, Input, Label, Textarea, inputClasses } from "@/components/ui/field";
+import { Button } from "@/components/ui/button";
+import { FormAlert, Input, Label, Textarea, inputClasses } from "@/components/ui/field";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/cn";
 import { avatarColors, initial } from "@/lib/avatar";
@@ -38,27 +33,11 @@ export type ProfileEditInitial = {
   showAge: boolean;
   showDistrict: boolean;
   showOnline: boolean;
+  /** Ana (ilk onaylı) fotoğrafın bağlantısı: önizleme için. */
   photoUrl: string | null;
-  photoStatus: "approved" | "pending" | "rejected" | null;
+  /** Bütün fotoğraflar, sırasıyla. */
+  photos: EditPhoto[];
 };
-
-const MAX_SIDE = 1600;
-
-/** Tarayıcıda küçült ve yeniden kodla (sunucu yine de doğrular ve üst veriyi siler). */
-async function compress(file: File): Promise<Blob> {
-  try {
-    const bitmap = await createImageBitmap(file);
-    const scale = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height));
-    const canvas = document.createElement("canvas");
-    canvas.width = Math.round(bitmap.width * scale);
-    canvas.height = Math.round(bitmap.height * scale);
-    canvas.getContext("2d")?.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.86));
-    return blob ?? file;
-  } catch {
-    return file;
-  }
-}
 
 /** Profil düzenleme (tasarim/10). */
 export function ProfileEditForm({ initial: init, hobbies }: { initial: ProfileEditInitial; hobbies: Hobby[] }) {
@@ -68,13 +47,10 @@ export function ProfileEditForm({ initial: init, hobbies }: { initial: ProfileEd
   const locale = useLocale();
   const router = useRouter();
   const [v, setV] = useState(init);
-  const [error, setError] = useState<ProfileEditError | PhotoError | null>(null);
+  const [error, setError] = useState<ProfileEditError | null>(null);
   const [saved, setSaved] = useState(false);
   const [pending, startTransition] = useTransition();
-  const [photoBusy, setPhotoBusy] = useState(false);
-  const [photoStatus, setPhotoStatus] = useState(init.photoStatus);
   const [query, setQuery] = useState("");
-  const fileRef = useRef<HTMLInputElement>(null);
   const pickerRef = useRef<HTMLDetailsElement>(null);
 
   const set = <K extends keyof ProfileEditInitial>(k: K, value: ProfileEditInitial[K]) => {
@@ -110,42 +86,10 @@ export function ProfileEditForm({ initial: init, hobbies }: { initial: ProfileEd
       }
     });
 
-  const onFile = async (file: File | undefined) => {
-    if (!file) return;
-    setError(null);
-    setPhotoBusy(true);
-    try {
-      const blob = await compress(file);
-      const form = new FormData();
-      form.append("file", new File([blob], "photo.jpg", { type: blob.type || file.type }));
-      const result = await uploadProfilePhotoAction(form);
-      if (!result.ok) setError(result.error);
-      else {
-        setPhotoStatus(result.status === "pending" ? "pending" : "approved");
-        router.refresh();
-      }
-    } finally {
-      setPhotoBusy(false);
-      if (fileRef.current) fileRef.current.value = "";
-    }
-  };
-
-  const removePhoto = async () => {
-    setPhotoBusy(true);
-    const result = await removeProfilePhotoAction();
-    setPhotoBusy(false);
-    if (!result.ok) setError(result.error);
-    else {
-      setPhotoStatus(null);
-      setV((p) => ({ ...p, photoUrl: null }));
-      router.refresh();
-    }
-  };
-
   const nameLine = `${v.displayName || v.username}${v.showAge && v.age !== null ? `, ${v.age}` : ""}`;
   const place = formatPlace({ ...v, country_code: v.country }, (c) => tc(c as CountryCode), { district: v.showDistrict });
   const avatar = (size: number) =>
-    init.photoUrl && photoStatus !== null ? (
+    init.photoUrl ? (
       // eslint-disable-next-line @next/next/no-img-element
       <img src={init.photoUrl} alt="" className="rounded-full object-cover" style={{ width: size, height: size }} />
     ) : (
@@ -169,33 +113,8 @@ export function ProfileEditForm({ initial: init, hobbies }: { initial: ProfileEd
       >
         <h1 className="text-[34px] tracking-[-0.05em] md:text-[42px]">{t("title")}</h1>
 
-        {/* Fotoğraf */}
-        <div>
-          <div className="flex flex-wrap items-center gap-4">
-            {avatar(84)}
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              className="sr-only"
-              id="photo"
-              onChange={(e) => void onFile(e.target.files?.[0])}
-            />
-            <label htmlFor="photo" className={cn(buttonClasses({ variant: "outline" }), "cursor-pointer", photoBusy && "pointer-events-none opacity-60")}>
-              <Camera className="h-4 w-4" aria-hidden="true" />
-              {photoBusy ? t("uploading") : init.photoUrl ? t("changePhoto") : t("uploadPhoto")}
-            </label>
-            {init.photoUrl && photoStatus !== null && (
-              <Button variant="ghost" onClick={() => void removePhoto()} disabled={photoBusy}>
-                <Trash2 className="h-4 w-4" aria-hidden="true" />
-                {t("removePhoto")}
-              </Button>
-            )}
-          </div>
-          {photoStatus === "pending" && <p className="mt-2 text-sm text-lilac">{t("photoPending")}</p>}
-          {photoStatus === "rejected" && <p className="mt-2 text-sm text-coral-text">{t("photoRejected")}</p>}
-          <Hint>{t("photoHint")}</Hint>
-        </div>
+        {/* Fotoğraflar (en çok 6, sıralanabilir). Sunucu yenilenince baştan çizilir. */}
+        <PhotoManager key={init.photos.map((p) => `${p.id}:${p.status}`).join(",")} photos={init.photos} />
 
         <div>
           <Label htmlFor="displayName">{t("displayName")}</Label>

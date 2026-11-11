@@ -3,7 +3,6 @@ import { CalendarDays, ChevronLeft, GraduationCap, Lock, MapPin, MessageSquare, 
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { ablativeSuffix } from "@/lib/i18n/turkish";
-import { ProfilePhoto } from "@/components/profile/avatar";
 import { ComposeButton, ComposeProvider, IdeaButton } from "@/components/profile/compose";
 import { SafetyActions } from "@/components/safety/safety-actions";
 import { AnonComposeButton } from "@/components/anon/anon-compose";
@@ -15,6 +14,7 @@ import type { ProfileDetail } from "@/lib/types";
 import { formatPlace } from "@/lib/location/format";
 import type { CountryCode } from "@/lib/data/countries";
 import { StudentBadge } from "@/components/campus/student-badge";
+import { ProfileGallery } from "@/components/profile/profile-gallery";
 
 /** Kişi profili (masaüstü: tasarim/07, telefon: tasarim/15). */
 export async function ProfileView({
@@ -35,6 +35,8 @@ export async function ProfileView({
   const hobbyName = (h: ProfileDetail["hobbies"][number]) => (locale === "tr" ? h.name_tr : h.name_en);
   const nameLine = p.age !== null ? `${p.display_name}, ${p.age}` : p.display_name;
   const place = formatPlace(p, (c) => tc(c as CountryCode));
+  // Galeri: imzalı bağlantılar; yoksa (eski veri) yalnızca ana fotoğraf.
+  const gallery = p.photo_urls?.length ? p.photo_urls : p.photo_url ? [p.photo_url] : [];
   const since = new Date(p.member_since);
   const sinceText = t("memberSince", {
     date: new Intl.DateTimeFormat(locale, { month: "long", year: "numeric", timeZone: "UTC" }).format(since),
@@ -117,7 +119,7 @@ export async function ProfileView({
 
       {/* Telefon: tam genişlik görsel + üst butonlar (tasarim/15) */}
       <div className="relative md:hidden">
-        <ProfilePhoto id={p.id} url={p.photo_url} alt={t("photoAlt", { name: p.display_name })} className="h-[330px] w-full" />
+        <ProfileGallery id={p.id} urls={gallery} name={p.display_name} className="h-[330px] w-full" />
         <Link
           href="/discover"
           className="absolute left-4 top-4 grid h-11 w-11 place-items-center rounded-full bg-night/80"
@@ -139,7 +141,7 @@ export async function ProfileView({
       </div>
 
       <div className="mx-auto mt-0 grid max-w-[1120px] gap-8 px-4 md:mt-6 md:grid-cols-[440px_minmax(0,1fr)] md:gap-10 md:px-0">
-        <ProfilePhoto id={p.id} url={p.photo_url} alt={t("photoAlt", { name: p.display_name })} className="hidden h-[550px] rounded-[28px] md:block" />
+        <ProfileGallery id={p.id} urls={gallery} name={p.display_name} className="hidden h-[550px] overflow-hidden rounded-[28px] md:block" />
 
         <section className="pt-5 md:pt-0">
           <div className="flex flex-wrap items-center gap-x-3 gap-y-1">

@@ -4,7 +4,7 @@ import { resolveLocale } from "@/i18n/locale";
 import { createClient } from "@/lib/supabase/server";
 import { BackLink, ProfileView } from "@/components/profile/profile-view";
 import type { ProfileDetail } from "@/lib/types";
-import { withPhotoUrls } from "@/lib/photos";
+import { signPhotoPaths, withPhotoUrls } from "@/lib/photos";
 
 async function loadProfile(username: string) {
   const supabase = await createClient();
@@ -39,5 +39,8 @@ export default async function ProfilePage({ params, searchParams }: PageProps<"/
   }
 
   const [withPhoto] = await withPhotoUrls([p]);
-  return <ProfileView p={withPhoto} locale={locale} autoCompose={sp.compose === "1"} />;
+  // Galeri: onaylı fotoğrafların hepsi için kısa ömürlü bağlantılar (yetki storage RLS'te).
+  const urls = await signPhotoPaths(p.photo_paths ?? []);
+  const photoUrls = (p.photo_paths ?? []).map((path) => urls.get(path)).filter((u): u is string => Boolean(u));
+  return <ProfileView p={{ ...withPhoto, photo_urls: photoUrls }} locale={locale} autoCompose={sp.compose === "1"} />;
 }

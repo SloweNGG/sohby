@@ -406,7 +406,14 @@
       "email_not_verified": "Mesaj göndermeden önce e-posta adresini doğrulamalısın. E-postana gelen bağlantıya tıkla."
     },
     "photoAlt": "{name} profil fotoğrafı",
-    "editProfile": "Profili düzenle"
+    "editProfile": "Profili düzenle",
+    "galleryRole": "fotoğraf galerisi",
+    "galleryLabel": "{name} fotoğrafları",
+    "galleryPhotoAlt": "{name}, fotoğraf {n}/{total}",
+    "galleryPrev": "Önceki fotoğraf",
+    "galleryNext": "Sonraki fotoğraf",
+    "galleryGoTo": "Fotoğraf {n}/{total}",
+    "galleryPosition": "Fotoğraf {n}/{total}"
   },
   "chats": {
     "metaTitle": "Sohbetler",
@@ -622,13 +629,7 @@
   "profileEdit": {
     "metaTitle": "Profilini düzenle",
     "title": "Profilin",
-    "uploadPhoto": "Fotoğraf yükle",
-    "changePhoto": "Fotoğrafı değiştir",
-    "removePhoto": "Fotoğrafı kaldır",
     "uploading": "Yükleniyor…",
-    "photoPending": "Fotoğrafın inceleniyor. Onaylanınca profilinde görünecek.",
-    "photoRejected": "Son yüklediğin fotoğraf onaylanmadı. Başka bir fotoğraf deneyebilirsin.",
-    "photoHint": "JPEG, PNG ya da WebP; en çok 5 MB. Fotoğraftaki konum bilgisi kaydetmeden önce silinir.",
     "displayName": "Görünen ad",
     "city": "Şehir",
     "district": "Semt",
@@ -661,8 +662,23 @@
       "photo_unsupported_type": "Yalnızca JPEG, PNG ya da WebP yükleyebilirsin.",
       "photo_invalid_image": "Bu dosya okunamadı. Başka bir fotoğraf dene.",
       "photo_rate_limited": "Bugün çok fazla fotoğraf yükledin. Yarın tekrar dene.",
-      "photo_failed": "Fotoğraf yüklenemedi. Lütfen tekrar dene."
-    }
+      "photo_failed": "Fotoğraf yüklenemedi. Lütfen tekrar dene.",
+      "photo_too_many": "En çok 6 fotoğraf ekleyebilirsin. Yenisini eklemek için birini sil.",
+      "photo_order_failed": "Sıralama kaydedilemedi. Tekrar dene."
+    },
+    "photosTitle": "Fotoğraflar",
+    "photosCount": "{count}/{max}",
+    "photosHint": "En çok 6 fotoğraf. İlk fotoğraf ana fotoğrafındır; Keşfet'te o görünür. Sürükleyerek ya da oklarla sırala. JPEG, PNG ya da WebP; en çok 5 MB. Fotoğraftaki konum bilgisi kaydetmeden önce silinir.",
+    "addPhoto": "Fotoğraf ekle",
+    "mainPhoto": "Ana fotoğraf",
+    "photoStatusPending": "İnceleniyor",
+    "photoStatusRejected": "Onaylanmadı",
+    "photoAlt": "{n}. fotoğrafın",
+    "photoMoveLeft": "{n}. fotoğrafı bir öne al",
+    "photoMoveRight": "{n}. fotoğrafı bir arkaya al",
+    "photoRemove": "{n}. fotoğrafı sil",
+    "photoMoved": "Fotoğraf {from}. sıradan {to}. sıraya taşındı.",
+    "photoRemoved": "{n}. fotoğraf silindi."
   },
   "settings": {
     "metaTitle": "Ayarlar",

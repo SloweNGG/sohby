@@ -22,17 +22,20 @@ export default async function ProfileEditPage({ params }: PageProps<"/[locale]/p
   }
   const { profile, private: priv, hobbyIds } = account;
   const supabase = await createClient();
-  const [hobbies, latest] = await Promise.all([
+  const [hobbies, list] = await Promise.all([
     getHobbyCatalog(),
+    // Kullanıcı yalnızca kendi fotoğraflarını görür (RLS).
     supabase
       .from("profile_photos")
-      .select("storage_path, status")
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle(),
+      .select("id, storage_path, status")
+      .eq("user_id", profile.id)
+      .order("position")
+      .order("created_at"),
   ]);
-  const photo = latest.data as { storage_path: string; status: "approved" | "pending" | "rejected" } | null;
-  const urls = await signPhotoPaths([photo?.storage_path]);
+  const rows = (list.data ?? []) as Array<{ id: string; storage_path: string; status: "approved" | "pending" | "rejected" }>;
+  const urls = await signPhotoPaths(rows.map((r) => r.storage_path));
+  const photos = rows.map((r) => ({ id: r.id, status: r.status, url: urls.get(r.storage_path) ?? null }));
+  const main = photos.find((ph) => ph.status === "approved");
 
   return (
     <main className="px-4 pb-28 pt-6 sm:px-6 md:px-10 md:pb-12 md:pt-10">
@@ -54,8 +57,8 @@ export default async function ProfileEditPage({ params }: PageProps<"/[locale]/p
           showAge: profile.show_age,
           showDistrict: profile.show_district,
           showOnline: profile.show_online,
-          photoUrl: photo ? (urls.get(photo.storage_path) ?? null) : null,
-          photoStatus: photo?.status ?? null,
+          photoUrl: main?.url ?? null,
+          photos,
         }}
       />
     </main>

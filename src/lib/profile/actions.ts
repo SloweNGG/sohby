@@ -78,11 +78,12 @@ export type PhotoError =
   | "photo_unsupported_type"
   | "photo_invalid_image"
   | "photo_rate_limited"
+  | "photo_too_many"
   | "photo_failed";
 
 export type PhotoResult = { ok: true; status: "approved" | "pending" | "removed" } | { ok: false; error: PhotoError };
 
-async function callPhotoFunction(init: RequestInit): Promise<Response | null> {
+async function callPhotoFunction(init: RequestInit, query = ""): Promise<Response | null> {
   const supabase = await createClient();
   // Belirteç Edge Function içinde Supabase Auth ile doğrulanır.
   const {
@@ -90,7 +91,7 @@ async function callPhotoFunction(init: RequestInit): Promise<Response | null> {
   } = await supabase.auth.getSession();
   if (!session?.access_token) return null;
   const { url, key } = getSupabaseEnv();
-  return fetch(`${url}/functions/v1/upload-profile-photo`, {
+  return fetch(`${url}/functions/v1/upload-profile-photo${query}`, {
     ...init,
     headers: { ...(init.headers ?? {}), authorization: `Bearer ${session.access_token}`, apikey: key },
   });
@@ -102,6 +103,7 @@ const PHOTO_ERRORS: Record<string, PhotoError> = {
   unsupported_type: "photo_unsupported_type",
   invalid_image: "photo_invalid_image",
   rate_limited: "photo_rate_limited",
+  too_many_photos: "photo_too_many",
 };
 
 export async function uploadProfilePhotoAction(formData: FormData): Promise<PhotoResult> {
@@ -120,10 +122,24 @@ export async function uploadProfilePhotoAction(formData: FormData): Promise<Phot
   return { ok: true, status: json.status === "pending" ? "pending" : "approved" };
 }
 
-export async function removeProfilePhotoAction(): Promise<PhotoResult> {
+/** Fotoğraf kaldır: kimlik verilirse yalnızca o fotoğraf, verilmezse hepsi. */
+export async function removeProfilePhotoAction(photoId?: string): Promise<PhotoResult> {
   if (!(await getCurrentUserId())) return { ok: false, error: "photo_unauthorized" };
-  const res = await callPhotoFunction({ method: "DELETE" });
+  if (photoId !== undefined && !z.uuid().safeParse(photoId).success) return { ok: false, error: "photo_failed" };
+  const res = await callPhotoFunction({ method: "DELETE" }, photoId ? `?photo=${photoId}` : "");
   if (!res || !res.ok) return { ok: false, error: "photo_failed" };
   revalidatePath("/", "layout");
   return { ok: true, status: "removed" };
+}
+
+/** Fotoğraf sırası: kullanıcının fotoğraflarının tamamı, yeni sırasıyla (ilki ana fotoğraf olur). */
+export async function reorderProfilePhotosAction(ids: string[]): Promise<{ ok: boolean }> {
+  if (!(await getCurrentUserId())) return { ok: false };
+  const parsed = z.array(z.uuid()).min(1).max(6).safeParse(ids);
+  if (!parsed.success) return { ok: false };
+  const supabase = await createClient();
+  const { error } = await supabase.rpc("reorder_my_photos", { p_ids: parsed.data });
+  if (error) return { ok: false };
+  revalidatePath("/", "layout");
+  return { ok: true };
 }
