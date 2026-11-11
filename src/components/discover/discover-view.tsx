@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
 import { Search } from "lucide-react";
 import { Link } from "@/i18n/navigation";
@@ -5,7 +6,14 @@ import type { Locale } from "@/i18n/routing";
 import { Logo } from "@/components/logo";
 import { DiscoverCard } from "@/components/discover/profile-card";
 import { DiscoverFilters, DiscoverSearch } from "@/components/discover/toolbar";
-import { activePanelCount, discoverQuery, type DiscoverPlace, type DiscoverQuery } from "@/components/discover/query";
+import {
+  activePanelCount,
+  discoverPath,
+  discoverQuery,
+  type DiscoverMode,
+  type DiscoverPlace,
+  type DiscoverQuery,
+} from "@/components/discover/query";
 import { buttonClasses } from "@/components/ui/button";
 import { FormAlert } from "@/components/ui/field";
 import type { ProfileCard } from "@/lib/types";
@@ -19,6 +27,9 @@ export async function DiscoverView({
   page,
   canFlirt,
   places,
+  mode = "general",
+  title,
+  intro,
 }: {
   locale: Locale;
   current: DiscoverQuery;
@@ -28,10 +39,24 @@ export async function DiscoverView({
   page: number;
   canFlirt: boolean;
   places: DiscoverPlace[];
+  mode?: DiscoverMode;
+  /** Başlık (varsayılan "Keşfet"). */
+  title?: string;
+  /** Başlığın altında gösterilecek ek içerik (ör. kampüs rozeti ve ayarları). */
+  intro?: ReactNode;
 }) {
   const t = await getTranslations({ locale, namespace: "discover" });
   const tc = await getTranslations({ locale, namespace: "common" });
   const filtered = current.filter !== "all" || current.q || activePanelCount(current) > 0;
+  const pathname = discoverPath(mode);
+  const emptyBody =
+    mode === "campus" && !filtered
+      ? t("emptyCampus")
+      : current.filter === "nearby"
+        ? t("emptyNearby")
+        : current.filter === "flirt"
+          ? t("emptyFlirt")
+          : t("emptyBody");
 
   return (
     <main className="px-4 pb-28 pt-5 sm:px-6 md:px-10 md:pb-12 md:pt-8">
@@ -44,18 +69,19 @@ export async function DiscoverView({
             <span className="sr-only">{t("searchOpen")}</span>
           </summary>
           <div className="absolute inset-x-4 top-[72px] z-30">
-            <DiscoverSearch current={current} locale={locale} />
+            <DiscoverSearch current={current} locale={locale} mode={mode} />
           </div>
         </details>
       </div>
 
       <header className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <h1 className="text-[34px] font-extrabold tracking-[-0.05em] md:text-[42px]">{t("title")}</h1>
-        <DiscoverSearch current={current} locale={locale} className="hidden w-full max-w-[420px] md:block" />
+        <h1 className="text-[34px] font-extrabold tracking-[-0.05em] md:text-[42px]">{title ?? t("title")}</h1>
+        <DiscoverSearch current={current} locale={locale} mode={mode} className="hidden w-full max-w-[420px] md:block" />
       </header>
+      {intro}
 
       <div className="mt-4 md:mt-5">
-        <DiscoverFilters current={current} locale={locale} canFlirt={canFlirt} places={places} />
+        <DiscoverFilters current={current} locale={locale} canFlirt={canFlirt} places={places} mode={mode} />
       </div>
 
       {error ? (
@@ -65,9 +91,9 @@ export async function DiscoverView({
       ) : people.length === 0 ? (
         <div className="mt-16 max-w-md">
           <h2 className="text-2xl">{t("emptyTitle")}</h2>
-          <p className="mt-2 text-muted">{current.filter === "nearby" ? t("emptyNearby") : current.filter === "flirt" ? t("emptyFlirt") : t("emptyBody")}</p>
+          <p className="mt-2 text-muted">{emptyBody}</p>
           {filtered && (
-            <Link href="/discover" className={buttonClasses({ variant: "outline", className: "mt-6" })}>
+            <Link href={pathname} className={buttonClasses({ variant: "outline", className: "mt-6" })}>
               {t("clearFilters")}
             </Link>
           )}
@@ -87,7 +113,7 @@ export async function DiscoverView({
           {hasMore && (
             <div className="mt-8 flex justify-center">
               <Link
-                href={{ pathname: "/discover", query: { ...discoverQuery(current, {}), page: String(page + 1) } }}
+                href={{ pathname, query: { ...discoverQuery(current, {}), page: String(page + 1) } }}
                 scroll={false}
                 className={buttonClasses({ variant: "outline" })}
               >

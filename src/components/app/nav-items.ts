@@ -6,6 +6,7 @@
  */
 export const NAV_ITEMS = [
   { key: "discover", route: "/discover" },
+  { key: "campus", route: "/campus" },
   { key: "chats", route: "/chats" },
   { key: "settings", route: "/settings" },
   { key: "profile", route: "/u/[username]" },
@@ -23,6 +24,7 @@ export function navHref(key: NavKey, username: string) {
 /** Hangi menü öğesi seçili? Başkasının profili Keşfet'e sayılır. */
 export function activeSection(pathname: string, username: string): NavKey | null {
   if (pathname.startsWith("/chats")) return "chats";
+  if (pathname.startsWith("/campus")) return "campus";
   if (pathname.startsWith("/settings")) return "settings";
   if (pathname === `/u/${username}` || pathname.startsWith("/profile")) return "profile";
   if (pathname.startsWith("/discover") || pathname.startsWith("/u/")) return "discover";

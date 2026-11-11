@@ -14,6 +14,7 @@ import { cn } from "@/lib/cn";
 import type { ProfileDetail } from "@/lib/types";
 import { formatPlace } from "@/lib/location/format";
 import type { CountryCode } from "@/lib/data/countries";
+import { StudentBadge } from "@/components/campus/student-badge";
 
 /** Kişi profili (masaüstü: tasarim/07, telefon: tasarim/15). */
 export async function ProfileView({
@@ -150,6 +151,7 @@ export async function ProfileView({
               </span>
             )}
           </div>
+          {p.student && <StudentBadge student={p.student} className="mt-3" />}
           {p.is_online && (
             <p className="mt-3 hidden items-center gap-2 font-semibold text-online md:flex">
               <span className="h-2 w-2 rounded-full bg-online" aria-hidden="true" />

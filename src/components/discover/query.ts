@@ -5,6 +5,12 @@ import { LANGUAGES, type LanguageCode } from "@/lib/types";
 export const DISCOVER_FILTERS = ["all", "nearby", "common_hobby", "online", "flirt"] as const;
 export type DiscoverFilter = (typeof DISCOVER_FILTERS)[number];
 
+/** Keşfet kipi: genel ya da kampüs (yalnızca aynı üniversitenin doğrulanmış öğrencileri). */
+export type DiscoverMode = "general" | "campus";
+/** Kampüste konuma bağlı sekmeler (Yakınımdakiler) ve flört yok. */
+export const CAMPUS_FILTERS = ["all", "online", "common_hobby"] as const satisfies readonly DiscoverFilter[];
+export const discoverPath = (mode: DiscoverMode) => (mode === "campus" ? "/campus" : "/discover");
+
 export const DISCOVER_GENDERS = ["female", "male", "other"] as const;
 export type DiscoverGender = (typeof DISCOVER_GENDERS)[number];
 
@@ -53,7 +59,11 @@ function intParam(value: unknown, min: number, max: number): number | null {
 const str = (v: unknown) => (typeof v === "string" ? v.trim() : "");
 
 /** Adresteki parametreleri doğrular; geçersiz olanlar yok sayılır. */
-export function parseDiscoverQuery(sp: Record<string, string | string[] | undefined>, canFlirt: boolean): DiscoverQuery {
+export function parseDiscoverQuery(
+  sp: Record<string, string | string[] | undefined>,
+  canFlirt: boolean,
+  mode: DiscoverMode = "general",
+): DiscoverQuery {
   let minAge = intParam(sp.minAge, 18, 99);
   let maxAge = intParam(sp.maxAge, 18, 99);
   if (minAge !== null && maxAge !== null && minAge > maxAge) [minAge, maxAge] = [maxAge, minAge];
@@ -61,9 +71,11 @@ export function parseDiscoverQuery(sp: Record<string, string | string[] | undefi
   if (minAge === 18 && (maxAge === null || maxAge === 99)) minAge = null;
   if (maxAge === 99 && minAge === null) maxAge = null;
 
-  const requested = DISCOVER_FILTERS.includes(sp.filter as DiscoverFilter) ? (sp.filter as DiscoverFilter) : "all";
+  const allowed: readonly DiscoverFilter[] = mode === "campus" ? CAMPUS_FILTERS : DISCOVER_FILTERS;
+  const requested = allowed.includes(sp.filter as DiscoverFilter) ? (sp.filter as DiscoverFilter) : "all";
   const country = str(sp.country).toUpperCase();
-  const validCountry = (COUNTRY_CODES as readonly string[]).includes(country) ? country : null;
+  // Kampüste herkes aynı yerde: ülke/şehir filtresi yok.
+  const validCountry = mode === "general" && (COUNTRY_CODES as readonly string[]).includes(country) ? country : null;
   const city = str(sp.city);
   const gender = str(sp.gender);
   const lang = str(sp.lang);

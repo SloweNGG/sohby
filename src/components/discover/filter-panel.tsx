@@ -18,6 +18,8 @@ const labelClass = "block text-sm font-semibold";
  */
 export function DiscoverFilterPanel({
   action,
+  pathname,
+  showLocation,
   current,
   hidden,
   countries,
@@ -25,6 +27,10 @@ export function DiscoverFilterPanel({
   places,
 }: {
   action: string;
+  /** Uygulama içi yol ("/discover" ya da "/campus"). */
+  pathname: string;
+  /** Kampüste ülke/şehir seçimi yok. */
+  showLocation: boolean;
   current: DiscoverQuery;
   /** Panel dışındaki seçimler (sekme, arama) korunur. */
   hidden: Record<string, string>;
@@ -124,53 +130,57 @@ export function DiscoverFilterPanel({
         </select>
       </div>
 
-      <div className="mt-4">
-        <label htmlFor={`${id}-country`} className={labelClass}>
-          {t("country")}
-        </label>
-        <select
-          id={`${id}-country`}
-          name="country"
-          value={country}
-          onChange={(e) => {
-            setCountry(e.target.value);
-            setCity("");
-          }}
-          className={selectClass}
-        >
-          <option value="">{t("anyCountry")}</option>
-          {countries.map((c) => (
-            <option key={c.value} value={c.value}>
-              {c.label}
-            </option>
-          ))}
-        </select>
-      </div>
+      {showLocation && (
+        <>
+          <div className="mt-4">
+            <label htmlFor={`${id}-country`} className={labelClass}>
+              {t("country")}
+            </label>
+            <select
+              id={`${id}-country`}
+              name="country"
+              value={country}
+              onChange={(e) => {
+                setCountry(e.target.value);
+                setCity("");
+              }}
+              className={selectClass}
+            >
+              <option value="">{t("anyCountry")}</option>
+              {countries.map((c) => (
+                <option key={c.value} value={c.value}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          </div>
 
-      <div className="mt-4">
-        <label htmlFor={`${id}-city`} className={labelClass}>
-          {t("city")}
-        </label>
-        <select
-          id={`${id}-city`}
-          name="city"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          disabled={!country}
-          className={cn(selectClass, "disabled:opacity-50")}
-        >
-          <option value="">{country ? t("anyCity") : t("chooseCountryFirst")}</option>
-          {cities.map((p) => (
-            <option key={p.key} value={p.key}>
-              {p.city}
-            </option>
-          ))}
-        </select>
-      </div>
+          <div className="mt-4">
+            <label htmlFor={`${id}-city`} className={labelClass}>
+              {t("city")}
+            </label>
+            <select
+              id={`${id}-city`}
+              name="city"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              disabled={!country}
+              className={cn(selectClass, "disabled:opacity-50")}
+            >
+              <option value="">{country ? t("anyCity") : t("chooseCountryFirst")}</option>
+              {cities.map((p) => (
+                <option key={p.key} value={p.key}>
+                  {p.city}
+                </option>
+              ))}
+            </select>
+          </div>
+        </>
+      )}
 
-      <p className="mt-3 text-xs leading-relaxed text-muted">{t("note")}</p>
+      <p className="mt-3 text-xs leading-relaxed text-muted">{showLocation ? t("note") : t("noteCampus")}</p>
       <div className="mt-4 flex items-center justify-between">
-        <Link href={{ pathname: "/discover", query: hidden }} className="text-sm text-muted hover:text-moon">
+        <Link href={{ pathname, query: hidden }} className="text-sm text-muted hover:text-moon">
           {t("clear")}
         </Link>
         <button type="submit" className="h-10 rounded-full bg-coral px-5 text-sm font-semibold text-ink">

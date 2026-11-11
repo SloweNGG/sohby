@@ -5,6 +5,7 @@ import { ProfilePhoto } from "@/components/profile/avatar";
 import { Tag } from "@/components/ui/chip";
 import type { ProfileCard } from "@/lib/types";
 import { formatPlace } from "@/lib/location/format";
+import { StudentBadge } from "@/components/campus/student-badge";
 import type { CountryCode } from "@/lib/data/countries";
 
 /** Keşfet kartı (masaüstü: tasarim/06, telefon: tasarim/12). */
@@ -48,7 +49,10 @@ export function DiscoverCard({ p }: { p: ProfileCard }) {
 
       <div className="flex flex-1 items-center gap-2 p-3 sm:flex-col sm:items-stretch sm:p-[18px]">
         <div className="min-w-0 flex-1">
-          <h2 className="truncate text-base font-bold tracking-[-0.02em] sm:text-xl">{nameLine}</h2>
+          <div className="flex items-center gap-1.5">
+            <h2 className="truncate text-base font-bold tracking-[-0.02em] sm:text-xl">{nameLine}</h2>
+            {p.student && <StudentBadge student={p.student} compact />}
+          </div>
           {p.looking_for.includes("flirt") && (
             <span className="mt-1 inline-flex items-center gap-1 text-xs font-semibold text-coral-text">
               <Heart className="h-3 w-3" aria-hidden="true" />

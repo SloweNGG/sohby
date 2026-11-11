@@ -49,6 +49,10 @@ export type MyProfileRow = {
   accept_anonymous: boolean;
   preferred_locale: "tr" | "en";
   photo_permission: PhotoPermission;
+  student_university_id: string | null;
+  student_verified_until: string | null;
+  show_university: boolean;
+  show_outside_campus: boolean;
   photo_id: string | null;
   deleted_at: string | null;
   account_status: "active" | "age_verification_required" | "suspended" | "closed";
@@ -68,6 +72,27 @@ export type MyPrivateRow = {
 
 export type Hobby = { id: number; slug: string; name_tr: string; name_en: string };
 
+export type University = { id: string; name_tr: string; name_en: string; city: string };
+
+/** get_my_campus() çıktısı. */
+export type CampusMine = {
+  verified: boolean;
+  verified_until: string | null;
+  university: University | null;
+  show_university: boolean;
+  show_outside_campus: boolean;
+  latest: {
+    status: "pending" | "approved" | "rejected" | "expired";
+    university_id: string;
+    created_at: string;
+    reviewed_at: string | null;
+    review_note: string | null;
+  } | null;
+};
+
+/** Kampüs rozeti: doğrulanmış öğrenci; üniversite yalnızca sahibi izin verdiyse. */
+export type StudentInfo = { university: { id: string; name_tr: string; name_en: string } | null };
+
 /** private.profile_card çıktısı (gizlilik filtresinden geçmiş profil). */
 export type ProfileCard = {
   id: string;
@@ -81,6 +106,8 @@ export type ProfileCard = {
   occupation: string | null;
   bio: string | null;
   languages: LanguageCode[];
+  /** Doğrulanmış öğrenciyse rozet bilgisi, değilse null. */
+  student?: StudentInfo | null;
   looking_for: LookingFor[];
   is_online: boolean;
   member_since: string;

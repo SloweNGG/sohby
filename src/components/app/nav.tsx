@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { LogOut, MessageSquare, PencilLine, Settings, User, UserRound, Users, type LucideIcon } from "lucide-react";
+import { GraduationCap, LogOut, MessageSquare, PencilLine, Settings, User, UserRound, Users, type LucideIcon } from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { LogoMark } from "@/components/logo";
 import { signOutAction } from "@/lib/auth/actions";
@@ -12,7 +12,13 @@ import { NAV_ITEMS, activeSection, navHref, type NavKey } from "./nav-items";
 
 type Me = { id: string; username: string; displayName: string };
 
-const ICONS: Record<NavKey, LucideIcon> = { discover: Users, chats: MessageSquare, settings: Settings, profile: User };
+const ICONS: Record<NavKey, LucideIcon> = {
+  discover: Users,
+  campus: GraduationCap,
+  chats: MessageSquare,
+  settings: Settings,
+  profile: User,
+};
 
 function useSection(username: string) {
   return activeSection(usePathname(), username);

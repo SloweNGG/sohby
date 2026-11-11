@@ -26,4 +26,5 @@ test("başkasının profili Keşfet'e, kendi profilin Profil'e sayılır", () =>
   assert.equal(activeSection("/profile/edit", "selin"), "profile");
   assert.equal(activeSection("/chats/anon/x", "selin"), "chats");
   assert.equal(activeSection("/settings", "selin"), "settings");
+  assert.equal(activeSection("/campus", "selin"), "campus");
 });

@@ -8,9 +8,12 @@ import { LANGUAGES } from "@/lib/types";
 import type { CountryCode } from "@/lib/data/countries";
 import { DiscoverFilterPanel } from "@/components/discover/filter-panel";
 import {
+  CAMPUS_FILTERS,
   DISCOVER_FILTERS,
   activePanelCount,
+  discoverPath,
   discoverQuery,
+  type DiscoverMode,
   type DiscoverPlace,
   type DiscoverQuery,
 } from "@/components/discover/query";
@@ -22,9 +25,19 @@ const chipClass = (active: boolean) =>
   );
 
 /** Arama kutusu (GET formu: JavaScript olmadan da çalışır). */
-export async function DiscoverSearch({ current, locale, className }: { current: DiscoverQuery; locale: Locale; className?: string }) {
+export async function DiscoverSearch({
+  current,
+  locale,
+  className,
+  mode = "general",
+}: {
+  current: DiscoverQuery;
+  locale: Locale;
+  className?: string;
+  mode?: DiscoverMode;
+}) {
   const t = await getTranslations("discover");
-  const action = getPathname({ href: "/discover", locale });
+  const action = getPathname({ href: discoverPath(mode), locale });
   const keep = discoverQuery(current, { q: "" });
   return (
     <form action={action} method="get" role="search" className={className}>
@@ -52,18 +65,22 @@ export async function DiscoverFilters({
   locale,
   canFlirt,
   places,
+  mode = "general",
 }: {
   current: DiscoverQuery;
   locale: Locale;
   /** Flört filtresi yalnızca flört seçmiş kullanıcıya gösterilir. */
   canFlirt: boolean;
   places: DiscoverPlace[];
+  mode?: DiscoverMode;
 }) {
   const t = await getTranslations({ locale, namespace: "discover" });
   const tc = await getTranslations({ locale, namespace: "countries" });
   const tg = await getTranslations({ locale, namespace: "auth.gender" });
-  const action = getPathname({ href: "/discover", locale });
+  const pathname = discoverPath(mode);
+  const action = getPathname({ href: pathname, locale });
   const count = activePanelCount(current);
+  const tabs = mode === "campus" ? CAMPUS_FILTERS : DISCOVER_FILTERS.filter((f) => f !== "flirt" || canFlirt);
 
   // Listeler sunucuda sıralanır (sunucu ve tarayıcı aynı sırayı görsün).
   const collator = new Intl.Collator(locale);
@@ -103,10 +120,10 @@ export async function DiscoverFilters({
   return (
     <>
       <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-none md:mx-0 md:flex-wrap md:overflow-visible md:px-0">
-        {DISCOVER_FILTERS.filter((f) => f !== "flirt" || canFlirt).map((f) => (
+        {tabs.map((f) => (
           <Link
             key={f}
-            href={{ pathname: "/discover", query: discoverQuery(current, { filter: f }) }}
+            href={{ pathname, query: discoverQuery(current, { filter: f }) }}
             className={chipClass(current.filter === f)}
             aria-current={current.filter === f ? "true" : undefined}
           >
@@ -124,6 +141,8 @@ export async function DiscoverFilters({
           <DiscoverFilterPanel
             key={new URLSearchParams(discoverQuery(current, {})).toString()}
             action={action}
+            pathname={pathname}
+            showLocation={mode === "general"}
             current={current}
             hidden={discoverQuery(current, {
               minAge: null,
@@ -145,7 +164,7 @@ export async function DiscoverFilters({
           {pills.map((p) => (
             <li key={p.key}>
               <Link
-                href={{ pathname: "/discover", query: discoverQuery(current, p.remove) }}
+                href={{ pathname, query: discoverQuery(current, p.remove) }}
                 aria-label={t("panel.remove", { label: p.label })}
                 className="inline-flex h-8 items-center gap-1.5 rounded-full border border-edge bg-surface pl-3 pr-2 text-sm text-moon hover:border-lilac"
               >

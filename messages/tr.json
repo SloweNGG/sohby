@@ -281,7 +281,8 @@
     "signOut": "Çıkış yap",
     "accountMenu": "Hesap menüsü",
     "settings": "Ayarlar",
-    "editProfile": "Profili düzenle"
+    "editProfile": "Profili düzenle",
+    "campus": "Kampüs"
   },
   "discover": {
     "metaTitle": "Keşfet",
@@ -330,8 +331,10 @@
       "apply": "Uygula",
       "clear": "Temizle",
       "active": "Seçili filtreler",
-      "remove": "{label} filtresini kaldır"
-    }
+      "remove": "{label} filtresini kaldır",
+      "noteCampus": "Yaşını ya da cinsiyetini gizleyenler bu filtrelerde görünmez. Kampüste yalnızca üniversitendeki doğrulanmış öğrenciler var."
+    },
+    "emptyCampus": "Kampüste henüz başka doğrulanmış öğrenci yok. Arkadaşlarını davet et; ilk gelenler sen olun!"
   },
   "profile": {
     "back": "Keşfet’e dön",
@@ -873,6 +876,62 @@
     "detectFound": "Ülke ve şehrini doldurduk. Doğru değilse aşağıdan değiştirebilirsin.",
     "detectCountryOnly": "Ülkeni bulduk ama şehrini bulamadık. Şehrini aşağıdan seç.",
     "detectFailed": "Konumunu bulamadık. Ülke ve şehrini aşağıdan kendin seç."
+  },
+  "campus": {
+    "title": "Kampüs",
+    "badge": {
+      "label": "Doğrulanmış öğrenci",
+      "withUniversity": "Doğrulanmış öğrenci · {university}"
+    },
+    "join": {
+      "lead": "Yalnızca öğrencilerin girebildiği bölüm. Öğrenci kartınla doğrulan, kampüsündeki öğrencilerle tanış.",
+      "benefit1": "Yalnızca senin üniversitendeki doğrulanmış öğrencileri görürsün.",
+      "benefit2": "Profilinde \"Doğrulanmış öğrenci\" rozeti çıkar; insanlar gerçek bir öğrenciyle konuştuğunu bilir.",
+      "benefit3": "Kartın şifrelenerek saklanır, yalnızca ekibimiz görür ve inceleme bitince en geç 7 gün içinde silinir.",
+      "pendingTitle": "Kartın inceleniyor",
+      "pendingBody": "Kartını {date} tarihinde gönderdin. Ekibimiz inceleyince kampüs açılacak; genellikle 1–2 gün sürer.",
+      "rejectedTitle": "Kartın onaylanmadı",
+      "rejectedReason": "Sebep: {reason}. Yeni bir fotoğrafla tekrar deneyebilirsin.",
+      "expired": "Öğrenci doğrulamanın süresi doldu. Kampüse dönmek için güncel öğrenci kartını yükle.",
+      "noUniversities": "Şu an kampüs açık bir üniversite yok.",
+      "onlyStudents": "Kampüs yalnızca kayıtlı öğrenciler içindir; mezunlar ve personel katılamaz. Doğrulama 1 yıl geçerlidir."
+    },
+    "form": {
+      "title": "Öğrenci kartınla doğrulan",
+      "renewTitle": "Güncel öğrenci kartını yükle",
+      "hint": "Kartının ön yüzünün net bir fotoğrafını yükle. Ekibimiz kontrol edip onaylar.",
+      "university": "Üniversite",
+      "universityHint": "Kampüs şimdilik yalnızca bu üniversitede açık. Yakında başka üniversiteler de gelecek.",
+      "file": "Öğrenci kartının fotoğrafı",
+      "tips": "Adın, fotoğrafın ve üniversitenin adı okunabilir olmalı. Kartında T.C. kimlik numarası varsa üzerini kapatabilirsin. JPEG, PNG ya da WebP, en çok 5 MB.",
+      "privacy": "Fotoğraf şifrelenerek ayrı bir yerde saklanır, konum ve cihaz bilgileri silinir. Yalnızca ekibimiz görür; her görüntüleme kayda geçer. İnceleme bitince en geç 7 gün içinde silinir.",
+      "submit": "Gönder",
+      "errors": {
+        "unauthorized": "Oturumun kapanmış. Yeniden giriş yap.",
+        "invalid_university": "Bu üniversite için kampüs açık değil.",
+        "too_large": "Fotoğraf en çok 5 MB olabilir.",
+        "unsupported_type": "Yalnızca JPEG, PNG ya da WebP fotoğraf yükleyebilirsin.",
+        "invalid_image": "Fotoğraf okunamadı. Başka bir fotoğraf dene.",
+        "not_allowed": "Şu an yeni kart yükleyemezsin. Doğrulaman bitmeye 14 gün kala yenileyebilirsin.",
+        "already_pending": "Önceki kartın hâlâ inceleniyor.",
+        "rate_limited": "Bugün çok fazla deneme yaptın. Yarın tekrar dene.",
+        "failed": "Bir şeyler ters gitti. Biraz sonra tekrar dene."
+      }
+    },
+    "verified": {
+      "until": "{date} tarihine kadar geçerli",
+      "expiring": "Doğrulaman {date} tarihinde bitiyor ({days} gün kaldı). Kampüste kalmak için güncel öğrenci kartını yükle.",
+      "renewPending": "Yeni öğrenci kartın inceleniyor. Onaylanınca doğrulaman 1 yıl uzar."
+    },
+    "settings": {
+      "title": "Kampüs görünürlüğü",
+      "showUniversity": "Profilimde üniversitemi göster",
+      "showUniversityHint": "Kapalıysa rozetinde yalnızca \"Doğrulanmış öğrenci\" yazar.",
+      "showOutside": "Kampüs dışındaki Keşfet'te de görün",
+      "showOutsideHint": "Kapalıysa yalnızca kampüsteki öğrenciler seni Keşfet'te görür.",
+      "saved": "Kaydedildi.",
+      "error": "Kaydedilemedi. Tekrar dene."
+    }
   },
   "countries": {
     "VI": "ABD Virjin Adaları",

@@ -281,7 +281,8 @@
     "signOut": "Sign out",
     "accountMenu": "Account menu",
     "settings": "Settings",
-    "editProfile": "Edit profile"
+    "editProfile": "Edit profile",
+    "campus": "Campus"
   },
   "discover": {
     "metaTitle": "Explore",
@@ -330,8 +331,10 @@
       "apply": "Apply",
       "clear": "Clear",
       "active": "Active filters",
-      "remove": "Remove filter: {label}"
-    }
+      "remove": "Remove filter: {label}",
+      "noteCampus": "People who hide their age or gender do not appear in these filters. Campus only shows verified students from your university."
+    },
+    "emptyCampus": "No other verified students on campus yet. Invite your friends and be the first!"
   },
   "profile": {
     "back": "Back to Explore",
@@ -873,6 +876,62 @@
     "detectFound": "We filled in your country and city. If they are wrong, change them below.",
     "detectCountryOnly": "We found your country but not your city. Choose your city below.",
     "detectFailed": "We could not find your location. Choose your country and city below."
+  },
+  "campus": {
+    "title": "Campus",
+    "badge": {
+      "label": "Verified student",
+      "withUniversity": "Verified student · {university}"
+    },
+    "join": {
+      "lead": "A space only students can enter. Verify with your student ID and meet students on your campus.",
+      "benefit1": "You only see verified students from your own university.",
+      "benefit2": "A \"Verified student\" badge appears on your profile, so people know they are talking to a real student.",
+      "benefit3": "Your card is stored encrypted, only our team sees it, and it is deleted within 7 days after review.",
+      "pendingTitle": "Your card is being reviewed",
+      "pendingBody": "You sent your card on {date}. Campus opens once our team reviews it; this usually takes 1–2 days.",
+      "rejectedTitle": "Your card was not approved",
+      "rejectedReason": "Reason: {reason}. You can try again with a new photo.",
+      "expired": "Your student verification has expired. Upload your current student ID to return to campus.",
+      "noUniversities": "No university has campus open right now.",
+      "onlyStudents": "Campus is only for enrolled students; graduates and staff cannot join. Verification is valid for 1 year."
+    },
+    "form": {
+      "title": "Verify with your student ID",
+      "renewTitle": "Upload your current student ID",
+      "hint": "Upload a clear photo of the front of your card. Our team checks and approves it.",
+      "university": "University",
+      "universityHint": "Campus is only open at this university for now. More universities are coming soon.",
+      "file": "Photo of your student ID",
+      "tips": "Your name, photo and university name must be readable. If your card shows a national ID number, you can cover it. JPEG, PNG or WebP, up to 5 MB.",
+      "privacy": "The photo is encrypted and stored separately; location and device data are removed. Only our team sees it and every view is logged. It is deleted within 7 days after review.",
+      "submit": "Send",
+      "errors": {
+        "unauthorized": "Your session has ended. Please sign in again.",
+        "invalid_university": "Campus is not open for this university.",
+        "too_large": "The photo can be at most 5 MB.",
+        "unsupported_type": "You can only upload a JPEG, PNG or WebP photo.",
+        "invalid_image": "We could not read the photo. Try another one.",
+        "not_allowed": "You cannot upload a new card right now. You can renew 14 days before your verification ends.",
+        "already_pending": "Your previous card is still being reviewed.",
+        "rate_limited": "You have tried too many times today. Try again tomorrow.",
+        "failed": "Something went wrong. Please try again later."
+      }
+    },
+    "verified": {
+      "until": "Valid until {date}",
+      "expiring": "Your verification ends on {date} ({days} days left). Upload your current student ID to stay on campus.",
+      "renewPending": "Your new student ID is being reviewed. Once approved, your verification is extended by 1 year."
+    },
+    "settings": {
+      "title": "Campus visibility",
+      "showUniversity": "Show my university on my profile",
+      "showUniversityHint": "If off, your badge only says \"Verified student\".",
+      "showOutside": "Also appear in Discover outside campus",
+      "showOutsideHint": "If off, only students on campus see you in Discover.",
+      "saved": "Saved.",
+      "error": "Could not save. Try again."
+    }
   },
   "countries": {
     "AF": "Afghanistan",
