@@ -866,7 +866,13 @@
     "noResults": "Bu ülkede bu adla bir şehir bulamadık. Yakınındaki büyük bir şehri seçebilirsin.",
     "results": "Şehir önerileri",
     "resultCount": "{count, plural, =0 {Sonuç yok} one {# şehir bulundu} other {# şehir bulundu}}",
-    "source": "Şehir listesi: <link>GeoNames</link> (CC BY 4.0)"
+    "source": "Şehir listesi: <link>GeoNames</link> (CC BY 4.0)",
+    "detect": "Konumumu bul",
+    "detecting": "Bulunuyor…",
+    "detectHint": "İnternet bağlantına göre ülke ve şehrini tahmin ederiz. GPS kullanılmaz, kaydedilmez. İstersen aşağıdan kendin de seçebilirsin.",
+    "detectFound": "Ülke ve şehrini doldurduk. Doğru değilse aşağıdan değiştirebilirsin.",
+    "detectCountryOnly": "Ülkeni bulduk ama şehrini bulamadık. Şehrini aşağıdan seç.",
+    "detectFailed": "Konumunu bulamadık. Ülke ve şehrini aşağıdan kendin seç."
   },
   "countries": {
     "VI": "ABD Virjin Adaları",

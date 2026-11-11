@@ -866,7 +866,13 @@
     "noResults": "We could not find a city with that name in this country. You can choose a larger city nearby.",
     "results": "City suggestions",
     "resultCount": "{count, plural, =0 {No results} one {# city found} other {# cities found}}",
-    "source": "City list: <link>GeoNames</link> (CC BY 4.0)"
+    "source": "City list: <link>GeoNames</link> (CC BY 4.0)",
+    "detect": "Find my location",
+    "detecting": "Finding…",
+    "detectHint": "We estimate your country and city from your internet connection. No GPS, nothing is saved. You can also choose them yourself below.",
+    "detectFound": "We filled in your country and city. If they are wrong, change them below.",
+    "detectCountryOnly": "We found your country but not your city. Choose your city below.",
+    "detectFailed": "We could not find your location. Choose your country and city below."
   },
   "countries": {
     "AF": "Afghanistan",

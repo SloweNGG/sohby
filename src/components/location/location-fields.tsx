@@ -1,15 +1,19 @@
 "use client";
 
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState, useTransition } from "react";
 import { useMessages, useTranslations } from "next-intl";
-import { Check, Search } from "lucide-react";
+import { Check, LocateFixed, Search } from "lucide-react";
 import { Hint, Label, inputClasses } from "@/components/ui/field";
 import { cn } from "@/lib/cn";
 import { SORTED_TR_CITIES } from "@/lib/data/cities";
 import { COUNTRY_CODES, type CountryCode } from "@/lib/data/countries";
-import { searchCitiesAction, type CityOption } from "@/lib/location/actions";
+import { detectLocationAction, searchCitiesAction, type CityOption } from "@/lib/location/actions";
 
-export type LocationValue = { country: CountryCode; city: string; cityId: number | null };
+export type LocationValue = {
+  country: CountryCode;
+  city: string;
+  cityId: number | null;
+};
 
 /**
  * Ülke + şehir seçimi. Türkiye'de 81 il listesi, diğer ülkelerde yazdıkça
@@ -36,45 +40,93 @@ export function LocationFields({
     return ["TR" as CountryCode, ...ordered.filter((c) => c !== "TR")];
   }, [messages.countries]);
 
+  // "Konumumu bul": bağlantıya göre tahmini ülke/şehir (GPS yok, kaydedilmez).
+  const [detecting, startDetect] = useTransition();
+  const [detectState, setDetectState] = useState<"idle" | "found" | "country" | "failed">("idle");
+  const [version, setVersion] = useState(0);
+  const detect = () =>
+    startDetect(async () => {
+      const found = await detectLocationAction();
+      if (!found) {
+        setDetectState("failed");
+        return;
+      }
+      onChange({
+        country: found.country as CountryCode,
+        city: found.city,
+        cityId: found.cityId,
+      });
+      setVersion((n) => n + 1);
+      setDetectState(found.city ? "found" : "country");
+    });
+
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
+    <div className="grid gap-4">
       <div>
-        <Label htmlFor="country">{t("country")}</Label>
-        <select
-          id="country"
-          className={cn(inputClasses, "pr-10")}
-          value={value.country}
-          onChange={(e) => onChange({ country: e.target.value as CountryCode, city: "", cityId: null })}
+        <button
+          type="button"
+          onClick={detect}
+          disabled={detecting}
+          className="inline-flex h-11 items-center gap-2 rounded-full border border-edge px-5 text-[15px] font-semibold text-moon transition-colors hover:bg-surface disabled:opacity-60"
         >
-          {countries.map((c) => (
-            <option key={c} value={c}>
-              {tc(c)}
-            </option>
-          ))}
-        </select>
+          <LocateFixed className="h-4 w-4" aria-hidden="true" />
+          {detecting ? t("detecting") : t("detect")}
+        </button>
+        <p className="mt-2 text-xs leading-relaxed text-muted" role="status">
+          {detectState === "found"
+            ? t("detectFound")
+            : detectState === "country"
+              ? t("detectCountryOnly")
+              : detectState === "failed"
+                ? t("detectFailed")
+                : t("detectHint")}
+        </p>
       </div>
-      <div>
-        {value.country === "TR" ? (
-          <>
-            <Label htmlFor="city">{t("city")}</Label>
-            <select
-              id="city"
-              className={cn(inputClasses, "pr-10")}
-              aria-invalid={invalid || undefined}
-              value={value.city}
-              onChange={(e) => onChange({ ...value, city: e.target.value, cityId: null })}
-            >
-              <option value="">{t("cityPlaceholder")}</option>
-              {SORTED_TR_CITIES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-          </>
-        ) : (
-          <CityCombobox key={value.country} value={value} onChange={onChange} invalid={invalid} />
-        )}
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <Label htmlFor="country">{t("country")}</Label>
+          <select
+            id="country"
+            className={cn(inputClasses, "pr-10")}
+            value={value.country}
+            onChange={(e) =>
+              onChange({
+                country: e.target.value as CountryCode,
+                city: "",
+                cityId: null,
+              })
+            }
+          >
+            {countries.map((c) => (
+              <option key={c} value={c}>
+                {tc(c)}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          {value.country === "TR" ? (
+            <>
+              <Label htmlFor="city">{t("city")}</Label>
+              <select
+                id="city"
+                className={cn(inputClasses, "pr-10")}
+                aria-invalid={invalid || undefined}
+                value={value.city}
+                onChange={(e) => onChange({ ...value, city: e.target.value, cityId: null })}
+              >
+                <option value="">{t("cityPlaceholder")}</option>
+                {SORTED_TR_CITIES.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </>
+          ) : (
+            <CityCombobox key={`${value.country}-${version}`} value={value} onChange={onChange} invalid={invalid} />
+          )}
+        </div>
       </div>
     </div>
   );
@@ -131,7 +183,10 @@ function CityCombobox({
         {t("city")}
       </label>
       <div className="relative">
-        <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" aria-hidden="true" />
+        <Search
+          className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
+          aria-hidden="true"
+        />
         <input
           id="city"
           role="combobox"
@@ -170,7 +225,10 @@ function CityCombobox({
           }}
         />
         {value.cityId !== null && (
-          <Check className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-lilac" aria-hidden="true" />
+          <Check
+            className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-lilac"
+            aria-hidden="true"
+          />
         )}
       </div>
       {showList && (
@@ -210,7 +268,12 @@ function CityCombobox({
       <p className="mt-1 text-xs text-muted">
         {t.rich("source", {
           link: (chunks) => (
-            <a href="https://www.geonames.org" target="_blank" rel="noopener noreferrer" className="text-lilac underline">
+            <a
+              href="https://www.geonames.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-lilac underline"
+            >
               {chunks}
             </a>
           ),
