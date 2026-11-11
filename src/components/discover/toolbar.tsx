@@ -120,7 +120,9 @@ export async function DiscoverFilters({
             <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
             {count > 0 ? t("filters.moreCount", { count }) : t("filters.more")}
           </summary>
+          {/* key: etiketle filtre kaldırılınca (sayfa yenilenmeden) panel eski seçimleri tutmasın */}
           <DiscoverFilterPanel
+            key={new URLSearchParams(discoverQuery(current, {})).toString()}
             action={action}
             current={current}
             hidden={discoverQuery(current, {
