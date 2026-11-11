@@ -280,7 +280,18 @@
     "accountMenu": "Account menu",
     "settings": "Settings",
     "editProfile": "Edit profile",
-    "campus": "Campus"
+    "campus": "Campus",
+    "profileProgress": "Your profile is {percent}% complete",
+    "profileProgressLabel": "Profile completion",
+    "profileMissing": "Missing: {items}",
+    "completeProfile": "Complete your profile",
+    "completion": {
+      "photo": "photo",
+      "bio": "about",
+      "hobbies": "hobbies",
+      "district": "neighbourhood",
+      "occupation": "occupation"
+    }
   },
   "discover": {
     "metaTitle": "Explore",

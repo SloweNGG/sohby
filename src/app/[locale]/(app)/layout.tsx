@@ -11,6 +11,7 @@ import { BadgeProvider } from "@/components/app/badges";
 import { PresenceHeartbeat } from "@/components/app/presence";
 import { BottomNav, Sidebar } from "@/components/app/nav";
 import { TimeZoneSync } from "@/components/app/time-zone-sync";
+import { profileCompletion } from "@/lib/profile-completion";
 import { DEFAULT_TIME_ZONE, TZ_COOKIE, validTimeZone } from "@/lib/timezone";
 import type { BadgeCounts } from "@/lib/types";
 
@@ -53,6 +54,8 @@ export default async function AppLayout({ children, params }: LayoutProps<"/[loc
     displayName: account.profile.display_name ?? account.profile.username,
   };
 
+  const completion = profileCompletion({ ...account.profile, hobbyCount: account.hobbyIds.length });
+
   return (
     // now: tarayıcı ilk çizimde sunucunun anını kullanır ("4 sn önce" gibi göreli
     // zamanlar sunucu ile aynı çıkar, hydration uyuşmazlığı olmaz); sonra useNow günceller.
@@ -60,8 +63,8 @@ export default async function AppLayout({ children, params }: LayoutProps<"/[loc
       <TimeZoneSync current={timeZone} />
       <BadgeProvider initial={(badges as BadgeCounts) ?? { unread_messages: 0, pending_requests: 0 }} userId={me.id}>
         <PresenceHeartbeat />
-        <Sidebar me={me} />
-        <div className="min-h-dvh md:pl-[76px]">{children}</div>
+        <Sidebar me={me} completion={completion} />
+        <div className="min-h-dvh md:pl-[76px] xl:pl-60">{children}</div>
         <BottomNav me={me} />
       </BadgeProvider>
     </NextIntlClientProvider>

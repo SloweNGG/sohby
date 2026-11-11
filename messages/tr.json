@@ -280,7 +280,18 @@
     "accountMenu": "Hesap menüsü",
     "settings": "Ayarlar",
     "editProfile": "Profili düzenle",
-    "campus": "Kampüs"
+    "campus": "Kampüs",
+    "profileProgress": "Profilin %{percent} tamam",
+    "profileProgressLabel": "Profil doluluğu",
+    "profileMissing": "Eksik: {items}",
+    "completeProfile": "Profili tamamla",
+    "completion": {
+      "photo": "fotoğraf",
+      "bio": "hakkında",
+      "hobbies": "hobiler",
+      "district": "semt",
+      "occupation": "meslek"
+    }
   },
   "discover": {
     "metaTitle": "Keşfet",
