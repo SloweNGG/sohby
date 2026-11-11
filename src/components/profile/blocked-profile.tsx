@@ -25,12 +25,10 @@ export async function BlockedProfile({
       <BackLink label={t("back")} />
       <div className="mx-auto mt-6 grid max-w-[1120px] gap-8 md:grid-cols-[440px_minmax(0,1fr)] md:gap-10">
         <div className="relative h-[330px] overflow-hidden rounded-[28px] md:h-[550px]">
-          <ProfilePhoto
-            id={p.id}
-            url={p.photo_url}
-            alt={t("blockedPhotoAlt", { name: p.display_name })}
-            className="absolute inset-0 scale-110 blur-2xl"
-          />
+          {/* Bulanıklık dış kutuda: ProfilePhoto kendi "relative" sınıfını taşır. */}
+          <div className="absolute inset-0 scale-110 blur-2xl">
+            <ProfilePhoto id={p.id} url={p.photo_url} alt={t("blockedPhotoAlt", { name: p.display_name })} className="h-full w-full" />
+          </div>
           <div className="absolute inset-0 grid place-items-center bg-night/40">
             <span className="inline-flex items-center gap-2 rounded-full bg-night/85 px-4 py-2 font-semibold">
               <Ban className="h-4 w-4" aria-hidden="true" />

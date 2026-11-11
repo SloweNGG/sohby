@@ -54,7 +54,9 @@ export default async function AppLayout({ children, params }: LayoutProps<"/[loc
   };
 
   return (
-    <NextIntlClientProvider timeZone={timeZone}>
+    // now: tarayıcı ilk çizimde sunucunun anını kullanır ("4 sn önce" gibi göreli
+    // zamanlar sunucu ile aynı çıkar, hydration uyuşmazlığı olmaz); sonra useNow günceller.
+    <NextIntlClientProvider timeZone={timeZone} now={new Date()}>
       <TimeZoneSync current={timeZone} />
       <BadgeProvider initial={(badges as BadgeCounts) ?? { unread_messages: 0, pending_requests: 0 }} userId={me.id}>
         <PresenceHeartbeat />
