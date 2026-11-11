@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { openAgeDocumentAction } from "@/lib/actions";
+import { openAgeDocumentAction, openStudentDocumentAction } from "@/lib/actions";
 import { btn } from "./shell-classes";
 
 /**
@@ -11,9 +11,12 @@ import { btn } from "./shell-classes";
 export function AgeDocViewer({
   documentId,
   labels,
+  kind = "age",
 }: {
   documentId: string;
   labels: { show: string; hide: string; error: string; notAvailable: string; alt: string };
+  /** Yaş belgesi ya da öğrenci kartı (kampüs). */
+  kind?: "age" | "student";
 }) {
   const [src, setSrc] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -39,7 +42,7 @@ export function AgeDocViewer({
         onClick={() =>
           startTransition(async () => {
             setError(null);
-            const r = await openAgeDocumentAction(documentId);
+            const r = await (kind === "student" ? openStudentDocumentAction : openAgeDocumentAction)(documentId);
             if ("url" in r) setSrc(r.url);
             else setError(r.error === "not_found" ? labels.notAvailable : labels.error);
           })

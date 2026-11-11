@@ -10,7 +10,8 @@
     "signOut": "Sign out",
     "settings": "Settings",
     "pending": "pending",
-    "overview": "Overview"
+    "overview": "Overview",
+    "studentDocuments": "Student IDs"
   },
   "login": {
     "title": "Admin sign in",
@@ -199,7 +200,8 @@
     "age_document_reject": "Age document rejected",
     "report_reviewing": "Report against them taken into review",
     "report_resolved": "Report against them resolved",
-    "report_dismissed": "Report against them dismissed"
+    "report_dismissed": "Report against them dismissed",
+    "student_revoke": "Student verification revoked"
   },
   "userDetail": {
     "notFound": "User not found.",
@@ -248,5 +250,35 @@
     },
     "review": "Review",
     "history": "Admin actions"
+  },
+  "studentDocs": {
+    "title": "Student IDs (Campus)",
+    "hint": "Compare the name and photo on the card with the profile, and the university with the selected one. Every time you open a card it is logged; the link is valid for 60 seconds. Cards are deleted automatically within 7 days after review, or after 30 days if not reviewed. Approval is valid for 1 year.",
+    "tabPending": "Pending",
+    "tabAll": "All",
+    "empty": "No pending student IDs.",
+    "university": "Selected university",
+    "profileName": "Name on profile",
+    "age": "{age} years old",
+    "uploaded": "Uploaded",
+    "deleteAfter": "Deleted on",
+    "show": "Show card (logged)",
+    "hide": "Hide",
+    "notAvailable": "The file was deleted or has expired.",
+    "openError": "Could not open the card.",
+    "check1": "Does the card belong to the selected university?",
+    "check2": "Do the name and photo on the card match the profile?",
+    "check3": "Does the card look current (expiry date, if any)?",
+    "approve": "Approve (1 year)",
+    "reject": "Reject",
+    "notePlaceholder": "Reason for rejection (shown to the user, required)",
+    "revoke": "Revoke verification",
+    "revokePlaceholder": "Reason for revoking (required)",
+    "status": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "expired": "Expired"
+    }
   }
 }

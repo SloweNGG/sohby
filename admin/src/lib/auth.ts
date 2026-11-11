@@ -4,7 +4,7 @@ import { connection } from "next/server";
 import { redirect } from "next/navigation";
 import { createClient } from "./supabase";
 
-export type PendingCounts = Partial<Record<"reports" | "photos" | "age_documents" | "appeals", number>>;
+export type PendingCounts = Partial<Record<"reports" | "photos" | "age_documents" | "student_documents" | "appeals", number>>;
 
 /**
  * Yönetici kontrolü + menüdeki bekleyen iş sayıları, TEK veritabanı çağrısıyla

@@ -10,7 +10,8 @@
     "signOut": "Çıkış",
     "settings": "Ayarlar",
     "pending": "bekleyen",
-    "overview": "Genel bakış"
+    "overview": "Genel bakış",
+    "studentDocuments": "Öğrenci kartları"
   },
   "login": {
     "title": "Yönetici girişi",
@@ -199,7 +200,8 @@
     "age_document_reject": "Yaş belgesi reddedildi",
     "report_reviewing": "Hakkındaki şikâyet incelemeye alındı",
     "report_resolved": "Hakkındaki şikâyet çözüldü",
-    "report_dismissed": "Hakkındaki şikâyet geçersiz sayıldı"
+    "report_dismissed": "Hakkındaki şikâyet geçersiz sayıldı",
+    "student_revoke": "Öğrenci doğrulaması geri alındı"
   },
   "userDetail": {
     "notFound": "Kullanıcı bulunamadı.",
@@ -248,5 +250,35 @@
     },
     "review": "İncele",
     "history": "Yönetici işlemleri"
+  },
+  "studentDocs": {
+    "title": "Öğrenci kartları (Kampüs)",
+    "hint": "Karttaki ad ve fotoğrafı profille, üniversiteyi seçilen üniversiteyle karşılaştır. Kartı her açışın işlem kaydına yazılır; bağlantı 60 saniye geçerlidir. Kartlar inceleme bitince en geç 7 gün, incelenmezse 30 gün sonra otomatik silinir. Onay 1 yıl geçerlidir.",
+    "tabPending": "Bekleyenler",
+    "tabAll": "Tümü",
+    "empty": "Bekleyen öğrenci kartı yok.",
+    "university": "Seçilen üniversite",
+    "profileName": "Profildeki ad",
+    "age": "{age} yaş",
+    "uploaded": "Yüklendi",
+    "deleteAfter": "Silinme",
+    "show": "Kartı göster (kayda geçer)",
+    "hide": "Gizle",
+    "notAvailable": "Dosya silindi ya da süresi doldu.",
+    "openError": "Kart açılamadı.",
+    "check1": "Kart seçilen üniversiteye mi ait?",
+    "check2": "Karttaki ad ve fotoğraf profille uyuşuyor mu?",
+    "check3": "Kart güncel görünüyor mu (varsa geçerlilik tarihi)?",
+    "approve": "Onayla (1 yıl)",
+    "reject": "Reddet",
+    "notePlaceholder": "Ret gerekçesi (kullanıcıya gösterilir, zorunlu)",
+    "revoke": "Doğrulamayı geri al",
+    "revokePlaceholder": "Geri alma gerekçesi (zorunlu)",
+    "status": {
+      "pending": "Bekliyor",
+      "approved": "Onaylandı",
+      "rejected": "Reddedildi",
+      "expired": "Süresi doldu"
+    }
   }
 }

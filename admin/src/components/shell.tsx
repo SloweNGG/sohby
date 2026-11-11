@@ -28,6 +28,7 @@ export async function AdminShell({ children }: { children: React.ReactNode }) {
     { href: "/reports", label: t("nav.reports"), count: c.reports, countLabel: pending },
     { href: "/photos", label: t("nav.photos"), count: c.photos, countLabel: pending },
     { href: "/age-documents", label: t("nav.ageDocuments"), count: c.age_documents, countLabel: pending },
+    { href: "/student-documents", label: t("nav.studentDocuments"), count: c.student_documents, countLabel: pending },
     { href: "/users", label: t("nav.users") },
     { href: "/appeals", label: t("nav.appeals"), count: c.appeals, countLabel: pending },
     { href: "/audit", label: t("nav.audit") },

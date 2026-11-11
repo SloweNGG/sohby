@@ -98,3 +98,32 @@ export async function reviewAgeDocumentAction(form: FormData) {
     "/age-documents",
   );
 }
+
+// ---------------------------------------------------------------------------
+// Öğrenci kartları (kampüs, kural 16)
+// ---------------------------------------------------------------------------
+/** Kartı aç: işlem kaydına yazılır, 60 saniyelik bağlantı döner. */
+export async function openStudentDocumentAction(documentId: string): Promise<{ url: string } | { error: string }> {
+  const parsed = id.safeParse(documentId);
+  if (!parsed.success) return { error: "not_found" };
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("admin_open_student_document", { p_document: parsed.data });
+  if (error || typeof data !== "string") return { error: error?.message.includes("not_found") ? "not_found" : "failed" };
+  const { url } = supabaseEnv();
+  return { url: `${url}/functions/v1/student-documents?token=${encodeURIComponent(data)}` };
+}
+
+export async function reviewStudentDocumentAction(form: FormData) {
+  const note = String(form.get("note") ?? "").trim().slice(0, 500);
+  await rpc(
+    "admin_review_student_document",
+    { p_document: id.parse(form.get("id")), p_approve: form.get("approve") === "1", p_note: note || null },
+    "/student-documents",
+  );
+}
+
+/** Doğrulamayı geri al (ör. sahte kart sonradan anlaşıldı). Gerekçe zorunlu. */
+export async function revokeStudentAction(form: FormData) {
+  const note = String(form.get("note") ?? "").trim().slice(0, 500);
+  await rpc("admin_revoke_student", { p_user: id.parse(form.get("user")), p_note: note || null }, "/student-documents");
+}
