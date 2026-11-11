@@ -1,4 +1,5 @@
 /** Veritabanı satırları ve RPC çıktıları için elle yazılmış tipler. */
+import type { CountryCode } from "@/lib/data/countries";
 
 export type Gender = "female" | "male" | "other" | "unspecified";
 
@@ -30,7 +31,9 @@ export type MyProfileRow = {
   username: string;
   display_name: string | null;
   gender: Gender;
+  country_code: CountryCode;
   city: string | null;
+  city_id: number | null;
   district: string | null;
   occupation: string | null;
   bio: string | null;
@@ -72,6 +75,7 @@ export type ProfileCard = {
   display_name: string;
   age: number | null;
   gender: Exclude<Gender, "unspecified"> | null;
+  country_code: CountryCode;
   city: string | null;
   district: string | null;
   occupation: string | null;

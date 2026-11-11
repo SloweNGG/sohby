@@ -1,3 +1,5 @@
+import { cookies } from "next/headers";
+import { NextIntlClientProvider } from "next-intl";
 import { resolveLocale } from "@/i18n/locale";
 import { redirect } from "@/i18n/navigation";
 import { getMyAccount } from "@/lib/profile";
@@ -8,6 +10,8 @@ import { blockingStatus } from "@/lib/account/status";
 import { BadgeProvider } from "@/components/app/badges";
 import { PresenceHeartbeat } from "@/components/app/presence";
 import { BottomNav, Sidebar } from "@/components/app/nav";
+import { TimeZoneSync } from "@/components/app/time-zone-sync";
+import { DEFAULT_TIME_ZONE, TZ_COOKIE, validTimeZone } from "@/lib/timezone";
 import type { BadgeCounts } from "@/lib/types";
 
 // Oturuma bağlı: her istekte sunucuda render edilir.
@@ -42,6 +46,7 @@ export default async function AppLayout({ children, params }: LayoutProps<"/[loc
 
   const supabase = await createClient();
   const { data: badges } = await supabase.rpc("get_badge_counts");
+  const timeZone = validTimeZone((await cookies()).get(TZ_COOKIE)?.value) ?? DEFAULT_TIME_ZONE;
   const me = {
     id: account.profile.id,
     username: account.profile.username,
@@ -49,11 +54,14 @@ export default async function AppLayout({ children, params }: LayoutProps<"/[loc
   };
 
   return (
-    <BadgeProvider initial={(badges as BadgeCounts) ?? { unread_messages: 0, pending_requests: 0 }} userId={me.id}>
-      <PresenceHeartbeat />
-      <Sidebar me={me} />
-      <div className="min-h-dvh md:pl-[76px]">{children}</div>
-      <BottomNav me={me} />
-    </BadgeProvider>
+    <NextIntlClientProvider timeZone={timeZone}>
+      <TimeZoneSync current={timeZone} />
+      <BadgeProvider initial={(badges as BadgeCounts) ?? { unread_messages: 0, pending_requests: 0 }} userId={me.id}>
+        <PresenceHeartbeat />
+        <Sidebar me={me} />
+        <div className="min-h-dvh md:pl-[76px]">{children}</div>
+        <BottomNav me={me} />
+      </BadgeProvider>
+    </NextIntlClientProvider>
   );
 }

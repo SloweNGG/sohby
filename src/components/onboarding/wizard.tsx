@@ -17,7 +17,7 @@ import {
 import { Link } from "@/i18n/navigation";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
-import { FormAlert, Hint, Input, Label, Textarea, inputClasses } from "@/components/ui/field";
+import { FormAlert, Hint, Input, Label, Textarea } from "@/components/ui/field";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ToggleChip } from "@/components/ui/chip";
 import { RadioDot } from "@/components/auth/signup-form";
@@ -28,7 +28,9 @@ import {
   type OnboardingErrorCode,
   type OnboardingStepInput,
 } from "@/lib/onboarding/actions";
-import { SORTED_TR_CITIES } from "@/lib/data/cities";
+import { LocationFields } from "@/components/location/location-fields";
+import { formatPlace } from "@/lib/location/format";
+import type { CountryCode } from "@/lib/data/countries";
 import { checkBirthDate, ageFromIsoDate, formatDateInput, GENDERS } from "@/lib/validation/auth";
 import {
   DATING_INTERESTS,
@@ -53,7 +55,9 @@ export type WizardInitial = {
   needsBirthDate: boolean;
   needsTerms: boolean;
   age: number | null;
+  country: CountryCode;
   city: string;
+  cityId: number | null;
   district: string;
   hobbyIds: number[];
   languages: LanguageCode[];
@@ -94,6 +98,7 @@ export function OnboardingWizard({
   const td = useTranslations("lookingForDesc");
   const tCommon = useTranslations("common");
   const tSignup = useTranslations("auth.signup");
+  const tc = useTranslations("countries");
   const locale = useLocale();
 
   const [v, setV] = useState(initial);
@@ -166,7 +171,7 @@ export function OnboardingWizard({
           acceptTerms: v.needsTerms ? acceptTerms : undefined,
         };
       case "location":
-        return { step, city: v.city as (typeof SORTED_TR_CITIES)[number], district: v.district };
+        return { step, country: v.country, city: v.city, cityId: v.cityId, district: v.district };
       case "hobbies":
         return { step, hobbyIds: v.hobbyIds };
       case "languages":
@@ -425,24 +430,16 @@ export function OnboardingWizard({
 
           {step === "location" && (
             <StepHeader title={t("location.title")} subtitle={t("location.subtitle")}>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div>
-                  <Label htmlFor="city">{t("location.city")}</Label>
-                  <select
-                    id="city"
-                    className={cn(inputClasses, "pr-10")}
-                    value={v.city}
-                    onChange={(e) => set("city", e.target.value)}
-                  >
-                    <option value="">{t("location.cityPlaceholder")}</option>
-                    {SORTED_TR_CITIES.map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
+              <div className="grid gap-4">
+                <LocationFields
+                  value={{ country: v.country, city: v.city, cityId: v.cityId }}
+                  onChange={(next) => {
+                    setV((prev) => ({ ...prev, ...next }));
+                    setError(null);
+                  }}
+                  invalid={error === "city_required"}
+                />
+                <div className="sm:w-1/2 sm:pr-2">
                   <Label htmlFor="district">{t("location.district")}</Label>
                   <Input
                     id="district"
@@ -647,9 +644,7 @@ export function OnboardingWizard({
             {v.city && (
               <p className="mt-5 flex items-center gap-2 text-[15px]">
                 <MapPin className="h-4 w-4 shrink-0" aria-hidden="true" />
-                {[v.showDistrict ? v.district : "", v.city, t("country")]
-                  .filter(Boolean)
-                  .join(", ")}
+                {formatPlace({ ...v, country_code: v.country }, (c) => tc(c as CountryCode), { district: v.showDistrict })}
               </p>
             )}
             <p className={cn("mt-4 text-sm leading-relaxed", v.bio ? "text-moon" : "text-muted")}>

@@ -16,6 +16,8 @@ import { ChatPhoto } from "./chat-photo";
 import { PHOTO_ACCEPT, checkPhotoFile, isRetryable, statusAfterError, type PhotoSendError } from "@/lib/chat/photo";
 import { resizePhoto, sendChatPhoto } from "@/lib/chat/photo-client";
 import type { ConversationHeader, Message, PhotoStatus } from "@/lib/types";
+import { formatPlace } from "@/lib/location/format";
+import type { CountryCode } from "@/lib/data/countries";
 
 const PAGE = 50;
 const RESYNC_PAGE = 200;
@@ -74,6 +76,7 @@ export function ChatRoom({
   mobileMenu?: ReactNode;
 }) {
   const t = useTranslations("chat");
+  const tc = useTranslations("countries");
   const locale = useLocale();
   const { refresh: refreshList } = useChats();
   const { refresh: refreshBadges } = useBadges();
@@ -352,7 +355,7 @@ export function ChatRoom({
     el.style.height = `${Math.min(el.scrollHeight, 160)}px`;
   }, [draft]);
 
-  const place = [other.district, other.city].filter(Boolean).join(", ");
+  const place = formatPlace(other, (c) => tc(c as CountryCode));
   const lastMineIndex = messages.findLastIndex((x) => x.sender_id === me && !x.status);
   const tooLong = draft.trim().length > MAX_LENGTH;
   const showPhotoButton = photoStatus !== "disabled" && photoStatus !== "not_found";

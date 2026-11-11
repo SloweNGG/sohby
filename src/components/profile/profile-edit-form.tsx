@@ -11,7 +11,8 @@ import {
   type PhotoError,
   type ProfileEditError,
 } from "@/lib/profile/actions";
-import { SORTED_TR_CITIES } from "@/lib/data/cities";
+import { LocationFields } from "@/components/location/location-fields";
+import type { CountryCode } from "@/lib/data/countries";
 import { GENDERS } from "@/lib/validation/auth";
 import { Button, buttonClasses } from "@/components/ui/button";
 import { FormAlert, Hint, Input, Label, Textarea, inputClasses } from "@/components/ui/field";
@@ -19,13 +20,16 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/cn";
 import { avatarColors, initial } from "@/lib/avatar";
 import type { Gender, Hobby } from "@/lib/types";
+import { formatPlace } from "@/lib/location/format";
 
 export type ProfileEditInitial = {
   id: string;
   username: string;
   age: number | null;
   displayName: string;
+  country: CountryCode;
   city: string;
+  cityId: number | null;
   district: string;
   occupation: string;
   gender: Gender;
@@ -60,6 +64,7 @@ async function compress(file: File): Promise<Blob> {
 export function ProfileEditForm({ initial: init, hobbies }: { initial: ProfileEditInitial; hobbies: Hobby[] }) {
   const t = useTranslations("profileEdit");
   const tg = useTranslations("auth.gender");
+  const tc = useTranslations("countries");
   const locale = useLocale();
   const router = useRouter();
   const [v, setV] = useState(init);
@@ -89,8 +94,7 @@ export function ProfileEditForm({ initial: init, hobbies }: { initial: ProfileEd
     startTransition(async () => {
       const result = await saveProfileAction({
         displayName: v.displayName,
-        city: v.city as (typeof SORTED_TR_CITIES)[number],
-        district: v.district,
+        location: { country: v.country, city: v.city, cityId: v.cityId, district: v.district },
         occupation: v.occupation,
         gender: v.gender,
         bio: v.bio,
@@ -139,7 +143,7 @@ export function ProfileEditForm({ initial: init, hobbies }: { initial: ProfileEd
   };
 
   const nameLine = `${v.displayName || v.username}${v.showAge && v.age !== null ? `, ${v.age}` : ""}`;
-  const place = [v.showDistrict ? v.district : "", v.city].filter(Boolean).join(", ");
+  const place = formatPlace({ ...v, country_code: v.country }, (c) => tc(c as CountryCode), { district: v.showDistrict });
   const avatar = (size: number) =>
     init.photoUrl && photoStatus !== null ? (
       // eslint-disable-next-line @next/next/no-img-element
@@ -198,17 +202,16 @@ export function ProfileEditForm({ initial: init, hobbies }: { initial: ProfileEd
           <Input id="displayName" maxLength={40} value={v.displayName} onChange={(e) => set("displayName", e.target.value)} />
         </div>
 
+        <LocationFields
+          value={{ country: v.country, city: v.city, cityId: v.cityId }}
+          onChange={(next) => {
+            setV((p) => ({ ...p, ...next }));
+            setSaved(false);
+            setError(null);
+          }}
+          invalid={error === "city_required"}
+        />
         <div className="grid gap-4 sm:grid-cols-2">
-          <div>
-            <Label htmlFor="city">{t("city")}</Label>
-            <select id="city" className={inputClasses} value={v.city} onChange={(e) => set("city", e.target.value)}>
-              {SORTED_TR_CITIES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-          </div>
           <div>
             <Label htmlFor="district">{t("district")}</Label>
             <Input id="district" maxLength={60} value={v.district} onChange={(e) => set("district", e.target.value)} />

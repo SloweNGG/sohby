@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import { getCurrentUserId } from "@/lib/auth/session";
 import { GENDERS } from "@/lib/validation/auth";
-import { TR_CITIES } from "@/lib/data/cities";
+import { locationColumns, locationSchema } from "@/lib/validation/location";
 import { syncHobbies } from "./hobbies";
 
 export type ProfileEditError =
@@ -19,8 +19,7 @@ export type ProfileEditError =
 
 const profileSchema = z.object({
   displayName: z.string().trim().min(1).max(40),
-  city: z.enum(TR_CITIES),
-  district: z.string().trim().max(60),
+  location: locationSchema,
   occupation: z.string().trim().max(80),
   gender: z.enum(GENDERS),
   bio: z.string().max(500),
@@ -42,7 +41,7 @@ export async function saveProfileAction(
     const field = String(parsed.error.issues[0]?.path[0] ?? "");
     const map: Record<string, ProfileEditError> = {
       displayName: "display_name_required",
-      city: "city_required",
+      location: "city_required",
       hobbyIds: input.hobbyIds?.length > 15 ? "too_many_hobbies" : "hobbies_required",
       bio: "bio_too_long",
     };
@@ -54,8 +53,7 @@ export async function saveProfileAction(
     .from("profiles")
     .update({
       display_name: d.displayName,
-      city: d.city,
-      district: d.district || null,
+      ...locationColumns(d.location),
       occupation: d.occupation || null,
       gender: d.gender,
       bio: d.bio || null,
@@ -64,7 +62,7 @@ export async function saveProfileAction(
       show_online: d.showOnline,
     })
     .eq("id", userId);
-  if (error) return { ok: false, error: "generic" };
+  if (error) return { ok: false, error: error.message?.includes("invalid_city") ? "city_required" : "generic" };
   const hobbyError = await syncHobbies(supabase, userId, d.hobbyIds);
   if (hobbyError) return { ok: false, error: hobbyError.includes("too_many_hobbies") ? "too_many_hobbies" : "generic" };
   revalidatePath("/", "layout");

@@ -8,7 +8,7 @@ import { syncHobbies } from "@/lib/profile/hobbies";
 import { getCurrentUserId } from "@/lib/auth/session";
 import { checkBirthDate, isValidUsername, normalizeUsername, GENDERS } from "@/lib/validation/auth";
 import { DATING_INTERESTS, LANGUAGES, LOOKING_FOR, MESSAGE_POLICIES } from "@/lib/types";
-import { TR_CITIES } from "@/lib/data/cities";
+import { hasValidCity, locationColumns, locationFields } from "@/lib/validation/location";
 
 /**
  * Başlangıç soruları: her "Devam"da ilgili adım kaydedilir (sayfa yenilense de
@@ -58,11 +58,9 @@ const basicsSchema = z.object({
   acceptTerms: z.boolean().optional(),
 });
 
-const locationSchema = z.object({
-  step: z.literal("location"),
-  city: z.enum(TR_CITIES),
-  district: z.string().trim().max(60),
-});
+const locationStepSchema = locationFields
+  .extend({ step: z.literal("location") })
+  .refine(hasValidCity, { path: ["city"] });
 
 const hobbiesSchema = z.object({
   step: z.literal("hobbies"),
@@ -94,7 +92,7 @@ const stepSchema = z.discriminatedUnion("step", [
   lookingForSchema,
   datingSchema,
   basicsSchema,
-  locationSchema,
+  locationStepSchema,
   hobbiesSchema,
   languagesSchema,
   aboutSchema,
@@ -118,6 +116,7 @@ function dbError(message: string | undefined): OnboardingErrorCode {
   const hit = known.find((k) => message?.includes(k));
   if (hit) return hit;
   if (message?.includes("birth_date_required")) return "birth_date_invalid";
+  if (message?.includes("invalid_city")) return "city_required";
   return "generic";
 }
 
@@ -228,7 +227,7 @@ export async function saveOnboardingStep(input: OnboardingStepInput): Promise<On
     }
 
     case "location": {
-      const error = await updateProfile({ city: data.city, district: data.district || null });
+      const error = await updateProfile(locationColumns(data));
       return error ? { ok: false, error: dbError(error.message) } : { ok: true };
     }
 

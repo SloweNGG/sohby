@@ -4,12 +4,15 @@ import { Link } from "@/i18n/navigation";
 import { ProfilePhoto } from "@/components/profile/avatar";
 import { Tag } from "@/components/ui/chip";
 import type { ProfileCard } from "@/lib/types";
+import { formatPlace } from "@/lib/location/format";
+import type { CountryCode } from "@/lib/data/countries";
 
 /** Keşfet kartı (masaüstü: tasarim/06, telefon: tasarim/12). */
 export function DiscoverCard({ p }: { p: ProfileCard }) {
   const t = useTranslations("discover");
+  const tc = useTranslations("countries");
   const locale = useLocale();
-  const place = [p.district, p.city].filter(Boolean).join(", ");
+  const place = formatPlace(p, (c) => tc(c as CountryCode));
   const shortPlace = p.district ?? p.city ?? "";
   const nameLine = p.age !== null ? `${p.display_name}, ${p.age}` : p.display_name;
   const hobbyLabel = (h: ProfileCard["hobbies"][number]) => (locale === "tr" ? h.name_tr : h.name_en);

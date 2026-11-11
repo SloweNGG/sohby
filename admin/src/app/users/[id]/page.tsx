@@ -11,7 +11,7 @@ type ReportRow = { id: string; reason: string; status: string; created_at: strin
 type Detail = {
   profile: {
     id: string; username: string; display_name: string | null; email: string | null; email_confirmed_at: string | null;
-    birth_date: string | null; gender: string; city: string | null; district: string | null; occupation: string | null; bio: string | null;
+    birth_date: string | null; gender: string; country_code: string; city: string | null; district: string | null; occupation: string | null; bio: string | null;
     looking_for: string[]; languages: string[]; hobbies: Array<{ tr: string; en: string }>;
     account_status: string; status_reason: string | null; suspended_until: string | null; status_changed_at: string | null;
     created_at: string; last_seen_at: string | null; onboarding_completed_at: string | null; deleted_at: string | null; is_test: boolean;
@@ -46,7 +46,9 @@ async function UserDetail({ detail }: { detail: ReturnType<typeof adminRpc<Detai
   const p = d.profile;
   const age = ageFrom(p.birth_date);
 
-  const place = [p.district, p.city].filter(Boolean).join(", ");
+  // Ülke adı yalnızca sunucuda üretilir (Unicode CLDR); Türkiye için yazılmaz.
+  const country = p.country_code && p.country_code !== "TR" ? new Intl.DisplayNames([locale], { type: "region" }).of(p.country_code) : null;
+  const place = [p.district, p.city, country].filter(Boolean).join(", ");
   const historyText = (h: Detail["admin_history"][number]) => {
     // Çeviri anahtarlarında nokta alt başlık demek; işlem adındaki noktalar alt çizgiye çevrilir.
     const key = `history.${h.action.replace(/\./g, "_")}`;

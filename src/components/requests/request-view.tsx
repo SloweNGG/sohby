@@ -7,6 +7,8 @@ import { InitialAvatar } from "@/components/profile/avatar";
 import { Tag } from "@/components/ui/chip";
 import { RequestActions } from "./request-actions";
 import type { MessageRequestItem } from "@/lib/types";
+import { formatPlace } from "@/lib/location/format";
+import type { CountryCode } from "@/lib/data/countries";
 
 /** Mesaj isteği ayrıntısı (tasarim/09 sağ panel). */
 export async function RequestView({
@@ -20,10 +22,11 @@ export async function RequestView({
 }) {
   const t = await getTranslations({ locale, namespace: "requests" });
   const tl = await getTranslations({ locale, namespace: "lookingFor" });
+  const tc = await getTranslations({ locale, namespace: "countries" });
   const format = await getFormatter({ locale });
   const s = request.sender;
   const nameLine = s.age !== null ? `${s.display_name}, ${s.age}` : s.display_name;
-  const place = [s.district, s.city].filter(Boolean).join(", ");
+  const place = formatPlace(s, (c) => tc(c as CountryCode));
   const common = s.hobbies.filter((h) => h.common);
 
   return (

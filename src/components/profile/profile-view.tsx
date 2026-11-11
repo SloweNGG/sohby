@@ -12,6 +12,8 @@ import { buttonClasses } from "@/components/ui/button";
 import { signOutAction } from "@/lib/auth/actions";
 import { cn } from "@/lib/cn";
 import type { ProfileDetail } from "@/lib/types";
+import { formatPlace } from "@/lib/location/format";
+import type { CountryCode } from "@/lib/data/countries";
 
 /** Kişi profili (masaüstü: tasarim/07, telefon: tasarim/15). */
 export async function ProfileView({
@@ -27,10 +29,11 @@ export async function ProfileView({
   const tl = await getTranslations({ locale, namespace: "lookingFor" });
   const tg = await getTranslations({ locale, namespace: "auth.gender" });
   const ta = await getTranslations({ locale, namespace: "app" });
+  const tc = await getTranslations({ locale, namespace: "countries" });
 
   const hobbyName = (h: ProfileDetail["hobbies"][number]) => (locale === "tr" ? h.name_tr : h.name_en);
   const nameLine = p.age !== null ? `${p.display_name}, ${p.age}` : p.display_name;
-  const place = [p.district, p.city].filter(Boolean).join(", ");
+  const place = formatPlace(p, (c) => tc(c as CountryCode));
   const since = new Date(p.member_since);
   const sinceText = t("memberSince", {
     date: new Intl.DateTimeFormat(locale, { month: "long", year: "numeric", timeZone: "UTC" }).format(since),
