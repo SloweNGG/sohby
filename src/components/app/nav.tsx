@@ -207,7 +207,7 @@ export function BottomNav({ me }: { me: Me }) {
       aria-label={t("mainNav")}
       className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-night-deep/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
     >
-      <ul className="mx-auto flex h-[76px] max-w-md items-center justify-around">
+      <ul className="mx-auto flex h-16 max-w-md items-center justify-around">
         {items.map(({ key, href, icon: Icon, label, count }) => {
           const active = section === key;
           return (
@@ -216,13 +216,16 @@ export function BottomNav({ me }: { me: Me }) {
                 href={href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "relative flex w-[72px] flex-col items-center gap-1 text-xs font-semibold",
+                  "relative grid h-12 w-14 place-items-center rounded-2xl",
                   active ? "text-coral-text" : "text-moon",
                 )}
               >
-                <Icon className="h-[22px] w-[22px]" strokeWidth={1.75} aria-hidden="true" />
-                {label}
-                <Badge count={count} className="-top-2 left-[calc(50%+4px)]" />
+                <Icon className="h-6 w-6" strokeWidth={1.75} aria-hidden="true" />
+                <span className="sr-only">
+                  {label}
+                  {count > 0 ? ` (${count})` : ""}
+                </span>
+                <Badge count={count} className="right-1.5 top-1" />
               </Link>
             </li>
           );
