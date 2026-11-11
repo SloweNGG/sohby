@@ -176,7 +176,7 @@ export function SettingsForm({
           </div>
         </section>
 
-        <section>
+        <section id="language" className="scroll-mt-6">
           <h2 className="text-xl">{t("languageTitle")}</h2>
           <p className="mb-4 mt-1 text-sm text-muted">{t("languageHint")}</p>
           <div className="grid gap-2.5 sm:grid-cols-2" role="radiogroup" aria-label={t("languageTitle")}>

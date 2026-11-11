@@ -694,6 +694,7 @@
     "title": "Settings",
     "nav": {
       "privacy": "Privacy",
+      "language": "App language",
       "blocked": "Blocked",
       "account": "Account",
       "flirt": "Dating",

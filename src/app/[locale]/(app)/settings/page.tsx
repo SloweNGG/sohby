@@ -39,7 +39,7 @@ export default async function SettingsPage({ params }: PageProps<"/[locale]/sett
       <nav aria-label={t("title")} className="mb-6 md:mb-0">
         <h1 className="text-[34px] tracking-[-0.05em]">{t("title")}</h1>
         <ul className="mt-4 flex gap-2 overflow-x-auto md:mt-6 md:flex-col md:gap-1">
-          {(["privacy", "flirt", "blocked", "declined", "account"] as const).map((k, i) => (
+          {(["privacy", "language", "flirt", "blocked", "declined", "account"] as const).map((k, i) => (
             <li key={k}>
               <a
                 href={`#${k}`}
