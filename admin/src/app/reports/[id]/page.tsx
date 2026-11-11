@@ -45,8 +45,8 @@ async function ReportDetail({ id }: { id: string }) {
         {t(`reasons.${r.reason}`)} {r.is_anonymous && <Badge>{t("reports.anonymous")}</Badge>}
       </h1>
       <dl className="mt-4 grid grid-cols-[160px_1fr] gap-y-2 text-sm">
-        <dt className="text-muted">{t("reports.reported")}</dt><dd>@{r.reported?.username} · {t(`accountStatus.${r.reported?.account_status ?? "active"}`)}</dd>
-        <dt className="text-muted">{t("reports.reporter")}</dt><dd>@{r.reporter?.username ?? "—"}</dd>
+        <dt className="text-muted">{t("reports.reported")}</dt><dd>{r.reported ? <Link href={`/users/${r.reported.id}`} className="text-lilac underline-offset-4 hover:underline">@{r.reported.username}</Link> : "—"} · {t(`accountStatus.${r.reported?.account_status ?? "active"}`)}</dd>
+        <dt className="text-muted">{t("reports.reporter")}</dt><dd>{r.reporter ? <Link href={`/users/${r.reporter.id}`} className="text-lilac underline-offset-4 hover:underline">@{r.reporter.username}</Link> : "—"}</dd>
         <dt className="text-muted">{t("common.status")}</dt><dd>{t(`reportStatus.${r.status}`)}</dd>
         <dt className="text-muted">{t("reports.note")}</dt><dd className="whitespace-pre-wrap">{r.note ?? "—"}</dd>
       </dl>

@@ -94,7 +94,8 @@
     "setStatus": "Durumu değiştir",
     "reason": "Gerekçe (kullanıcıya gösterilir)",
     "until": "Askı bitişi (isteğe bağlı)",
-    "apply": "Uygula"
+    "apply": "Uygula",
+    "joined": "Katıldı"
   },
   "accountStatus": {
     "active": "Aktif",
@@ -172,5 +173,80 @@
     "messages24h": "Son 24 saatte mesaj",
     "conversations24h": "Son 24 saatte yeni sohbet",
     "reports7d": "Son 7 günde şikâyet"
+  },
+  "gender": {
+    "female": "Kadın",
+    "male": "Erkek",
+    "other": "Diğer",
+    "unspecified": "Belirtmemiş"
+  },
+  "lookingFor": {
+    "chat": "Sohbet",
+    "friends": "Yeni arkadaşlar",
+    "hobby_buddy": "Hobi arkadaşı",
+    "activity": "Birlikte etkinlik",
+    "flirt": "Flört",
+    "new_in_town": "Yeni şehirde çevre",
+    "language_practice": "Dil pratiği"
+  },
+  "history": {
+    "user_status": "Durum değişti",
+    "photo_approve": "Fotoğraf onaylandı",
+    "photo_reject": "Fotoğraf reddedildi",
+    "appeal_accept": "İtiraz kabul edildi",
+    "appeal_reject": "İtiraz reddedildi",
+    "age_document_approve": "Yaş belgesi onaylandı",
+    "age_document_reject": "Yaş belgesi reddedildi",
+    "report_reviewing": "Hakkındaki şikâyet incelemeye alındı",
+    "report_resolved": "Hakkındaki şikâyet çözüldü",
+    "report_dismissed": "Hakkındaki şikâyet geçersiz sayıldı"
+  },
+  "userDetail": {
+    "notFound": "Kullanıcı bulunamadı.",
+    "viewLogged": "Bu sayfanın açılması işlem kaydına yazıldı.",
+    "testAccount": "Test hesabı",
+    "account": "Hesap",
+    "profile": "Profil",
+    "verified": "doğrulandı",
+    "notVerified": "doğrulanmadı",
+    "birthDate": "Doğum tarihi",
+    "joined": "Katıldı",
+    "lastSeen": "Son görülme",
+    "onboarding": "Başlangıç soruları",
+    "done": "Tamamlandı",
+    "notDone": "Tamamlanmadı",
+    "statusReason": "Gerekçe",
+    "suspendedUntil": "Askı bitişi",
+    "deletedAt": "Silinme",
+    "gender": "Cinsiyet",
+    "place": "Semt",
+    "occupation": "Meslek",
+    "lookingFor": "Ne arıyor",
+    "languages": "Diller",
+    "hobbies": "Hobiler",
+    "changeStatus": "Hesap durumunu değiştir",
+    "statusHint": "Gerekçe kullanıcıya gösterilir. Askı bitişi boş bırakılırsa askı siz kaldırana kadar sürer. Her değişiklik işlem kaydına yazılır.",
+    "activity": "Etkinlik",
+    "conversations": "Sohbet",
+    "messagesSent": "Gönderdiği mesaj",
+    "blockedBy": "Onu engelleyen kişi",
+    "blocksMade": "Engellediği kişi",
+    "activityHint": "Yalnızca sayılar. Mesajların içeriği burada görünmez; yalnızca şikâyet ekranından, kayda geçerek açılır.",
+    "photos": "Profil fotoğrafları",
+    "currentPhoto": "Profilde",
+    "photoStatus": {
+      "pending": "Onay bekliyor",
+      "approved": "Onaylı",
+      "rejected": "Reddedildi"
+    },
+    "reportsAgainst": "Hakkındaki şikâyetler",
+    "reportsFiled": "Yaptığı şikâyetler",
+    "appealStatus": {
+      "open": "Bekliyor",
+      "accepted": "Kabul edildi",
+      "rejected": "Reddedildi"
+    },
+    "review": "İncele",
+    "history": "Yönetici işlemleri"
   }
 }

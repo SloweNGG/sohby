@@ -40,6 +40,7 @@ const ADMIN_CALLS = [
   ["admin_list_appeals", ["open"]],
   ["admin_list_audit", [10]],
   ["admin_overview", []],
+  ["admin_get_user", () => [user]],
 ];
 
 test("yönetici olmayan hiçbir yönetim fonksiyonunu çalıştıramaz ve hiçbir şey kaydedilmez", async () => {

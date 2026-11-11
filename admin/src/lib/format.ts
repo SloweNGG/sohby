@@ -31,3 +31,14 @@ export function fmtDate(iso: string | null | undefined): string {
     year: "numeric",
   }).format(new Date(dateOnly ? `${iso}T00:00:00Z` : iso));
 }
+
+/** Doğum tarihinden ("2000-05-17") bugünkü yaş. */
+export function ageFrom(birth: string | null | undefined): number | null {
+  if (!birth) return null;
+  const b = new Date(`${birth}T00:00:00Z`);
+  const now = new Date();
+  let age = now.getUTCFullYear() - b.getUTCFullYear();
+  const m = now.getUTCMonth() - b.getUTCMonth();
+  if (m < 0 || (m === 0 && now.getUTCDate() < b.getUTCDate())) age -= 1;
+  return age;
+}

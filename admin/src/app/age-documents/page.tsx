@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getT } from "@/lib/i18n";
-import { fmtDate, fmtDateTime } from "@/lib/format";
+import { ageFrom, fmtDate, fmtDateTime } from "@/lib/format";
 import { createClient } from "@/lib/supabase";
 import { reviewAgeDocumentAction } from "@/lib/actions";
 import { AdminShell, Badge, btnDanger, btnPrimary, input } from "@/components/shell";
@@ -16,16 +16,6 @@ type Doc = {
   file_available: boolean;
   user: { username: string; display_name: string | null; birth_date: string | null } | null;
 };
-
-function ageFrom(birth: string | null): number | null {
-  if (!birth) return null;
-  const b = new Date(`${birth}T00:00:00Z`);
-  const now = new Date();
-  let age = now.getUTCFullYear() - b.getUTCFullYear();
-  const m = now.getUTCMonth() - b.getUTCMonth();
-  if (m < 0 || (m === 0 && now.getUTCDate() < b.getUTCDate())) age -= 1;
-  return age;
-}
 
 export default async function AgeDocumentsPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const { status } = await searchParams;

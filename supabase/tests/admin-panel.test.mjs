@@ -73,3 +73,39 @@ test("genel bakış: yalnızca sayılar; açılması kayda yazılır; silinmiş 
   const text = JSON.stringify(o);
   for (const name of ["pnl_user", "pnl_other", "pnl_susp", user, other]) assert.ok(!text.includes(name));
 });
+
+test("kullanıcı ayrıntısı: yönetici olmayan göremez", async () => {
+  await rejects(db.rpc(other, "admin_get_user", [user]), /forbidden/);
+});
+
+test("kullanıcı ayrıntısı: açılış kayda yazılır; şikâyetler, işlem geçmişi ve sayılar döner", async () => {
+  await db.rpc(admin, "admin_set_user_status", [user, "suspended", "deneme gerekçesi", null]);
+  await db.rpc(admin, "admin_set_user_status", [user, "active", null, null]);
+  const d = await db.rpc(admin, "admin_get_user", [user]);
+  assert.equal(d.profile.username, "pnl_user");
+  assert.equal(d.reports_against.length, 1);
+  assert.equal(d.reports_against[0].other.username, "pnl_other");
+  assert.equal(d.reports_filed.length, 0);
+  assert.equal(d.stats.conversations, 1);
+  assert.equal(d.stats.messages_sent, 1);
+  const statusChanges = d.admin_history.filter((h) => h.action === "user.status");
+  assert.equal(statusChanges.length, 2);
+  assert.equal(statusChanges[1].details.reason, "deneme gerekçesi");
+  // Görüntülemeler geçmişte listelenmez.
+  assert.ok(d.admin_history.every((h) => !h.action.endsWith(".view")));
+  const [row] = await db.admin(
+    `select target_id from private.admin_audit_log where action = 'user.view' and admin_id = $1 order by id desc limit 1`,
+    [admin],
+  );
+  assert.equal(row.target_id, user);
+  assert.equal(await db.rpc(admin, "admin_get_user", ["00000000-0000-0000-0000-000000000000"]), null);
+});
+
+test("kullanıcı ayrıntısı: Kural 11 flört tercihi ve Kural 3 mesaj içeriği yanıtta yok", async () => {
+  await db.enableFlirt(other, ["female"]);
+  const d = await db.rpc(admin, "admin_get_user", [other]);
+  const text = JSON.stringify(d);
+  assert.ok(!/interested_in|dating|consent/i.test(text), "flört tercihi sızdı");
+  assert.ok(!text.includes("merhaba"), "mesaj içeriği sızdı");
+  assert.ok(d.profile.looking_for.includes("flirt"));
+});

@@ -94,7 +94,8 @@
     "setStatus": "Change status",
     "reason": "Reason (shown to the user)",
     "until": "Suspension end (optional)",
-    "apply": "Apply"
+    "apply": "Apply",
+    "joined": "Joined"
   },
   "accountStatus": {
     "active": "Active",
@@ -172,5 +173,80 @@
     "messages24h": "Messages in last 24h",
     "conversations24h": "New chats in last 24h",
     "reports7d": "Reports in last 7 days"
+  },
+  "gender": {
+    "female": "Woman",
+    "male": "Man",
+    "other": "Other",
+    "unspecified": "Not specified"
+  },
+  "lookingFor": {
+    "chat": "Chat",
+    "friends": "New friends",
+    "hobby_buddy": "Hobby buddy",
+    "activity": "Do things together",
+    "flirt": "Dating",
+    "new_in_town": "New in town",
+    "language_practice": "Language practice"
+  },
+  "history": {
+    "user_status": "Status changed",
+    "photo_approve": "Photo approved",
+    "photo_reject": "Photo rejected",
+    "appeal_accept": "Appeal accepted",
+    "appeal_reject": "Appeal rejected",
+    "age_document_approve": "Age document approved",
+    "age_document_reject": "Age document rejected",
+    "report_reviewing": "Report against them taken into review",
+    "report_resolved": "Report against them resolved",
+    "report_dismissed": "Report against them dismissed"
+  },
+  "userDetail": {
+    "notFound": "User not found.",
+    "viewLogged": "Opening this page was written to the audit log.",
+    "testAccount": "Test account",
+    "account": "Account",
+    "profile": "Profile",
+    "verified": "verified",
+    "notVerified": "not verified",
+    "birthDate": "Date of birth",
+    "joined": "Joined",
+    "lastSeen": "Last seen",
+    "onboarding": "Onboarding",
+    "done": "Completed",
+    "notDone": "Not completed",
+    "statusReason": "Reason",
+    "suspendedUntil": "Suspended until",
+    "deletedAt": "Deleted",
+    "gender": "Gender",
+    "place": "Area",
+    "occupation": "Occupation",
+    "lookingFor": "Looking for",
+    "languages": "Languages",
+    "hobbies": "Hobbies",
+    "changeStatus": "Change account status",
+    "statusHint": "The reason is shown to the user. If no end date is set, the suspension lasts until you lift it. Every change is written to the audit log.",
+    "activity": "Activity",
+    "conversations": "Chats",
+    "messagesSent": "Messages sent",
+    "blockedBy": "Blocked by",
+    "blocksMade": "Has blocked",
+    "activityHint": "Counts only. Message content is not shown here; it can only be opened from a report, and that is logged.",
+    "photos": "Profile photos",
+    "currentPhoto": "On profile",
+    "photoStatus": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "reportsAgainst": "Reports against them",
+    "reportsFiled": "Reports they filed",
+    "appealStatus": {
+      "open": "Open",
+      "accepted": "Accepted",
+      "rejected": "Rejected"
+    },
+    "review": "Review",
+    "history": "Admin actions"
   }
 }
