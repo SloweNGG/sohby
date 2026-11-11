@@ -1,15 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Eye, ImageOff } from "lucide-react";
+import { Eye, ImageOff, X } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { forgetChatPhotoUrl, signedChatPhotoUrl } from "@/lib/chat/photo-client";
 
 /**
  * Sohbetteki fotoğraf. Gelen fotoğraflar bulanık gelir ve "Fotoğrafı göster"
  * ile açılır; gönderen kendi fotoğrafını net görür. Dosya gizli bucket'tan
- * kısa ömürlü imzalı bağlantıyla yüklenir.
+ * kısa ömürlü imzalı bağlantıyla yüklenir. Görünen fotoğrafa tıklanınca tam
+ * ekran büyür (bulanıkken büyümez; önce "Fotoğrafı göster" gerekir).
  */
 export function ChatPhoto({
   path,
@@ -28,6 +29,7 @@ export function ChatPhoto({
   const [failed, setFailed] = useState(false);
   const [retried, setRetried] = useState(false);
   const [revealed, setRevealed] = useState(mine);
+  const dialogRef = useRef<HTMLDialogElement>(null);
 
   useEffect(() => {
     if (localUrl || !path) return;
@@ -62,21 +64,37 @@ export function ChatPhoto({
     );
   }
 
+  const alt = hidden ? t("hiddenAlt") : mine ? t("mineAlt") : t("alt");
+  const thumb = src ? (
+    // İmzalı bağlantı kısa ömürlü ve özel: Next görüntü optimizasyonundan geçmez.
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt={alt}
+      aria-hidden={hidden || undefined}
+      onError={onError}
+      className={cn(
+        "block max-h-[420px] w-auto max-w-[260px] object-cover md:max-w-[320px]",
+        hidden && "scale-110 blur-2xl",
+      )}
+    />
+  ) : null;
+
   return (
+    <>
     <div className={cn("relative overflow-hidden rounded-[22px] bg-surface", sending && "opacity-70")}>
-      {src ? (
-        // İmzalı bağlantı kısa ömürlü ve özel: Next görüntü optimizasyonundan geçmez.
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={src}
-          alt={hidden ? t("hiddenAlt") : mine ? t("mineAlt") : t("alt")}
-          aria-hidden={hidden || undefined}
-          onError={onError}
-          className={cn(
-            "block max-h-[420px] w-auto max-w-[260px] object-cover md:max-w-[320px]",
-            hidden && "scale-110 blur-2xl",
-          )}
-        />
+      {src && !hidden ? (
+        <button
+          type="button"
+          onClick={() => dialogRef.current?.showModal()}
+          aria-label={t("enlarge")}
+          aria-haspopup="dialog"
+          className="block cursor-zoom-in"
+        >
+          {thumb}
+        </button>
+      ) : src ? (
+        thumb
       ) : (
         <div className="h-48 w-56 animate-pulse" aria-label={t("loading")} role="img" />
       )}
@@ -93,5 +111,34 @@ export function ChatPhoto({
         </div>
       )}
     </div>
+    {src && !hidden && (
+      // Tarayıcının yerleşik penceresi: Esc ile kapanır, odak içeride kalır, sayfanın üstünde açılır.
+      // Fotoğraf kutusunun dışında durur: gönderilirkenki yarı saydamlık büyük hâle geçmez.
+      <dialog
+        ref={dialogRef}
+        aria-label={alt}
+        className="fixed inset-0 m-0 h-dvh max-h-none w-dvw max-w-none bg-transparent p-0 backdrop:bg-night/90"
+      >
+        <div
+          className="flex h-full w-full items-center justify-center p-4 md:p-10"
+          onClick={(e) => {
+            // Fotoğrafın dışına tıklanınca kapanır.
+            if (e.target === e.currentTarget) dialogRef.current?.close();
+          }}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={src} alt={alt} className="max-h-full max-w-full rounded-[20px] object-contain" />
+        </div>
+        <button
+          type="button"
+          onClick={() => dialogRef.current?.close()}
+          aria-label={t("close")}
+          className="absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full border border-edge bg-night/85 text-moon hover:bg-night"
+        >
+          <X className="h-5 w-5" aria-hidden="true" />
+        </button>
+      </dialog>
+    )}
+    </>
   );
 }

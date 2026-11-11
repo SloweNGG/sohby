@@ -471,7 +471,9 @@
         "recipient_off": "Bu kişi fotoğraf almayı kapatmış.",
         "rate_limited": "Bugünkü fotoğraf sınırına ulaştın (günde 50). Yarın yeniden gönderebilirsin.",
         "not_allowed": "Bu sohbete şu anda fotoğraf gönderemezsin."
-      }
+      },
+      "enlarge": "Fotoğrafı büyüt",
+      "close": "Kapat"
     }
   },
   "requests": {
