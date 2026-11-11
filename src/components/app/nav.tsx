@@ -87,7 +87,8 @@ export function Sidebar({ me, completion }: { me: Me; completion: ProfileComplet
             <Link
               key={item.key}
               href={navHref(item.key, me.username)}
-              className={itemClass(active)}
+              // Geniş görünümde Ayarlar, profil kartındaki dişli simgesindedir.
+              className={cn(itemClass(active), item.key === "settings" && "xl:hidden")}
               aria-current={active ? "page" : undefined}
             >
               <Icon className="h-5 w-5 shrink-0" aria-hidden="true" />
@@ -152,20 +153,33 @@ export function Sidebar({ me, completion }: { me: Me; completion: ProfileComplet
           </div>
         )}
         <div className="hidden rounded-[20px] bg-surface/60 p-1.5 xl:block">
-          <Link
-            href={`/u/${me.username}`}
-            aria-current={section === "profile" ? "page" : undefined}
-            className={cn(
-              "flex items-center gap-3 rounded-2xl p-2 hover:bg-line",
-              section === "profile" && "ring-2 ring-coral",
-            )}
-          >
-            {avatar("h-10 w-10 text-[15px]")}
-            <span className="min-w-0">
-              <span className="block truncate text-sm font-semibold">{me.displayName}</span>
-              <span className="block truncate text-xs text-muted">@{me.username}</span>
-            </span>
-          </Link>
+          <div className="flex items-center gap-1">
+            <Link
+              href={`/u/${me.username}`}
+              aria-current={section === "profile" ? "page" : undefined}
+              className={cn(
+                "flex min-w-0 flex-1 items-center gap-3 rounded-2xl p-2 hover:bg-line",
+                section === "profile" && "ring-2 ring-coral",
+              )}
+            >
+              {avatar("h-10 w-10 text-[15px]")}
+              <span className="min-w-0">
+                <span className="block truncate text-sm font-semibold">{me.displayName}</span>
+                <span className="block truncate text-xs text-muted">@{me.username}</span>
+              </span>
+            </Link>
+            <Link
+              href="/settings"
+              aria-label={t("settings")}
+              aria-current={section === "settings" ? "page" : undefined}
+              className={cn(
+                "grid h-10 w-10 shrink-0 place-items-center rounded-full transition-colors",
+                section === "settings" ? "bg-coral text-ink" : "text-muted hover:bg-line hover:text-moon",
+              )}
+            >
+              <Settings className="h-5 w-5" aria-hidden="true" />
+            </Link>
+          </div>
           <div className="mt-1 border-t border-line pt-1">
             <Link href="/profile/edit" className={accountLinkClass}>
               <PencilLine className="h-4 w-4" aria-hidden="true" />
