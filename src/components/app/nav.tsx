@@ -187,14 +187,16 @@ export function Sidebar({ me, completion }: { me: Me; completion: ProfileComplet
 /** Telefon alt gezinme çubuğu (tasarim/12, 13, 15). Sohbet ekranında gizlenir. */
 export function BottomNav({ me }: { me: Me }) {
   const t = useTranslations("app");
-  const section = useSection(me.username);
+  // Telefonda Ayarlar menüde yok; profil sayfasından açılır, o yüzden Profil seçili görünür.
+  const rawSection = useSection(me.username);
+  const section = rawSection === "settings" ? "profile" : rawSection;
   const pathname = usePathname();
   const { unread_messages, pending_requests } = useBadges();
   const chatCount = unread_messages + pending_requests;
   const inConversation = /^\/chats\/(?!requests$)[^/]+/.test(pathname);
   if (inConversation) return null;
 
-  const items = NAV_ITEMS.map((item) => ({
+  const items = NAV_ITEMS.filter((item) => item.key !== "settings").map((item) => ({
     key: item.key,
     href: navHref(item.key, me.username),
     icon: ICONS[item.key],

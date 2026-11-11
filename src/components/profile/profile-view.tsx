@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { CalendarDays, ChevronLeft, GraduationCap, Lock, MapPin, MessageSquare, User } from "lucide-react";
+import { CalendarDays, ChevronLeft, GraduationCap, Lock, MapPin, MessageSquare, Settings, User } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { ablativeSuffix } from "@/lib/i18n/turkish";
@@ -127,6 +127,15 @@ export async function ProfileView({
         >
           <ChevronLeft className="h-5 w-5" aria-hidden="true" />
         </Link>
+        {p.is_self && (
+          <Link
+            href="/settings"
+            className="absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full bg-night/80"
+            aria-label={ta("settings")}
+          >
+            <Settings className="h-5 w-5" aria-hidden="true" />
+          </Link>
+        )}
         {!p.is_self && (
           <div className="absolute right-4 top-4">
             <SafetyActions
@@ -195,6 +204,10 @@ export async function ProfileView({
               <div className="mt-4 flex flex-wrap gap-2">
                 <Link href="/profile/edit" className={buttonClasses({ size: "sm" })}>
                   {t("editProfile")}
+                </Link>
+                <Link href="/settings" className={cn(buttonClasses({ variant: "outline", size: "sm" }), "md:hidden")}>
+                  <Settings className="h-4 w-4" aria-hidden="true" />
+                  {ta("settings")}
                 </Link>
               </div>
               <form action={signOutAction} className="mt-3">

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
+import { ChevronLeft } from "lucide-react";
 import { resolveLocale } from "@/i18n/locale";
-import { redirect } from "@/i18n/navigation";
+import { Link, redirect } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ageFromBirthDate, getMyAccount } from "@/lib/profile";
 import { SettingsForm } from "@/components/settings/settings-form";
@@ -19,6 +20,7 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/settings
 export default async function SettingsPage({ params }: PageProps<"/[locale]/settings">) {
   const locale = await resolveLocale(params);
   const t = await getTranslations({ locale, namespace: "settings" });
+  const ta = await getTranslations({ locale, namespace: "app" });
   const account = await getMyAccount();
   if (!account) {
     redirect({ href: "/login", locale });
@@ -37,6 +39,14 @@ export default async function SettingsPage({ params }: PageProps<"/[locale]/sett
   return (
     <main className="px-4 pb-28 pt-6 sm:px-6 md:grid md:grid-cols-[240px_minmax(0,640px)] md:gap-12 md:px-10 md:pb-12 md:pt-10">
       <nav aria-label={t("title")} className="mb-6 md:mb-0">
+        {/* Telefon: Ayarlar alt menüde yok, profilden gelinir; geri dönüş bağlantısı */}
+        <Link
+          href={`/u/${profile.username}`}
+          className="mb-3 inline-flex items-center gap-1 text-sm font-semibold text-lilac md:hidden"
+        >
+          <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+          {ta("myProfile")}
+        </Link>
         <h1 className="text-[34px] tracking-[-0.05em]">{t("title")}</h1>
         <ul className="mt-4 flex gap-2 overflow-x-auto md:mt-6 md:flex-col md:gap-1">
           {(["privacy", "language", "flirt", "blocked", "declined", "account"] as const).map((k, i) => (
