@@ -13,6 +13,7 @@ function deps(overrides = {}) {
     remove: async (paths) => { state.removed.push(...paths); },
     register: async (u, path) => { state.registered.push(path); return { status: "approved", remove_paths: ["old.jpg"] }; },
     removeAll: async () => ["a.jpg", "b.jpg"],
+    removeOne: async (u, id) => (id === "33333333-3333-3333-3333-333333333333" ? ["one.jpg"] : []),
     newId: () => "22222222-2222-2222-2222-222222222222",
     ...overrides,
   };
@@ -72,4 +73,21 @@ test("DELETE kullanıcının fotoğraflarını kaldırır; başka yöntem redded
   assert.equal((await handleUpload(req("DELETE", "good"), d)).status, 200);
   assert.deepEqual(d.state.removed, ["a.jpg", "b.jpg"]);
   assert.equal((await handleUpload(req("GET", "good"), deps())).status, 405);
+});
+
+test("DELETE ?photo= yalnızca o fotoğrafı siler; geçersiz kimlik reddedilir", async () => {
+  const d = deps();
+  const r = new Request("http://x/upload?photo=33333333-3333-3333-3333-333333333333", { method: "DELETE", headers: { authorization: "Bearer good" } });
+  assert.equal((await handleUpload(r, d)).status, 200);
+  assert.deepEqual(d.state.removed, ["one.jpg"]);
+  const bad = new Request("http://x/upload?photo=../x", { method: "DELETE", headers: { authorization: "Bearer good" } });
+  assert.equal((await handleUpload(bad, deps())).status, 400);
+});
+
+test("6 fotoğraf sınırı: 409 too_many_photos ve yüklenen dosya geri silinir", async () => {
+  const d = deps({ register: async () => { throw new Error("too_many_photos"); } });
+  const res = await handleUpload(req("POST", "good", form(JPEG)), d);
+  assert.equal(res.status, 409);
+  assert.deepEqual(await res.json(), { error: "too_many_photos" });
+  assert.deepEqual(d.state.removed, [d.state.uploaded[0].path]);
 });

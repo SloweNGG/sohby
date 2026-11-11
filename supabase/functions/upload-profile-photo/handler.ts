@@ -4,7 +4,9 @@
  *  - Kimlik: istekteki kullanıcı oturum belirteci Supabase Auth ile doğrulanır.
  *  - Dosya: en çok 5 MB; türü baytlardan belirlenir (JPEG/PNG/WebP).
  *  - Gizlilik: EXIF/GPS/XMP/metin üst verileri kaydetmeden önce silinir.
- *  - Kayıt ve onay durumu veritabanında `register_profile_photo` ile belirlenir.
+ *  - Kayıt ve onay durumu veritabanında `register_profile_photo` ile belirlenir
+ *    (en çok 6 fotoğraf; yenisi sona eklenir).
+ *  - DELETE ?photo=<kimlik> tek fotoğrafı, parametresiz DELETE hepsini siler.
  */
 import { CONTENT_TYPES, detectImageType, stripMetadata } from "../_shared/image.ts";
 
@@ -16,6 +18,8 @@ export type UploadDeps = {
   remove: (paths: string[]) => Promise<void>;
   register: (userId: string, path: string) => Promise<{ status: string; remove_paths: string[] }>;
   removeAll: (userId: string) => Promise<string[]>;
+  /** Tek fotoğrafı siler (yalnızca kullanıcının kendi fotoğrafıysa); dosya yollarını döndürür. */
+  removeOne: (userId: string, photoId: string) => Promise<string[]>;
   newId: () => string;
 };
 
@@ -30,7 +34,9 @@ export async function handleUpload(req: Request, deps: UploadDeps): Promise<Resp
   if (!userId) return json({ error: "unauthorized" }, 401);
 
   if (req.method === "DELETE") {
-    const paths = await deps.removeAll(userId);
+    const photoId = new URL(req.url).searchParams.get("photo");
+    if (photoId !== null && !/^[0-9a-f-]{36}$/.test(photoId)) return json({ error: "invalid_request" }, 400);
+    const paths = photoId ? await deps.removeOne(userId, photoId) : await deps.removeAll(userId);
     if (paths.length) await deps.remove(paths);
     return json({ ok: true });
   }
@@ -73,6 +79,7 @@ export async function handleUpload(req: Request, deps: UploadDeps): Promise<Resp
     await deps.remove([path]);
     const message = err instanceof Error ? err.message : String(err);
     if (message.includes("rate_limited")) return json({ error: "rate_limited" }, 429);
+    if (message.includes("too_many_photos")) return json({ error: "too_many_photos" }, 409);
     return json({ error: "register_failed" }, 500);
   }
 }

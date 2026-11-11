@@ -31,6 +31,11 @@ Deno.serve((req) => {
       if (error) throw new Error(error.message);
       return (data ?? []) as string[];
     },
+    removeOne: async (userId, photoId) => {
+      const { data, error } = await admin.rpc("remove_profile_photo", { p_user: userId, p_photo: photoId });
+      if (error) throw new Error(error.message);
+      return (data ?? []) as string[];
+    },
     newId: () => crypto.randomUUID(),
   });
 });

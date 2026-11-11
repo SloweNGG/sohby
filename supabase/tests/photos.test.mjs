@@ -84,17 +84,28 @@ test("otomatik onay kapalıyken fotoğraf beklemede kalır ve başkasına görü
   }
 });
 
-test("başkasının klasörüne kayıt yapılamaz; yeni fotoğraf eskisini kaldırır; günde 10 sınır", async () => {
+test("başkasının klasörüne kayıt yapılamaz; yeni fotoğraf sona eklenir; en çok 6; günde 10 sınır", async () => {
   const a = await db.activeUser({ username: "ph_a" });
   const b = await db.activeUser({ username: "ph_b" });
   await rejects(db.asService(`select public.register_profile_photo($1, $2)`, [a, `${b}/${randomUUID()}.jpg`]), /profile_photos_path_owner/);
 
   const first = await upload(a);
   const second = await upload(a);
-  assert.deepEqual(second.remove_paths, [first.path]);
-  assert.equal((await db.admin(`select count(*)::int c from public.profile_photos where user_id = $1`, [a]))[0].c, 1);
+  assert.deepEqual(second.remove_paths, [], "eski fotoğraf silinmez");
+  assert.equal((await db.admin(`select count(*)::int c from public.profile_photos where user_id = $1`, [a]))[0].c, 2);
+  const [{ photo_id }] = await db.admin(`select photo_id from public.profiles where id = $1`, [a]);
+  assert.equal(photo_id, first.id, "ana fotoğraf ilk sıradaki");
 
-  for (let i = 0; i < 8; i++) await upload(a);
+  for (let i = 0; i < 4; i++) await upload(a);
+  await rejects(upload(a), /too_many_photos/);
+  // Silip yeniden yükleyerek günlük sınıra (10) ulaş.
+  for (let i = 0; i < 4; i++) {
+    const [{ id }] = await db.admin(`select id from public.profile_photos where user_id = $1 order by position desc limit 1`, [a]);
+    await db.asService(`select public.remove_profile_photo($1, $2)`, [a, id]);
+    await upload(a);
+  }
+  const [{ id: last }] = await db.admin(`select id from public.profile_photos where user_id = $1 order by position desc limit 1`, [a]);
+  await db.asService(`select public.remove_profile_photo($1, $2)`, [a, last]);
   await rejects(upload(a), /rate_limited/);
 });
 

@@ -495,6 +495,7 @@ test("anon/authenticated'ın beklenmedik fonksiyon yetkisi yok", async () => {
       "search_cities", "discover_places",
       "get_my_campus", "start_student_verification", "admin_list_student_documents",
       "admin_open_student_document", "admin_review_student_document", "admin_revoke_student",
+      "reorder_my_photos",
     ].map((f) => `public.${f}:authenticated`),
   ]);
   const unexpected = rows.map((r) => `${r.fn}:${r.rolname}`).filter((k) => !allowed.has(k));
