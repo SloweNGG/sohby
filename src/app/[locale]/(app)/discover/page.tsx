@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { resolveLocale } from "@/i18n/locale";
 import { createClient } from "@/lib/supabase/server";
 import { DiscoverView } from "@/components/discover/discover-view";
-import { DISCOVER_FILTERS, type DiscoverFilter, type DiscoverQuery } from "@/components/discover/toolbar";
+import { parseDiscoverQuery, type DiscoverPlace } from "@/components/discover/query";
 import type { ProfileCard } from "@/lib/types";
 import { withPhotoUrls } from "@/lib/photos";
 import { getMyAccount } from "@/lib/profile";
@@ -27,33 +27,28 @@ export default async function DiscoverPage({ params, searchParams }: PageProps<"
   const locale = await resolveLocale(params);
   const sp = await searchParams;
 
-  let minAge = intParam(sp.minAge, 18, 99);
-  let maxAge = intParam(sp.maxAge, 18, 99);
-  if (minAge !== null && maxAge !== null && minAge > maxAge) [minAge, maxAge] = [maxAge, minAge];
-  // Varsayılan sınırlar seçilmişse filtre yok sayılır (yaşı gizli kişiler dışlanmasın).
-  if (minAge === 18 && (maxAge === null || maxAge === 99)) minAge = null;
-  if (maxAge === 99 && minAge === null) maxAge = null;
-
   const account = await getMyAccount();
   const canFlirt = Boolean(account?.profile.looking_for.includes("flirt"));
-  const requested = DISCOVER_FILTERS.includes(sp.filter as DiscoverFilter) ? (sp.filter as DiscoverFilter) : "all";
-  const current: DiscoverQuery = {
-    filter: requested === "flirt" && !canFlirt ? "all" : requested,
-    q: typeof sp.q === "string" ? sp.q.trim().slice(0, 50) : "",
-    minAge,
-    maxAge,
-  };
+  const current = parseDiscoverQuery(sp, canFlirt);
   const page = intParam(sp.page, 1, MAX_PAGES) ?? 1;
 
   const supabase = await createClient();
-  const { data, error } = await supabase.rpc("discover_profiles", {
-    p_filter: current.filter,
-    p_search: current.q || null,
-    p_min_age: current.minAge,
-    p_max_age: current.maxAge,
-    p_limit: PAGE_SIZE * page,
-    p_offset: 0,
-  });
+  const [{ data, error }, placesResult] = await Promise.all([
+    supabase.rpc("discover_profiles", {
+      p_filter: current.filter,
+      p_search: current.q || null,
+      p_min_age: current.minAge,
+      p_max_age: current.maxAge,
+      p_limit: PAGE_SIZE * page,
+      p_offset: 0,
+      p_country: current.country,
+      p_city_key: current.city,
+      p_gender: current.gender,
+      p_language: current.lang,
+    }),
+    supabase.rpc("discover_places"),
+  ]);
+  const places = (Array.isArray(placesResult.data) ? placesResult.data : []) as DiscoverPlace[];
   const people = await withPhotoUrls((data ?? []) as ProfileCard[]);
   const hasMore = people.length === PAGE_SIZE * page && page < MAX_PAGES;
 
@@ -66,6 +61,7 @@ export default async function DiscoverPage({ params, searchParams }: PageProps<"
       hasMore={hasMore}
       page={page}
       canFlirt={canFlirt}
+      places={places}
     />
   );
 }

@@ -4,7 +4,8 @@ import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { Logo } from "@/components/logo";
 import { DiscoverCard } from "@/components/discover/profile-card";
-import { DiscoverFilters, DiscoverSearch, discoverQuery, type DiscoverQuery } from "@/components/discover/toolbar";
+import { DiscoverFilters, DiscoverSearch } from "@/components/discover/toolbar";
+import { activePanelCount, discoverQuery, type DiscoverPlace, type DiscoverQuery } from "@/components/discover/query";
 import { buttonClasses } from "@/components/ui/button";
 import { FormAlert } from "@/components/ui/field";
 import type { ProfileCard } from "@/lib/types";
@@ -17,6 +18,7 @@ export async function DiscoverView({
   hasMore,
   page,
   canFlirt,
+  places,
 }: {
   locale: Locale;
   current: DiscoverQuery;
@@ -25,10 +27,11 @@ export async function DiscoverView({
   hasMore: boolean;
   page: number;
   canFlirt: boolean;
+  places: DiscoverPlace[];
 }) {
   const t = await getTranslations({ locale, namespace: "discover" });
   const tc = await getTranslations({ locale, namespace: "common" });
-  const filtered = current.filter !== "all" || current.q || current.minAge !== null || current.maxAge !== null;
+  const filtered = current.filter !== "all" || current.q || activePanelCount(current) > 0;
 
   return (
     <main className="px-4 pb-28 pt-5 sm:px-6 md:px-10 md:pb-12 md:pt-8">
@@ -52,7 +55,7 @@ export async function DiscoverView({
       </header>
 
       <div className="mt-4 md:mt-5">
-        <DiscoverFilters current={current} locale={locale} canFlirt={canFlirt} />
+        <DiscoverFilters current={current} locale={locale} canFlirt={canFlirt} places={places} />
       </div>
 
       {error ? (

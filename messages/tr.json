@@ -293,15 +293,13 @@
       "nearby": "Yakınımdakiler",
       "common_hobby": "Ortak hobi",
       "online": "Çevrimiçi",
-      "age": "Yaş aralığı",
-      "flirt": "Flört"
+      "flirt": "Flört",
+      "more": "Filtreler",
+      "moreCount": "Filtreler · {count}"
     },
     "age": {
       "min": "En az",
       "max": "En çok",
-      "apply": "Uygula",
-      "clear": "Temizle",
-      "note": "Yaşını gizleyenler bu filtrede görünmez.",
       "chip": "{min}–{max} yaş"
     },
     "online": "Çevrimiçi",
@@ -316,7 +314,24 @@
     "results": "{count, plural, =0 {Sonuç yok} =1 {1 kişi} other {# kişi}}",
     "photoAlt": "{name} profil fotoğrafı",
     "flirtTag": "Flört",
-    "emptyFlirt": "Şu an seninle karşılıklı flört eşleşmesi olan kimse yok."
+    "emptyFlirt": "Şu an seninle karşılıklı flört eşleşmesi olan kimse yok.",
+    "panel": {
+      "title": "Filtreler",
+      "age": "Yaş",
+      "gender": "Cinsiyet",
+      "any": "Hepsi",
+      "language": "Konuştuğu dil",
+      "country": "Ülke",
+      "anyCountry": "Tüm ülkeler",
+      "city": "Şehir",
+      "anyCity": "Tüm şehirler",
+      "chooseCountryFirst": "Önce ülke seç",
+      "note": "Yaşını ya da cinsiyetini gizleyenler bu filtrelerde görünmez. Listede yalnızca Keşfet'te kişi olan ülke ve şehirler var.",
+      "apply": "Uygula",
+      "clear": "Temizle",
+      "active": "Seçili filtreler",
+      "remove": "{label} filtresini kaldır"
+    }
   },
   "profile": {
     "back": "Keşfet’e dön",

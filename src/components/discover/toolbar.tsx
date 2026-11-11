@@ -1,29 +1,19 @@
 import { getTranslations } from "next-intl/server";
-import { Heart, Search, SlidersHorizontal } from "lucide-react";
+import { Heart, Search, SlidersHorizontal, X } from "lucide-react";
 import { Link, getPathname } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/cn";
 import { inputClasses } from "@/components/ui/field";
-
-export const DISCOVER_FILTERS = ["all", "nearby", "common_hobby", "online", "flirt"] as const;
-export type DiscoverFilter = (typeof DISCOVER_FILTERS)[number];
-
-export type DiscoverQuery = {
-  filter: DiscoverFilter;
-  q: string;
-  minAge: number | null;
-  maxAge: number | null;
-};
-
-function query(base: DiscoverQuery, patch: Partial<DiscoverQuery>) {
-  const next = { ...base, ...patch };
-  const out: Record<string, string> = {};
-  if (next.filter !== "all") out.filter = next.filter;
-  if (next.q) out.q = next.q;
-  if (next.minAge !== null) out.minAge = String(next.minAge);
-  if (next.maxAge !== null) out.maxAge = String(next.maxAge);
-  return out;
-}
+import { LANGUAGES } from "@/lib/types";
+import type { CountryCode } from "@/lib/data/countries";
+import { DiscoverFilterPanel } from "@/components/discover/filter-panel";
+import {
+  DISCOVER_FILTERS,
+  activePanelCount,
+  discoverQuery,
+  type DiscoverPlace,
+  type DiscoverQuery,
+} from "@/components/discover/query";
 
 const chipClass = (active: boolean) =>
   cn(
@@ -35,11 +25,12 @@ const chipClass = (active: boolean) =>
 export async function DiscoverSearch({ current, locale, className }: { current: DiscoverQuery; locale: Locale; className?: string }) {
   const t = await getTranslations("discover");
   const action = getPathname({ href: "/discover", locale });
+  const keep = discoverQuery(current, { q: "" });
   return (
     <form action={action} method="get" role="search" className={className}>
-      {current.filter !== "all" && <input type="hidden" name="filter" value={current.filter} />}
-      {current.minAge !== null && <input type="hidden" name="minAge" value={current.minAge} />}
-      {current.maxAge !== null && <input type="hidden" name="maxAge" value={current.maxAge} />}
+      {Object.entries(keep).map(([k, v]) => (
+        <input key={k} type="hidden" name={k} value={v} />
+      ))}
       <label className="relative block">
         <span className="sr-only">{t("search")}</span>
         <Search className="pointer-events-none absolute left-5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted md:hidden" aria-hidden="true" />
@@ -60,84 +51,109 @@ export async function DiscoverFilters({
   current,
   locale,
   canFlirt,
+  places,
 }: {
   current: DiscoverQuery;
   locale: Locale;
   /** Flört filtresi yalnızca flört seçmiş kullanıcıya gösterilir. */
   canFlirt: boolean;
+  places: DiscoverPlace[];
 }) {
-  const t = await getTranslations("discover");
+  const t = await getTranslations({ locale, namespace: "discover" });
+  const tc = await getTranslations({ locale, namespace: "countries" });
+  const tg = await getTranslations({ locale, namespace: "auth.gender" });
   const action = getPathname({ href: "/discover", locale });
-  const ageActive = current.minAge !== null || current.maxAge !== null;
+  const count = activePanelCount(current);
+
+  // Listeler sunucuda sıralanır (sunucu ve tarayıcı aynı sırayı görsün).
+  const collator = new Intl.Collator(locale);
+  const countryCodes = new Set(places.map((p) => p.country));
+  if (current.country) countryCodes.add(current.country);
+  const countries = [...countryCodes]
+    .map((c) => ({ value: c, label: tc(c as CountryCode) }))
+    .sort((a, b) => collator.compare(a.label, b.label));
+  const languageNames = new Intl.DisplayNames([locale], { type: "language" });
+  const langLabel = (code: string) => {
+    const n = languageNames.of(code) ?? code;
+    return n.charAt(0).toLocaleUpperCase(locale) + n.slice(1);
+  };
+  const languages = LANGUAGES.map((l) => ({ value: l, label: langLabel(l) })).sort((a, b) =>
+    collator.compare(a.label, b.label),
+  );
+
+  // Seçili filtreler: her biri tek tıkla kaldırılabilir.
+  const pills: Array<{ key: string; label: string; remove: Partial<DiscoverQuery> }> = [];
+  if (current.minAge !== null || current.maxAge !== null) {
+    pills.push({
+      key: "age",
+      label: t("age.chip", { min: current.minAge ?? 18, max: current.maxAge ?? 99 }),
+      remove: { minAge: null, maxAge: null },
+    });
+  }
+  if (current.gender) pills.push({ key: "gender", label: tg(current.gender), remove: { gender: null } });
+  if (current.lang) pills.push({ key: "lang", label: langLabel(current.lang), remove: { lang: null } });
+  if (current.country) {
+    pills.push({ key: "country", label: tc(current.country as CountryCode), remove: { country: null, city: null } });
+  }
+  if (current.country && current.city) {
+    const name = places.find((p) => p.key === current.city)?.city ?? current.city.replace(/^[a-z]+:/, "");
+    pills.push({ key: "city", label: name, remove: { city: null } });
+  }
 
   return (
-    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-none md:mx-0 md:flex-wrap md:overflow-visible md:px-0">
-      {DISCOVER_FILTERS.filter((f) => f !== "flirt" || canFlirt).map((f) => (
-        <Link
-          key={f}
-          href={{ pathname: "/discover", query: query(current, { filter: f }) }}
-          className={chipClass(current.filter === f)}
-          aria-current={current.filter === f ? "true" : undefined}
-        >
-          {f === "flirt" && <Heart className="h-4 w-4" aria-hidden="true" />}
-          {t(`filters.${f}`)}
-        </Link>
-      ))}
+    <>
+      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-none md:mx-0 md:flex-wrap md:overflow-visible md:px-0">
+        {DISCOVER_FILTERS.filter((f) => f !== "flirt" || canFlirt).map((f) => (
+          <Link
+            key={f}
+            href={{ pathname: "/discover", query: discoverQuery(current, { filter: f }) }}
+            className={chipClass(current.filter === f)}
+            aria-current={current.filter === f ? "true" : undefined}
+          >
+            {f === "flirt" && <Heart className="h-4 w-4" aria-hidden="true" />}
+            {t(`filters.${f}`)}
+          </Link>
+        ))}
 
-      <details className="group relative shrink-0">
-        <summary className={cn(chipClass(ageActive), "cursor-pointer list-none [&::-webkit-details-marker]:hidden")}>
-          <SlidersHorizontal className="h-4 w-4 md:hidden" aria-hidden="true" />
-          {ageActive
-            ? t("age.chip", { min: current.minAge ?? 18, max: current.maxAge ?? 99 })
-            : t("filters.age")}
-        </summary>
-        <form
-          action={action}
-          method="get"
-          className="fixed inset-x-4 top-40 z-40 rounded-2xl border border-edge bg-surface p-4 shadow-2xl md:absolute md:inset-x-auto md:left-0 md:top-12 md:w-72"
-        >
-          {current.filter !== "all" && <input type="hidden" name="filter" value={current.filter} />}
-          {current.q && <input type="hidden" name="q" value={current.q} />}
-          <div className="grid grid-cols-2 gap-3">
-            <label className="text-sm font-semibold">
-              {t("age.min")}
-              <input
-                type="number"
-                name="minAge"
-                min={18}
-                max={99}
-                defaultValue={current.minAge ?? 18}
-                className={cn(inputClasses, "mt-1.5 h-11 bg-night-deep")}
-              />
-            </label>
-            <label className="text-sm font-semibold">
-              {t("age.max")}
-              <input
-                type="number"
-                name="maxAge"
-                min={18}
-                max={99}
-                defaultValue={current.maxAge ?? 99}
-                className={cn(inputClasses, "mt-1.5 h-11 bg-night-deep")}
-              />
-            </label>
-          </div>
-          <p className="mt-3 text-xs leading-relaxed text-muted">{t("age.note")}</p>
-          <div className="mt-4 flex items-center justify-between">
-            <Link
-              href={{ pathname: "/discover", query: query(current, { minAge: null, maxAge: null }) }}
-              className="text-sm text-muted hover:text-moon"
-            >
-              {t("age.clear")}
-            </Link>
-            <button type="submit" className="h-10 rounded-full bg-coral px-5 text-sm font-semibold text-ink">
-              {t("age.apply")}
-            </button>
-          </div>
-        </form>
-      </details>
-    </div>
+        <details className="group relative shrink-0">
+          <summary className={cn(chipClass(count > 0), "cursor-pointer list-none [&::-webkit-details-marker]:hidden")}>
+            <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
+            {count > 0 ? t("filters.moreCount", { count }) : t("filters.more")}
+          </summary>
+          <DiscoverFilterPanel
+            action={action}
+            current={current}
+            hidden={discoverQuery(current, {
+              minAge: null,
+              maxAge: null,
+              gender: null,
+              lang: null,
+              country: null,
+              city: null,
+            })}
+            countries={countries}
+            languages={languages}
+            places={places}
+          />
+        </details>
+      </div>
+
+      {pills.length > 0 && (
+        <ul className="mt-3 flex flex-wrap gap-2" aria-label={t("panel.active")}>
+          {pills.map((p) => (
+            <li key={p.key}>
+              <Link
+                href={{ pathname: "/discover", query: discoverQuery(current, p.remove) }}
+                aria-label={t("panel.remove", { label: p.label })}
+                className="inline-flex h-8 items-center gap-1.5 rounded-full border border-edge bg-surface pl-3 pr-2 text-sm text-moon hover:border-lilac"
+              >
+                {p.label}
+                <X className="h-3.5 w-3.5 text-muted" aria-hidden="true" />
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
   );
 }
-
-export { query as discoverQuery };

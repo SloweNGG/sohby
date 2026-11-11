@@ -293,15 +293,13 @@
       "nearby": "Nearby",
       "common_hobby": "Shared hobby",
       "online": "Online",
-      "age": "Age range",
-      "flirt": "Dating"
+      "flirt": "Dating",
+      "more": "Filters",
+      "moreCount": "Filters · {count}"
     },
     "age": {
       "min": "Min",
       "max": "Max",
-      "apply": "Apply",
-      "clear": "Clear",
-      "note": "People who hide their age don't appear with this filter.",
       "chip": "Age {min}–{max}"
     },
     "online": "Online",
@@ -316,7 +314,24 @@
     "results": "{count, plural, =0 {No results} =1 {1 person} other {# people}}",
     "photoAlt": "{name}'s profile photo",
     "flirtTag": "Dating",
-    "emptyFlirt": "Nobody is a mutual dating match for you right now."
+    "emptyFlirt": "Nobody is a mutual dating match for you right now.",
+    "panel": {
+      "title": "Filters",
+      "age": "Age",
+      "gender": "Gender",
+      "any": "Any",
+      "language": "Speaks",
+      "country": "Country",
+      "anyCountry": "All countries",
+      "city": "City",
+      "anyCity": "All cities",
+      "chooseCountryFirst": "Choose a country first",
+      "note": "People who hide their age or gender do not appear in these filters. Only countries and cities with people in Discover are listed.",
+      "apply": "Apply",
+      "clear": "Clear",
+      "active": "Active filters",
+      "remove": "Remove filter: {label}"
+    }
   },
   "profile": {
     "back": "Back to Explore",
