@@ -30,6 +30,7 @@ Herkese açık (18+) bir sohbet ve tanışma uygulaması. Kullanıcılar profil 
 13. Sohbet silme yalnızca kullanıcının kendi görünümünden siler; mesajlar şikâyet incelemesi için belirli bir süre saklanır.
 14. Yöneticinin yaptığı her işlem ve her sohbet görüntüleme silinemez bir işlem kaydına yazılır.
 15. Yaş doğrulama belgeleri şifreli ve ayrı bir bucket'ta tutulur, inceleme bittikten sonra en geç 30 gün içinde silinir.
+16. Öğrenci kimlik kartları (kampüs doğrulaması) şifreli ve ayrı bir bucket'ta tutulur; yalnızca yönetici, kayda geçen kısa ömürlü bağlantıyla görür; inceleme bittikten sonra en geç 7 gün, incelenmezse yüklemeden 30 gün sonra silinir. Öğrenci bilgisini yalnızca yönetici onayı yazar.
 
 ## Tasarım sistemi (Gece teması)
 
@@ -59,6 +60,8 @@ Yazı tipi: Sora (Google Fonts), tek aile. Başlıklar 800, gövde 400, vurgu 60
 ## Kapsam
 
 **1. aşama (MVP):** tanıtım sayfası, kayıt, giriş, şifre sıfırlama, başlangıç soruları (flört seçilirse ilgi ve açık rıza adımı dahil), Keşfet, kişi profili, birebir yazılı mesajlaşma (Realtime), mesaj istekleri, flört, anonim sohbet ve kimlik açma, engelle, şikâyet et, sohbet silme ve toplu silme, profil düzenleme, gizlilik ayarları, TR/EN dil desteği, yönetim panelinde şikâyetler, fotoğraf onayı (otomatik onay anahtarlı) ve kullanıcılar, kullanıcı tarafında yaş doğrulama, askıya alma ve kapatma ekranları.
+
+**Kampüs (Pamukkale Üniversitesi ile başlar):** öğrenci kartıyla doğrulama ve yönetici onayı (1 yıl geçerli), profilde "Doğrulanmış öğrenci" rozeti, yalnızca aynı üniversitenin öğrencilerini gösteren kampüs Keşfet'i, "kampüs dışında da görün" ve "üniversitemi göster" ayarları.
 
 **2. aşama:** fotoğraf ve sesli mesaj, arkadaşlık sistemi, bildirim paneli ve Web Push, harita, yönetim panelinde genel bakış ve KVKK talepleri.
 

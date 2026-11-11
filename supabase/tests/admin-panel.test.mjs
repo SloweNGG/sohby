@@ -34,7 +34,7 @@ test("menü bilgisi: yöneticiye bekleyen işleri döner, yalnızca sayı içeri
   const s = await db.rpc(admin, "admin_shell");
   assert.equal(s.is_admin, true);
   const c = s.counts;
-  assert.deepEqual(Object.keys(c).sort(), ["age_documents", "appeals", "photos", "reports"]);
+  assert.deepEqual(Object.keys(c).sort(), ["age_documents", "appeals", "photos", "reports", "student_documents"]);
   assert.equal(c.reports, 1);
   assert.equal(c.appeals, 0);
   for (const v of Object.values(c)) assert.equal(typeof v, "number");
