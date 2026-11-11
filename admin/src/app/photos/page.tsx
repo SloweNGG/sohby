@@ -7,15 +7,15 @@ import { AdminShell, btnDanger, btnPrimary } from "@/components/shell";
 type Pending = { id: string; storage_path: string; created_at: string; user: { username: string } | null };
 
 export default async function PhotosPage() {
+  const photos = loadPhotos();
   return (
     <AdminShell>
-      <Photos />
+      <Photos photos={photos} />
     </AdminShell>
   );
 }
 
-async function Photos() {
-  const { t } = getT();
+async function loadPhotos() {
   const supabase = await createClient();
   const [{ data: settings }, { data: pending }] = await Promise.all([
     supabase.rpc("admin_get_settings"),
@@ -28,7 +28,12 @@ async function Photos() {
     ? await supabase.storage.from("profile-photos").createSignedUrls(rows.map((r) => r.storage_path), 300)
     : { data: [] };
   const urlOf = new Map((signed ?? []).map((s) => [s.path, s.signedUrl]));
+  return { auto, rows, urlOf };
+}
 
+async function Photos({ photos }: { photos: ReturnType<typeof loadPhotos> }) {
+  const { t } = getT();
+  const { auto, rows, urlOf } = await photos;
   return (
     <section>
       <h1 className="text-2xl">{t("photos.title")}</h1>

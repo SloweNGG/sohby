@@ -1,24 +1,23 @@
 import { getT } from "@/lib/i18n";
 import { fmtDateTime } from "@/lib/format";
-import { createClient } from "@/lib/supabase";
+import { adminRpc } from "@/lib/supabase";
 import { reviewAppealAction } from "@/lib/actions";
 import { AdminShell, btnDanger, btnPrimary } from "@/components/shell";
 
 type A = { id: string; message: string; status: string; account_status: string; created_at: string; user: { username: string } | null };
 
 export default async function AppealsPage() {
+  const appeals = adminRpc<A[]>("admin_list_appeals", { p_status: "open" });
   return (
     <AdminShell>
-      <Appeals />
+      <Appeals appeals={appeals} />
     </AdminShell>
   );
 }
 
-async function Appeals() {
+async function Appeals({ appeals }: { appeals: ReturnType<typeof adminRpc<A[]>> }) {
   const { t } = getT();
-  const supabase = await createClient();
-  const { data } = await supabase.rpc("admin_list_appeals", { p_status: "open" });
-  const rows = (data ?? []) as A[];
+  const rows = (await appeals).data ?? [];
   return (
     <section className="max-w-3xl">
       <h1 className="text-2xl">{t("appeals.title")}</h1>

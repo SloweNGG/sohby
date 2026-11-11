@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { getT } from "@/lib/i18n";
-import { getAdmin } from "@/lib/auth";
+import { getShell } from "@/lib/auth";
 import { logoutAction } from "@/lib/actions";
-import { createClient } from "@/lib/supabase";
 import { NavLinks, type NavItem } from "./nav-links";
 
 /** Yönetim sayfalarının ortak iskeleti. Yönetici değilse içerik gösterilmez. */
 export async function AdminShell({ children }: { children: React.ReactNode }) {
   const { t } = getT();
-  const { ok } = await getAdmin();
+  // Sayfa kendi bilgisini bundan ÖNCE istemeye başlar; bu kontrol onunla aynı anda yürür.
+  const { ok, counts } = await getShell();
   if (!ok) {
     return (
       <main className="mx-auto max-w-md px-4 py-24">
@@ -20,10 +20,8 @@ export async function AdminShell({ children }: { children: React.ReactNode }) {
       </main>
     );
   }
-  // Bekleyen iş sayıları (yalnızca toplamlar). Fonksiyon henüz yoksa ya da hata verirse rozetler gizlenir.
-  const supabase = await createClient();
-  const { data: counts } = await supabase.rpc("admin_nav_counts");
-  const c = (counts ?? {}) as Partial<Record<"reports" | "photos" | "age_documents" | "appeals", number>>;
+  // Bekleyen iş sayıları (yalnızca toplamlar). Alınamazsa rozetler gizlenir.
+  const c = counts ?? {};
   const pending = t("nav.pending");
   const items: NavItem[] = [
     { href: "/", label: t("nav.overview") },

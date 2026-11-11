@@ -24,13 +24,16 @@ after(async () => {
   await db?.close();
 });
 
-test("menü sayıları: yönetici olmayan göremez", async () => {
-  await rejects(db.rpc(user, "admin_nav_counts"), /forbidden/);
+test("menü bilgisi: yönetici olmayana yalnızca is_admin=false döner, sayı dönmez", async () => {
+  assert.deepEqual(await db.rpc(user, "admin_shell"), { is_admin: false });
+  await rejects(db.as(user, `select private.admin_pending_counts()`), /permission denied/);
 });
 
-test("menü sayıları: yöneticiye bekleyen işleri döner, yalnızca sayı içerir ve kayda satır yazmaz", async () => {
+test("menü bilgisi: yöneticiye bekleyen işleri döner, yalnızca sayı içerir ve kayda satır yazmaz", async () => {
   const before = await auditTotal();
-  const c = await db.rpc(admin, "admin_nav_counts");
+  const s = await db.rpc(admin, "admin_shell");
+  assert.equal(s.is_admin, true);
+  const c = s.counts;
   assert.deepEqual(Object.keys(c).sort(), ["age_documents", "appeals", "photos", "reports"]);
   assert.equal(c.reports, 1);
   assert.equal(c.appeals, 0);

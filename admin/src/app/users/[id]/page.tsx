@@ -1,6 +1,7 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { getT } from "@/lib/i18n";
-import { createClient } from "@/lib/supabase";
+import { adminRpc, createClient } from "@/lib/supabase";
 import { setUserStatusAction } from "@/lib/actions";
 import { ageFrom, fmtDate, fmtDateTime } from "@/lib/format";
 import { AdminShell, Badge, btn, input } from "@/components/shell";
@@ -28,29 +29,22 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export default async function UserPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  // admin_get_user her açılışı işlem kaydına yazar (kural 14). Flört tercihi ve mesaj içeriği içermez.
+  // Yönetici kontrolüyle aynı anda başlar.
+  const detail = UUID.test(id) ? adminRpc<Detail>("admin_get_user", { p_user: id }) : null;
   return (
     <AdminShell>
-      <UserDetail id={id} />
+      <UserDetail detail={detail} />
     </AdminShell>
   );
 }
 
-async function UserDetail({ id }: { id: string }) {
+async function UserDetail({ detail }: { detail: ReturnType<typeof adminRpc<Detail>> | null }) {
   const { t, locale } = getT();
-  if (!UUID.test(id)) return <NotFound />;
-  const supabase = await createClient();
-  // admin_get_user her açılışı işlem kaydına yazar (kural 14). Flört tercihi ve mesaj içeriği içermez.
-  const { data } = await supabase.rpc("admin_get_user", { p_user: id });
-  const d = data as Detail | null;
+  const d = detail ? (await detail).data : null;
   if (!d) return <NotFound />;
   const p = d.profile;
   const age = ageFrom(p.birth_date);
-
-  // Profil fotoğrafları gizli bucket'ta: yönetici oturumuyla 5 dakikalık imzalı bağlantı.
-  const { data: signed } = d.photos.length
-    ? await supabase.storage.from("profile-photos").createSignedUrls(d.photos.map((x) => x.storage_path), 300)
-    : { data: [] };
-  const urlOf = new Map((signed ?? []).filter((s) => s.signedUrl && !s.error).map((s) => [s.path, s.signedUrl]));
 
   const place = [p.district, p.city].filter(Boolean).join(", ");
   const historyText = (h: Detail["admin_history"][number]) => {
@@ -148,22 +142,10 @@ async function UserDetail({ id }: { id: string }) {
         {d.photos.length === 0 ? (
           <p className="mt-2 text-sm text-muted">{t("common.none")}</p>
         ) : (
-          <ul className="mt-3 grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-3">
-            {d.photos.map((ph) => (
-              <li key={ph.id} className="overflow-hidden rounded-[20px] border border-edge bg-surface">
-                {urlOf.get(ph.storage_path) ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={urlOf.get(ph.storage_path)!} alt={`@${p.username}`} className="aspect-square w-full object-cover" />
-                ) : (
-                  <div className="aspect-square w-full bg-night-deep" />
-                )}
-                <div className="flex flex-wrap gap-1 p-2 text-xs">
-                  <Badge>{t(`userDetail.photoStatus.${ph.status}`)}</Badge>
-                  {ph.is_current && <Badge>{t("userDetail.currentPhoto")}</Badge>}
-                </div>
-              </li>
-            ))}
-          </ul>
+          // Fotoğraf bağlantıları ayrıca alınır; sayfanın geri kalanı onları beklemez.
+          <Suspense fallback={<PhotoGrid photos={d.photos} username={p.username} urlOf={new Map()} />}>
+            <SignedPhotoGrid photos={d.photos} username={p.username} />
+          </Suspense>
         )}
       </section>
 
@@ -225,6 +207,39 @@ async function UserDetail({ id }: { id: string }) {
         )}
       </section>
     </div>
+  );
+}
+
+type Photo = Detail["photos"][number];
+
+// Profil fotoğrafları gizli bucket'ta: yönetici oturumuyla 5 dakikalık imzalı bağlantı.
+async function SignedPhotoGrid({ photos, username }: { photos: Photo[]; username: string }) {
+  const supabase = await createClient();
+  const { data: signed } = await supabase.storage.from("profile-photos").createSignedUrls(photos.map((x) => x.storage_path), 300);
+  const urlOf = new Map<string, string>();
+  for (const s of signed ?? []) if (s.path && s.signedUrl && !s.error) urlOf.set(s.path, s.signedUrl);
+  return <PhotoGrid photos={photos} username={username} urlOf={urlOf} />;
+}
+
+function PhotoGrid({ photos, username, urlOf }: { photos: Photo[]; username: string; urlOf: Map<string, string> }) {
+  const { t } = getT();
+  return (
+    <ul className="mt-3 grid grid-cols-[repeat(auto-fill,minmax(140px,1fr))] gap-3">
+      {photos.map((ph) => (
+        <li key={ph.id} className="overflow-hidden rounded-[20px] border border-edge bg-surface">
+          {urlOf.get(ph.storage_path) ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={urlOf.get(ph.storage_path)!} alt={`@${username}`} className="aspect-square w-full object-cover" />
+          ) : (
+            <div className="aspect-square w-full bg-night-deep" />
+          )}
+          <div className="flex flex-wrap gap-1 p-2 text-xs">
+            <Badge>{t(`userDetail.photoStatus.${ph.status}`)}</Badge>
+            {ph.is_current && <Badge>{t("userDetail.currentPhoto")}</Badge>}
+          </div>
+        </li>
+      ))}
+    </ul>
   );
 }
 

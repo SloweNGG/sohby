@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getT } from "@/lib/i18n";
 import { fmtDateTime } from "@/lib/format";
-import { createClient } from "@/lib/supabase";
+import { adminRpc } from "@/lib/supabase";
 import { AdminShell, Badge, btn } from "@/components/shell";
 
 type Brief = { id: string; username: string; display_name: string | null; account_status: string; deleted_at: string | null } | null;
@@ -14,17 +14,16 @@ export default async function ReportsPage({ searchParams }: { searchParams: Prom
   const { t } = getT();
   const { status } = await searchParams;
   const filter = status === "all" ? "all" : "open";
+  const reports = adminRpc<Row[]>("admin_list_reports", { p_status: filter });
   return (
     <AdminShell>
-      <ReportsTable filter={filter} t={t} />
+      <ReportsTable reports={reports} t={t} />
     </AdminShell>
   );
 }
 
-async function ReportsTable({ filter, t }: { filter: "open" | "all"; t: ReturnType<typeof getT>["t"] }) {
-  const supabase = await createClient();
-  const { data } = await supabase.rpc("admin_list_reports", { p_status: filter });
-  const rows = (data ?? []) as Row[];
+async function ReportsTable({ reports, t }: { reports: ReturnType<typeof adminRpc<Row[]>>; t: ReturnType<typeof getT>["t"] }) {
+  const rows = (await reports).data ?? [];
   const name = (b: Brief) => (b ? `@${b.username}${b.deleted_at ? ` (${t("common.deleted")})` : ""}` : "—");
   return (
     <section>

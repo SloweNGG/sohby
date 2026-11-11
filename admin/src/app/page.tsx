@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getT } from "@/lib/i18n";
-import { createClient } from "@/lib/supabase";
+import { adminRpc } from "@/lib/supabase";
 import { AdminShell } from "@/components/shell";
 
 type Overview = {
@@ -12,21 +12,24 @@ type Overview = {
   activity: { messages_24h: number; conversations_24h: number; reports_7d: number };
 };
 
+type Result<T> = ReturnType<typeof adminRpc<T>>;
+
 export default async function OverviewPage() {
+  // admin_overview yalnızca toplam sayılar döndürür; ekranın açılması kayda yazılır.
+  // Yönetici kontrolüyle aynı anda başlar (bkz. adminRpc).
+  const overview = adminRpc<Overview>("admin_overview");
   return (
     <AdminShell>
-      <OverviewContent />
+      <OverviewContent overview={overview} />
     </AdminShell>
   );
 }
 
-async function OverviewContent() {
+async function OverviewContent({ overview }: { overview: Result<Overview> }) {
   const { t, locale } = getT();
-  const supabase = await createClient();
-  // admin_overview yalnızca toplam sayılar döndürür; ekranın açılması kayda yazılır.
-  const { data, error } = await supabase.rpc("admin_overview");
+  const { data, error } = await overview;
   if (error || !data) return <p className="text-muted">{t("common.error")}</p>;
-  const o = data as Overview;
+  const o = data;
   const n = (v: number) => new Intl.NumberFormat(locale === "en" ? "en-GB" : "tr-TR").format(v);
 
   const pending = [

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getT } from "@/lib/i18n";
-import { createClient } from "@/lib/supabase";
+import { adminRpc } from "@/lib/supabase";
 import { AdminShell, btn, input } from "@/components/shell";
 import { fmtDate } from "@/lib/format";
 
@@ -12,18 +12,19 @@ const STATUSES = ["active", "age_verification_required", "suspended", "closed"] 
 
 export default async function UsersPage({ searchParams }: { searchParams: Promise<{ q?: string; status?: string }> }) {
   const sp = await searchParams;
+  const q = sp.q ?? "";
+  const status = STATUSES.find((s) => s === sp.status) ?? null;
+  const users = adminRpc<U[]>("admin_list_users", { p_search: q || null, p_status: status, p_limit: 100, p_offset: 0 });
   return (
     <AdminShell>
-      <Users q={sp.q ?? ""} status={STATUSES.find((s) => s === sp.status) ?? null} />
+      <Users q={q} status={status} users={users} />
     </AdminShell>
   );
 }
 
-async function Users({ q, status }: { q: string; status: string | null }) {
+async function Users({ q, status, users }: { q: string; status: string | null; users: ReturnType<typeof adminRpc<U[]>> }) {
   const { t } = getT();
-  const supabase = await createClient();
-  const { data } = await supabase.rpc("admin_list_users", { p_search: q || null, p_status: status, p_limit: 100, p_offset: 0 });
-  const rows = (data ?? []) as U[];
+  const rows = (await users).data ?? [];
   return (
     <section>
       <h1 className="text-2xl">{t("users.title")}</h1>

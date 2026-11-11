@@ -26,3 +26,14 @@ export async function createClient() {
     },
   });
 }
+
+/**
+ * Yönetim RPC'sini başlatır ve sonucunu döndürür. Sayfalar bunu AdminShell'den
+ * ÖNCE çağırır (beklemeden), böylece sayfa bilgisi yönetici kontrolüyle aynı
+ * anda gelir. Hata fırlatmaz; hata { error } olarak döner.
+ */
+export async function adminRpc<T>(fn: string, args?: Record<string, unknown>): Promise<{ data: T | null; error: { message: string } | null }> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc(fn, args);
+  return { data: (data ?? null) as T | null, error };
+}

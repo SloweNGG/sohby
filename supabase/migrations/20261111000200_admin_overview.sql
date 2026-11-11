@@ -21,7 +21,7 @@ declare
 begin
   perform private.admin_audit('overview.view');
   return jsonb_build_object(
-    'pending', public.admin_nav_counts(),
+    'pending', private.admin_pending_counts(),
     'users', (
       select jsonb_build_object(
         'total', count(*),

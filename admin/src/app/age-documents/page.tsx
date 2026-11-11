@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getT } from "@/lib/i18n";
 import { ageFrom, fmtDate, fmtDateTime } from "@/lib/format";
-import { createClient } from "@/lib/supabase";
+import { adminRpc } from "@/lib/supabase";
 import { reviewAgeDocumentAction } from "@/lib/actions";
 import { AdminShell, Badge, btnDanger, btnPrimary, input } from "@/components/shell";
 import { AgeDocViewer } from "@/components/age-doc-viewer";
@@ -19,18 +19,18 @@ type Doc = {
 
 export default async function AgeDocumentsPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   const { status } = await searchParams;
+  const filter = status === "all" ? "all" : "pending";
+  const docs = adminRpc<Doc[]>("admin_list_age_documents", { p_status: filter });
   return (
     <AdminShell>
-      <AgeDocuments status={status === "all" ? "all" : "pending"} />
+      <AgeDocuments status={filter} docs={docs} />
     </AdminShell>
   );
 }
 
-async function AgeDocuments({ status }: { status: "pending" | "all" }) {
+async function AgeDocuments({ status, docs }: { status: "pending" | "all"; docs: ReturnType<typeof adminRpc<Doc[]>> }) {
   const { t } = getT();
-  const supabase = await createClient();
-  const { data } = await supabase.rpc("admin_list_age_documents", { p_status: status });
-  const rows = (data ?? []) as Doc[];
+  const rows = (await docs).data ?? [];
   const tab = (active: boolean) =>
     "rounded-full px-3 py-1.5 text-sm " + (active ? "bg-coral font-semibold text-ink" : "border border-edge hover:bg-surface");
 

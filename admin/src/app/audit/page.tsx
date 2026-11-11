@@ -1,23 +1,22 @@
 import { getT } from "@/lib/i18n";
 import { fmtDateTime } from "@/lib/format";
-import { createClient } from "@/lib/supabase";
+import { adminRpc } from "@/lib/supabase";
 import { AdminShell } from "@/components/shell";
 
 type L = { id: number; admin_username: string | null; admin_id: string; action: string; target_type: string | null; target_id: string | null; details: unknown; created_at: string };
 
 export default async function AuditPage() {
+  const audit = adminRpc<L[]>("admin_list_audit", { p_limit: 200 });
   return (
     <AdminShell>
-      <Audit />
+      <Audit audit={audit} />
     </AdminShell>
   );
 }
 
-async function Audit() {
+async function Audit({ audit }: { audit: ReturnType<typeof adminRpc<L[]>> }) {
   const { t } = getT();
-  const supabase = await createClient();
-  const { data } = await supabase.rpc("admin_list_audit", { p_limit: 200 });
-  const rows = (data ?? []) as L[];
+  const rows = (await audit).data ?? [];
   return (
     <section>
       <h1 className="text-2xl">{t("audit.title")}</h1>

@@ -14,20 +14,20 @@ type Report = {
 
 export default async function ReportPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const report = loadReport(id);
   return (
     <AdminShell>
-      <ReportDetail id={id} />
+      <ReportDetail report={report} />
     </AdminShell>
   );
 }
 
-async function ReportDetail({ id }: { id: string }) {
-  const { t } = getT();
+async function loadReport(id: string) {
   const supabase = await createClient();
   // admin_get_report sohbet görüntülemesini işlem kaydına yazar (kural 14).
   const { data } = await supabase.rpc("admin_get_report", { p_report: id });
   const r = data as Report | null;
-  if (!r) return <p className="text-muted">{t("common.none")}</p>;
+  if (!r) return null;
   // Sohbet fotoğrafları: gizli bucket'tan 5 dakikalık imzalı bağlantı. Storage RLS,
   // yöneticiye yalnızca bu sohbeti az önce (kayda geçerek) açtıysa izin verir.
   const photoPaths = r.messages.filter((m) => m.kind === "photo" && m.photo_path).map((m) => m.photo_path as string);
@@ -35,6 +35,14 @@ async function ReportDetail({ id }: { id: string }) {
     ? await supabase.storage.from("chat-photos").createSignedUrls(photoPaths, 300)
     : { data: [] };
   const photoUrl = new Map((signed ?? []).filter((x) => x.signedUrl && !x.error).map((x) => [x.path, x.signedUrl]));
+  return { r, photoUrl };
+}
+
+async function ReportDetail({ report }: { report: ReturnType<typeof loadReport> }) {
+  const { t } = getT();
+  const loaded = await report;
+  if (!loaded) return <p className="text-muted">{t("common.none")}</p>;
+  const { r, photoUrl } = loaded;
   const who = (senderId: string) =>
     senderId === r.reported?.id ? `@${r.reported.username}` : senderId === r.reporter?.id ? `@${r.reporter.username}` : senderId;
 
