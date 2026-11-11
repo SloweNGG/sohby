@@ -9,7 +9,8 @@
     "audit": "İşlem kaydı",
     "signOut": "Çıkış",
     "settings": "Ayarlar",
-    "pending": "bekleyen"
+    "pending": "bekleyen",
+    "overview": "Genel bakış"
   },
   "login": {
     "title": "Yönetici girişi",
@@ -148,5 +149,28 @@
     "title": "Ayarlar",
     "turnOn": "Aç",
     "turnOff": "Kapat"
+  },
+  "overview": {
+    "title": "Genel bakış",
+    "pending": "Bekleyen işler",
+    "allClear": "Bekleyen iş yok.",
+    "pendingReports": "Açık şikâyet",
+    "pendingPhotos": "Onay bekleyen fotoğraf",
+    "pendingAgeDocs": "Bekleyen yaş belgesi",
+    "pendingAppeals": "Bekleyen itiraz",
+    "open": "Aç",
+    "list": "Listele",
+    "users": "Kullanıcılar",
+    "totalUsers": "Toplam kullanıcı",
+    "newToday": "Bugün katılan",
+    "new7d": "Son 7 günde katılan",
+    "prev7d": "Önceki 7 gün: {count}",
+    "active7d": "Son 7 günde giriş yapan",
+    "usersHint": "Silinmiş hesaplar ve test hesapları sayılmaz. \"Bugün\" Türkiye saatiyle gece yarısından başlar.",
+    "accountStatus": "Hesap durumları",
+    "activity": "Etkinlik",
+    "messages24h": "Son 24 saatte mesaj",
+    "conversations24h": "Son 24 saatte yeni sohbet",
+    "reports7d": "Son 7 günde şikâyet"
   }
 }

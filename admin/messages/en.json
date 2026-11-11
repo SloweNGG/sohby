@@ -9,7 +9,8 @@
     "audit": "Audit log",
     "signOut": "Sign out",
     "settings": "Settings",
-    "pending": "pending"
+    "pending": "pending",
+    "overview": "Overview"
   },
   "login": {
     "title": "Admin sign in",
@@ -148,5 +149,28 @@
     "title": "Settings",
     "turnOn": "Turn on",
     "turnOff": "Turn off"
+  },
+  "overview": {
+    "title": "Overview",
+    "pending": "Waiting for review",
+    "allClear": "Nothing waiting.",
+    "pendingReports": "Open reports",
+    "pendingPhotos": "Photos to review",
+    "pendingAgeDocs": "Age documents to review",
+    "pendingAppeals": "Open appeals",
+    "open": "Open",
+    "list": "List",
+    "users": "Users",
+    "totalUsers": "Total users",
+    "newToday": "Joined today",
+    "new7d": "Joined in last 7 days",
+    "prev7d": "Previous 7 days: {count}",
+    "active7d": "Active in last 7 days",
+    "usersHint": "Deleted and test accounts are not counted. \"Today\" starts at midnight Türkiye time.",
+    "accountStatus": "Account status",
+    "activity": "Activity",
+    "messages24h": "Messages in last 24h",
+    "conversations24h": "New chats in last 24h",
+    "reports7d": "Reports in last 7 days"
   }
 }

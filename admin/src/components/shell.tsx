@@ -26,6 +26,7 @@ export async function AdminShell({ children }: { children: React.ReactNode }) {
   const c = (counts ?? {}) as Partial<Record<"reports" | "photos" | "age_documents" | "appeals", number>>;
   const pending = t("nav.pending");
   const items: NavItem[] = [
+    { href: "/", label: t("nav.overview") },
     { href: "/reports", label: t("nav.reports"), count: c.reports, countLabel: pending },
     { href: "/photos", label: t("nav.photos"), count: c.photos, countLabel: pending },
     { href: "/age-documents", label: t("nav.ageDocuments"), count: c.age_documents, countLabel: pending },
