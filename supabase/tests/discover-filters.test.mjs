@@ -71,7 +71,7 @@ test("çevrimiçi olanlar her sekmede önce gelir (Yakınımdakiler'de aynı sem
   const viewer = await db.activeUser({ username: "on_viewer", city: "İzmir", district: "Bornova" });
   await db.activeUser({ username: "on_same_district", city: "İzmir", district: "Bornova" });
   const online = await db.activeUser({ username: "on_online", city: "İzmir", district: "Karşıyaka", settings: { show_online: true } });
-  const hiding = await db.activeUser({ username: "on_hiding", city: "İzmir", district: "Buca" });
+  const hiding = await db.activeUser({ username: "on_hiding", city: "İzmir", district: "Buca", settings: { show_online: false } });
   await db.admin(`update public.profiles set last_seen_at = now() where id = any($1)`, [[online, hiding]]);
 
   for (const filter of ["all", "nearby"]) {
@@ -84,4 +84,10 @@ test("çevrimiçi olanlar her sekmede önce gelir (Yakınımdakiler'de aynı sem
   assert.ok(nearby.indexOf("on_same_district") < nearby.indexOf("on_hiding"), "çevrimdışılar arasında aynı semt önce");
   const hidingCard = (await db.rpc(viewer, "discover_profiles", ["nearby"])).find((p) => p.username === "on_hiding");
   assert.equal(hidingCard.is_online, false, "çevrimiçi durumunu gizleyen çevrimiçi sayılmaz");
+});
+
+test("çevrimiçi görünme yeni hesaplarda varsayılan olarak açık", async () => {
+  const id = await db.activeUser({ username: "on_default" });
+  const [row] = await db.admin(`select show_online from public.profiles where id = $1`, [id]);
+  assert.equal(row.show_online, true);
 });
