@@ -133,7 +133,6 @@ export async function ProfileView({
               variant="menu"
               targetId={p.id}
               name={p.display_name}
-              afterBlockHref="/discover"
               menuClassName="border-transparent bg-night/80"
             />
           </div>
@@ -223,7 +222,7 @@ export async function ProfileView({
               {p.outgoing_request_pending && <p className="mt-2 text-sm text-muted">{t("requestSentHint")}</p>}
               {p.incoming_request_id && <p className="mt-2 text-sm text-muted">{t("incomingRequest")}</p>}
               <div className="mt-6 hidden md:block">
-                <SafetyActions variant="links" targetId={p.id} name={p.display_name} afterBlockHref="/discover" />
+                <SafetyActions variant="links" targetId={p.id} name={p.display_name} />
               </div>
             </>
           )}

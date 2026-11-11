@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { resolveLocale } from "@/i18n/locale";
 import { createClient } from "@/lib/supabase/server";
 import { BackLink, ProfileView } from "@/components/profile/profile-view";
+import { BlockedProfile } from "@/components/profile/blocked-profile";
 import type { ProfileDetail } from "@/lib/types";
 import { signPhotoPaths, withPhotoUrls } from "@/lib/photos";
 
@@ -35,6 +36,17 @@ export default async function ProfilePage({ params, searchParams }: PageProps<"/
         <h1 className="mt-10 text-3xl">{t("notFoundTitle")}</h1>
         <p className="mt-2 max-w-md text-muted">{t("notFoundBody")}</p>
       </main>
+    );
+  }
+
+  // Engellediğim kişi: sayfada kalınır, "Engellendi" görünümü (yalnızca ad + bulanık ana fotoğraf).
+  if (p.blocked_by_me) {
+    const [blocked] = await withPhotoUrls([p]);
+    return (
+      <BlockedProfile
+        locale={locale}
+        p={{ id: p.id, username: p.username, display_name: p.display_name, photo_url: blocked.photo_url, blocked_at: p.blocked_at ?? null }}
+      />
     );
   }
 

@@ -413,7 +413,12 @@
     "galleryPrev": "Previous photo",
     "galleryNext": "Next photo",
     "galleryGoTo": "Photo {n} of {total}",
-    "galleryPosition": "Photo {n} of {total}"
+    "galleryPosition": "Photo {n} of {total}",
+    "blockedBadge": "Blocked",
+    "blockedPhotoAlt": "{name} (blocked, blurred)",
+    "blockedTitle": "You blocked this person",
+    "blockedBody": "They cannot see you, will not appear in your Discover and cannot message you. Profile details are hidden.",
+    "blockedSince": "Blocked {time}"
   },
   "chats": {
     "metaTitle": "Chats",
@@ -560,7 +565,11 @@
       "not_found": "This person couldn't be found.",
       "note_too_long": "Notes can be at most 1000 characters.",
       "generic": "Couldn't complete the action. Please try again."
-    }
+    },
+    "unblock": "Unblock",
+    "unblockTitle": "Unblock {name}?",
+    "unblockBody": "Once unblocked, they can see you again, appear in your Discover and message you.",
+    "unblockConfirm": "Yes, unblock"
   },
   "landing": {
     "howItWorks": "How it works",
@@ -720,7 +729,6 @@
     "blockedTitle": "Blocked people",
     "blockedHint": "If you unblock someone, they can message and see you again.",
     "blockedEmpty": "You haven't blocked anyone.",
-    "unblock": "Unblock",
     "accountTitle": "Account",
     "deleteTitle": "Delete my account",
     "deleteHint": "Your account closes immediately and nobody can see you. Your messages are kept for 90 days for report reviews, then permanently deleted.",
@@ -756,7 +764,8 @@
       "accepted_chatsHint": "Chats you started, requests you accepted, or chats you've replied to.",
       "nobody": "Nobody",
       "nobodyHint": "No one can send you photos."
-    }
+    },
+    "blockedAgo": "blocked {time}"
   },
   "anon": {
     "alias": "{adjective} {animal}",

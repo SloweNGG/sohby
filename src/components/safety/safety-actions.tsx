@@ -21,8 +21,11 @@ type Props = {
   /** Anonim sohbet: işlemler kimlik yerine sohbet üzerinden gerçek hesaba işler. */
   anonConversationId?: string;
   name: string;
-  /** Engelledikten sonra gidilecek sayfa (ör. /discover, /chats). */
-  afterBlockHref: string;
+  /**
+   * Engelledikten sonra gidilecek sayfa (ör. /chats). Verilmezse sayfada kalınır
+   * ve sayfa yenilenir (profil: "Engellendi" görünümü).
+   */
+  afterBlockHref?: string;
   conversationId?: string;
   requestId?: string;
   variant?: Variant;
@@ -157,7 +160,7 @@ function BlockDialog({
   targetId?: string;
   anonConversationId?: string;
   name: string;
-  afterHref: string;
+  afterHref?: string;
 }) {
   const t = useTranslations("safety");
   const router = useRouter();
@@ -177,7 +180,7 @@ function BlockDialog({
         return;
       }
       close();
-      router.replace(afterHref);
+      if (afterHref) router.replace(afterHref);
       router.refresh();
     });
   };
@@ -219,7 +222,7 @@ function ReportDialog({
   targetId?: string;
   anonConversationId?: string;
   name: string;
-  afterBlockHref: string;
+  afterBlockHref?: string;
   conversationId?: string;
   requestId?: string;
 }) {
@@ -239,7 +242,7 @@ function ReportDialog({
     if (!dialog) return;
     const onClose = () => {
       if (done?.blocked) {
-        router.replace(afterBlockHref);
+        if (afterBlockHref) router.replace(afterBlockHref);
         router.refresh();
       }
       setReason(null);

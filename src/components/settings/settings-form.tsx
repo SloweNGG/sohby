@@ -1,10 +1,12 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
-import { useTranslations } from "next-intl";
+import { useFormatter, useLocale, useNow, useTranslations } from "next-intl";
+import { VenetianMask } from "lucide-react";
+import { InitialAvatar } from "@/components/profile/avatar";
+import { UnblockButton } from "@/components/safety/unblock-button";
 import { usePathname, useRouter } from "@/i18n/navigation";
-import { deleteAccountAction, saveSettingsAction, unblockUserAction } from "@/lib/settings/actions";
-import { unblockAnonymousAction } from "@/lib/anon/actions";
+import { deleteAccountAction, saveSettingsAction } from "@/lib/settings/actions";
 import { useAlias } from "@/components/anon/alias";
 import { MESSAGE_POLICIES, PHOTO_PERMISSIONS, type BlockedUser, type MessagePolicy, type PhotoPermission } from "@/lib/types";
 import type { Locale } from "@/i18n/routing";
@@ -63,6 +65,9 @@ export function SettingsForm({
   const [status, setStatus] = useState<"saved" | "error" | null>(null);
   const [pending, startTransition] = useTransition();
   const [blockedList, setBlockedList] = useState(blocked);
+  const format = useFormatter();
+  const now = useNow({ updateInterval: 60_000 });
+  const locale = useLocale();
   const [deleteError, setDeleteError] = useState(false);
   const [deleting, startDelete] = useTransition();
   const deleteRef = useRef<HTMLDialogElement>(null);
@@ -220,24 +225,34 @@ export function SettingsForm({
               const isAnon = Boolean(b.anon_conversation_id);
               return (
                 <li key={key} className="flex items-center justify-between gap-4 py-3">
-                  <span className="min-w-0">
-                    <span className="block truncate font-semibold">
-                      {isAnon ? alias(b.alias_adjective ?? "", b.alias_animal ?? "") : b.display_name}
+                  <span className="flex min-w-0 items-center gap-3">
+                    {isAnon ? (
+                      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-line text-lilac" aria-hidden="true">
+                        <VenetianMask className="h-5 w-5" />
+                      </span>
+                    ) : b.photo_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={b.photo_url} alt="" className="h-11 w-11 shrink-0 rounded-full object-cover" />
+                    ) : (
+                      <InitialAvatar id={b.id ?? key} name={b.display_name ?? "?"} locale={locale} size={44} />
+                    )}
+                    <span className="min-w-0">
+                      <span className="block truncate font-semibold">
+                        {isAnon ? alias(b.alias_adjective ?? "", b.alias_animal ?? "") : b.display_name}
+                      </span>
+                      <span className="block truncate text-sm text-muted">
+                        {isAnon ? tAnon("badge") : `@${b.username}`}
+                        {" · "}
+                        {t("blockedAgo", { time: format.relativeTime(new Date(b.blocked_at), now) })}
+                      </span>
                     </span>
-                    <span className="block truncate text-sm text-muted">{isAnon ? tAnon("badge") : `@${b.username}`}</span>
                   </span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={async () => {
-                      const r = isAnon
-                        ? await unblockAnonymousAction(b.anon_conversation_id as string)
-                        : await unblockUserAction(b.id as string);
-                      if (r.ok) setBlockedList((list) => list.filter((x) => x !== b));
-                    }}
-                  >
-                    {t("unblock")}
-                  </Button>
+                  <UnblockButton
+                    targetId={isAnon ? undefined : (b.id as string)}
+                    anonConversationId={isAnon ? (b.anon_conversation_id as string) : undefined}
+                    name={isAnon ? alias(b.alias_adjective ?? "", b.alias_animal ?? "") : (b.display_name ?? "")}
+                    onDone={() => setBlockedList((list) => list.filter((x) => x !== b))}
+                  />
                 </li>
               );
             })}

@@ -8,6 +8,7 @@ import { SettingsForm } from "@/components/settings/settings-form";
 import { FlirtSettings } from "@/components/settings/flirt-settings";
 import { DeclinedRequests } from "@/components/settings/declined-requests";
 import type { BlockedUser, DeclinedRequest } from "@/lib/types";
+import { withPhotoUrls } from "@/lib/photos";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/settings">): Promise<Metadata> {
   const locale = await resolveLocale(params);
@@ -30,6 +31,8 @@ export default async function SettingsPage({ params }: PageProps<"/[locale]/sett
     supabase.rpc("get_declined_requests"),
     supabase.rpc("chat_photos_enabled"),
   ]);
+  // Engellenenlerin ana fotoğrafları (tanımak için); anonim engellerde fotoğraf yok.
+  const blockedWithPhotos = await withPhotoUrls((blocked ?? []) as BlockedUser[]);
 
   return (
     <main className="px-4 pb-28 pt-6 sm:px-6 md:grid md:grid-cols-[240px_minmax(0,640px)] md:gap-12 md:px-10 md:pb-12 md:pt-10">
@@ -53,7 +56,7 @@ export default async function SettingsPage({ params }: PageProps<"/[locale]/sett
       </nav>
       <SettingsForm
         flirtSection={<FlirtSettings enabled={profile.looking_for.includes("flirt")} />}
-        blocked={(blocked ?? []) as BlockedUser[]}
+        blocked={blockedWithPhotos}
         photosEnabled={photosEnabled === true}
         declinedSection={<DeclinedRequests initial={(declined ?? []) as DeclinedRequest[]} />}
         initial={{

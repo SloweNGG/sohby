@@ -127,6 +127,9 @@ export type MessageMode = "conversation" | "direct" | "request" | "not_allowed";
 
 /** public.get_profile çıktısı. */
 export type ProfileDetail = ProfileCard & {
+  /** Benim engellediğim kişi: yalnızca ad, kullanıcı adı ve ana fotoğraf döner. */
+  blocked_by_me?: boolean;
+  blocked_at?: string | null;
   is_self: boolean;
   message_mode: MessageMode;
   conversation_id: string | null;
@@ -157,6 +160,9 @@ export type BlockedUser = {
   username: string | null;
   display_name: string | null;
   blocked_at: string;
+  /** Ana fotoğraf (yalnızca normal engellerde). */
+  photo_path?: string | null;
+  photo_url?: string | null;
   /** Anonim sohbetten yapılan engel: kimlik yerine takma ad döner. */
   anon_conversation_id?: string | null;
   alias_adjective?: string | null;

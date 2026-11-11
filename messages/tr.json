@@ -413,7 +413,12 @@
     "galleryPrev": "Önceki fotoğraf",
     "galleryNext": "Sonraki fotoğraf",
     "galleryGoTo": "Fotoğraf {n}/{total}",
-    "galleryPosition": "Fotoğraf {n}/{total}"
+    "galleryPosition": "Fotoğraf {n}/{total}",
+    "blockedBadge": "Engellendi",
+    "blockedPhotoAlt": "{name} (engellendi, bulanık)",
+    "blockedTitle": "Bu kişiyi engelledin",
+    "blockedBody": "Seni göremez, Keşfet'te karşına çıkmaz ve sana yazamaz. Profil ayrıntıları gizlendi.",
+    "blockedSince": "{time} engellendi"
   },
   "chats": {
     "metaTitle": "Sohbetler",
@@ -560,7 +565,11 @@
       "not_found": "Bu kişi bulunamadı.",
       "note_too_long": "Not en çok 1000 karakter olabilir.",
       "generic": "İşlem tamamlanamadı. Lütfen tekrar dene."
-    }
+    },
+    "unblock": "Engeli kaldır",
+    "unblockTitle": "{name} kişisinin engelini kaldır?",
+    "unblockBody": "Engeli kaldırınca seni yeniden görebilir, Keşfet'te karşına çıkabilir ve sana yazabilir.",
+    "unblockConfirm": "Evet, engeli kaldır"
   },
   "landing": {
     "howItWorks": "Nasıl çalışır",
@@ -720,7 +729,6 @@
     "blockedTitle": "Engellenen kişiler",
     "blockedHint": "Engelini kaldırdığın kişi sana yeniden yazabilir ve seni görebilir.",
     "blockedEmpty": "Engellediğin kimse yok.",
-    "unblock": "Engeli kaldır",
     "accountTitle": "Hesap",
     "deleteTitle": "Hesabımı sil",
     "deleteHint": "Hesabın hemen kapanır ve kimse seni göremez. Mesajların şikâyet incelemesi için 90 gün saklanır, sonra kalıcı olarak silinir.",
@@ -756,7 +764,8 @@
       "accepted_chatsHint": "Başlattığın, isteğini kabul ettiğin ya da cevap verdiğin sohbetler.",
       "nobody": "Kimse",
       "nobodyHint": "Kimse sana fotoğraf gönderemez."
-    }
+    },
+    "blockedAgo": "{time} engellendi"
   },
   "anon": {
     "alias": "{adjective} {animal}",
