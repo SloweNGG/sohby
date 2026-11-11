@@ -7,7 +7,9 @@
     "users": "Users",
     "appeals": "Appeals",
     "audit": "Audit log",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "settings": "Settings",
+    "pending": "pending"
   },
   "login": {
     "title": "Admin sign in",
@@ -78,7 +80,8 @@
     "reject": "Reject",
     "empty": "No photos waiting for review.",
     "chatPhotos": "Photos in chat",
-    "chatPhotosHint": "When on, users can send photos in accepted chats. When off, the photo button is hidden and the server rejects uploads."
+    "chatPhotosHint": "When on, users can send photos in accepted chats. When off, the photo button is hidden and the server rejects uploads.",
+    "changeInSettings": "Change in Settings"
   },
   "users": {
     "title": "Users",
@@ -140,5 +143,10 @@
       "rejected": "Rejected",
       "expired": "Expired"
     }
+  },
+  "settings": {
+    "title": "Settings",
+    "turnOn": "Turn on",
+    "turnOff": "Turn off"
   }
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getT } from "@/lib/i18n";
+import { fmtDateTime } from "@/lib/format";
 import { createClient } from "@/lib/supabase";
 import { AdminShell, Badge, btn } from "@/components/shell";
 
@@ -52,7 +53,7 @@ async function ReportsTable({ filter, t }: { filter: "open" | "all"; t: ReturnTy
             <tbody className="divide-y divide-line">
               {rows.map((r) => (
                 <tr key={r.id}>
-                  <td className="py-2 pr-4 whitespace-nowrap">{new Date(r.created_at).toLocaleString()}</td>
+                  <td className="py-2 pr-4 whitespace-nowrap">{fmtDateTime(r.created_at)}</td>
                   <td className="py-2 pr-4">
                     {t(`reasons.${r.reason}`)} {r.is_anonymous && <Badge>{t("reports.anonymous")}</Badge>}
                   </td>

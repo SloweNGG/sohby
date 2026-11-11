@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getT } from "@/lib/i18n";
+import { fmtDate, fmtDateTime } from "@/lib/format";
 import { createClient } from "@/lib/supabase";
 import { reviewAgeDocumentAction } from "@/lib/actions";
 import { AdminShell, Badge, btnDanger, btnPrimary, input } from "@/components/shell";
@@ -71,13 +72,13 @@ async function AgeDocuments({ status }: { status: "pending" | "all" }) {
                 <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
                   <dt className="text-muted">{t("ageDocs.birthDate")}</dt>
                   <dd>
-                    {d.user?.birth_date ?? "—"}
+                    {fmtDate(d.user?.birth_date)}
                     {age !== null && ` · ${t("ageDocs.age", { age })}`}
                   </dd>
                   <dt className="text-muted">{t("ageDocs.uploaded")}</dt>
-                  <dd>{new Date(d.created_at).toLocaleString()}</dd>
+                  <dd>{fmtDateTime(d.created_at)}</dd>
                   <dt className="text-muted">{t("ageDocs.deleteAfter")}</dt>
-                  <dd>{new Date(d.delete_after).toLocaleString()}</dd>
+                  <dd>{fmtDateTime(d.delete_after)}</dd>
                 </dl>
                 {d.review_note && <p className="text-sm text-muted">{d.review_note}</p>}
                 {d.file_available ? (

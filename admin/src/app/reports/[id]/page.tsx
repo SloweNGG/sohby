@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getT } from "@/lib/i18n";
+import { fmtDateTime } from "@/lib/format";
 import { createClient } from "@/lib/supabase";
 import { resolveReportAction, setUserStatusAction } from "@/lib/actions";
 import { AdminShell, Badge, btn, btnDanger, btnPrimary } from "@/components/shell";
@@ -59,7 +60,7 @@ async function ReportDetail({ id }: { id: string }) {
           <ol className="space-y-2 rounded-2xl border border-edge bg-night-deep p-4 text-sm">
             {r.messages.map((m, i) => (
               <li key={i}>
-                <span className="text-muted">{new Date(m.created_at).toLocaleString()} · {who(m.sender_id)}:</span>{" "}
+                <span className="text-muted">{fmtDateTime(m.created_at)} · {who(m.sender_id)}:</span>{" "}
                 {m.kind === "photo" ? (
                   m.photo_path && photoUrl.get(m.photo_path) ? (
                     <a href={photoUrl.get(m.photo_path)!} target="_blank" rel="noopener noreferrer" className="mt-1 block w-fit">

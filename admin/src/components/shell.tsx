@@ -2,6 +2,8 @@ import Link from "next/link";
 import { getT } from "@/lib/i18n";
 import { getAdmin } from "@/lib/auth";
 import { logoutAction } from "@/lib/actions";
+import { createClient } from "@/lib/supabase";
+import { NavLinks, type NavItem } from "./nav-links";
 
 /** Yönetim sayfalarının ortak iskeleti. Yönetici değilse içerik gösterilmez. */
 export async function AdminShell({ children }: { children: React.ReactNode }) {
@@ -18,27 +20,25 @@ export async function AdminShell({ children }: { children: React.ReactNode }) {
       </main>
     );
   }
-  const links = [
-    ["/reports", t("nav.reports")],
-    ["/photos", t("nav.photos")],
-    ["/age-documents", t("nav.ageDocuments")],
-    ["/users", t("nav.users")],
-    ["/appeals", t("nav.appeals")],
-    ["/audit", t("nav.audit")],
-  ] as const;
+  // Bekleyen iş sayıları (yalnızca toplamlar). Fonksiyon henüz yoksa ya da hata verirse rozetler gizlenir.
+  const supabase = await createClient();
+  const { data: counts } = await supabase.rpc("admin_nav_counts");
+  const c = (counts ?? {}) as Partial<Record<"reports" | "photos" | "age_documents" | "appeals", number>>;
+  const pending = t("nav.pending");
+  const items: NavItem[] = [
+    { href: "/reports", label: t("nav.reports"), count: c.reports, countLabel: pending },
+    { href: "/photos", label: t("nav.photos"), count: c.photos, countLabel: pending },
+    { href: "/age-documents", label: t("nav.ageDocuments"), count: c.age_documents, countLabel: pending },
+    { href: "/users", label: t("nav.users") },
+    { href: "/appeals", label: t("nav.appeals"), count: c.appeals, countLabel: pending },
+    { href: "/audit", label: t("nav.audit") },
+    { href: "/settings", label: t("nav.settings") },
+  ];
   return (
     <div className="min-h-dvh md:grid md:grid-cols-[220px_1fr]">
       <nav aria-label={t("title")} className="border-b border-line bg-night-deep p-4 md:min-h-dvh md:border-b-0 md:border-r">
-        <p className="mb-6 text-lg font-extrabold">{t("title")}</p>
-        <ul className="flex flex-wrap gap-1 md:flex-col">
-          {links.map(([href, label]) => (
-            <li key={href}>
-              <Link href={href} className="block rounded-xl px-3 py-2 text-sm hover:bg-surface">
-                {label}
-              </Link>
-            </li>
-          ))}
-        </ul>
+        <Link href="/" className="mb-6 block text-lg font-extrabold">{t("title")}</Link>
+        <NavLinks items={items} />
         <form action={logoutAction} className="mt-6">
           <button className="text-sm text-muted hover:text-moon">{t("nav.signOut")}</button>
         </form>

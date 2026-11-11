@@ -1,4 +1,5 @@
 import { getT } from "@/lib/i18n";
+import { fmtDateTime } from "@/lib/format";
 import { createClient } from "@/lib/supabase";
 import { AdminShell } from "@/components/shell";
 
@@ -34,7 +35,7 @@ async function Audit() {
           <tbody className="divide-y divide-line">
             {rows.map((l) => (
               <tr key={l.id}>
-                <td className="py-2 pr-4 whitespace-nowrap">{new Date(l.created_at).toLocaleString()}</td>
+                <td className="py-2 pr-4 whitespace-nowrap">{fmtDateTime(l.created_at)}</td>
                 <td className="py-2 pr-4">{l.admin_username ? `@${l.admin_username}` : l.admin_id}</td>
                 <td className="py-2 pr-4 font-mono text-xs">{l.action}</td>
                 <td className="py-2 pr-4 font-mono text-xs">{l.target_type ? `${l.target_type}:${l.target_id}` : "—"}</td>

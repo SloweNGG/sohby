@@ -1,4 +1,5 @@
 import { getT } from "@/lib/i18n";
+import { fmtDateTime } from "@/lib/format";
 import { createClient } from "@/lib/supabase";
 import { reviewAppealAction } from "@/lib/actions";
 import { AdminShell, btnDanger, btnPrimary } from "@/components/shell";
@@ -28,7 +29,7 @@ async function Appeals() {
           {rows.map((a) => (
             <li key={a.id} className="rounded-[20px] border border-edge bg-surface p-4">
               <p className="text-sm text-muted">
-                @{a.user?.username} · {t("appeals.statusAtAppeal")}: {t(`accountStatus.${a.account_status}`)} · {new Date(a.created_at).toLocaleString()}
+                @{a.user?.username} · {t("appeals.statusAtAppeal")}: {t(`accountStatus.${a.account_status}`)} · {fmtDateTime(a.created_at)}
               </p>
               <p className="mt-2 whitespace-pre-wrap">{a.message}</p>
               <div className="mt-3 flex gap-2">

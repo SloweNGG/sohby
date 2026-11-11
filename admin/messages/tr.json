@@ -7,7 +7,9 @@
     "users": "Kullanıcılar",
     "appeals": "İtirazlar",
     "audit": "İşlem kaydı",
-    "signOut": "Çıkış"
+    "signOut": "Çıkış",
+    "settings": "Ayarlar",
+    "pending": "bekleyen"
   },
   "login": {
     "title": "Yönetici girişi",
@@ -78,7 +80,8 @@
     "reject": "Reddet",
     "empty": "Onay bekleyen fotoğraf yok.",
     "chatPhotos": "Sohbette fotoğraf",
-    "chatPhotosHint": "Açıkken kullanıcılar kabul edilmiş sohbetlerde fotoğraf gönderebilir. Kapalıyken fotoğraf düğmesi görünmez ve sunucu yüklemeyi reddeder."
+    "chatPhotosHint": "Açıkken kullanıcılar kabul edilmiş sohbetlerde fotoğraf gönderebilir. Kapalıyken fotoğraf düğmesi görünmez ve sunucu yüklemeyi reddeder.",
+    "changeInSettings": "Ayarlar'dan değiştir"
   },
   "users": {
     "title": "Kullanıcılar",
@@ -140,5 +143,10 @@
       "rejected": "Reddedildi",
       "expired": "Süresi doldu"
     }
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "turnOn": "Aç",
+    "turnOff": "Kapat"
   }
 }
