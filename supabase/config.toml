@@ -19,3 +19,8 @@ verify_jwt = false
 # belirteci Supabase Auth ile), görüntüleme (60 saniye geçerli belirteç),
 # silme görevi (veritabanında üretilen görev belirteci).
 verify_jwt = false
+
+[functions.student-documents]
+# Öğrenci kartları (kampüs, kural 16): yaş belgeleriyle aynı üç giriş noktası,
+# her biri kendi doğrulamasını yapar.
+verify_jwt = false
