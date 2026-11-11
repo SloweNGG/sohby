@@ -52,7 +52,7 @@ export function CampusStatus({ mine, universities }: { mine: CampusMine; univers
         (renewing ? (
           <FormAlert tone="info">{t("verified.renewPending")}</FormAlert>
         ) : (
-          <details className="rounded-2xl border border-coral/50 bg-coral/10 p-4" open>
+          <details className="rounded-2xl border border-lilac/50 bg-night-deep p-4" open>
             <summary className="cursor-pointer text-sm font-semibold">
               {t("verified.expiring", { date: untilText, days: Math.max(daysLeft, 0) })}
             </summary>
