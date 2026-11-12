@@ -470,6 +470,7 @@ test("anon/authenticated'ın beklenmedik fonksiyon yetkisi yok", async () => {
     "private.can_view_profile_photo:authenticated",
     // Sohbet fotoğrafı: storage RLS politikası çağırır; yalnızca tarafa/yöneticiye true döner.
     "private.can_view_chat_photo:authenticated",
+    "private.can_view_chat_voice:authenticated",
     "private.anon_role:authenticated",
     "private.anon_blocked:authenticated",
     // RLS politikasında kullanılır; yalnızca sohbetin tarafına anlamlı değer döner.
@@ -490,7 +491,7 @@ test("anon/authenticated'ın beklenmedik fonksiyon yetkisi yok", async () => {
       "admin_whoami", "admin_list_reports", "admin_get_report", "admin_resolve_report",
       "admin_list_pending_photos", "admin_review_photo", "admin_get_settings", "admin_set_photo_auto_approve",
       "admin_list_users", "admin_set_user_status", "admin_list_appeals", "admin_review_appeal", "admin_list_audit",
-      "chat_photos_enabled", "admin_set_chat_photos",
+      "chat_photos_enabled", "admin_set_chat_photos", "chat_voice_enabled", "admin_set_chat_voice",
       "admin_shell", "admin_overview", "admin_get_user",
       "search_cities", "discover_places",
       "get_my_campus", "start_student_verification", "admin_list_student_documents",
