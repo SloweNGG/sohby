@@ -291,7 +291,9 @@
       "hobbies": "hobbies",
       "district": "neighbourhood",
       "occupation": "occupation"
-    }
+    },
+    "notifications": "Notifications",
+    "myFriends": "My friends"
   },
   "discover": {
     "metaTitle": "Explore",
@@ -484,7 +486,8 @@
       "disabled": "Photos in chat are currently turned off.",
       "recipient_off": "This person has turned off receiving photos.",
       "not_accepted": "You can send photos once they've replied to you.",
-      "rate_limited_photo": "You've reached today's photo limit (50 a day)."
+      "rate_limited_photo": "You've reached today's photo limit (50 a day).",
+      "friends_only": "This person only accepts photos from friends."
     },
     "read": "Read",
     "delete": "Delete chat",
@@ -506,7 +509,8 @@
         "not_accepted": "You can send photos once they've replied to you.",
         "recipient_off": "This person has turned off receiving photos.",
         "rate_limited": "You've reached today's photo limit (50 a day). You can send more tomorrow.",
-        "not_allowed": "You can't send photos to this chat right now."
+        "not_allowed": "You can't send photos to this chat right now.",
+        "friends_only": "This person only accepts photos from friends. Once you're friends, you can send photos."
       },
       "enlarge": "Enlarge photo",
       "close": "Close"
@@ -773,9 +777,13 @@
       "accepted_chats": "Anyone in chats I've accepted",
       "accepted_chatsHint": "Chats you started, requests you accepted, or chats you've replied to.",
       "nobody": "Nobody",
-      "nobodyHint": "No one can send you photos."
+      "nobodyHint": "No one can send you photos.",
+      "friends": "Only my friends",
+      "friendsHint": "Only people you're friends with can send you photos."
     },
-    "blockedAgo": "blocked {time}"
+    "blockedAgo": "blocked {time}",
+    "showFriends": "My friend list",
+    "showFriendsHint": "Your friends appear on your profile. Friends who hide their own list are still not shown."
   },
   "anon": {
     "alias": "{adjective} {animal}",
@@ -1500,5 +1508,76 @@
     "YE": "Yemen",
     "ZM": "Zambia",
     "ZW": "Zimbabwe"
+  },
+  "friends": {
+    "metaTitle": "Friends",
+    "add": "Add friend",
+    "requestSent": "Request sent",
+    "acceptRequest": "Accept request",
+    "friends": "Friends",
+    "accept": "Accept",
+    "decline": "Decline",
+    "cancelRequest": "Withdraw request",
+    "cancelShort": "Withdraw",
+    "remove": "Remove friend",
+    "removeTitle": "Remove {name} from friends?",
+    "removeBody": "{name} won't be notified. You can send a new friend request later if you like.",
+    "removeConfirm": "Remove",
+    "cancel": "Cancel",
+    "acceptFrom": "Accept {name}'s request",
+    "declineFrom": "Decline {name}'s request",
+    "cancelTo": "Withdraw your request to {name}",
+    "incomingHint": "{name} sent you a friend request.",
+    "done": {
+      "accepted": "You and {name} are now friends.",
+      "declined": "Request declined. {name} won't find out.",
+      "cancelled": "Request withdrawn."
+    },
+    "errors": {
+      "not_found": "This person can't be reached right now.",
+      "not_allowed": "This can't be done right now.",
+      "rate_limited": "You've sent too many friend requests today. Try again tomorrow.",
+      "email_not_verified": "Verify your email address before sending friend requests.",
+      "generic": "Something went wrong. Please try again."
+    },
+    "myFriendsTitle": "Your friends",
+    "theirFriendsTitle": "Friends",
+    "seeAll": "See all ({count})",
+    "you": "You",
+    "mutual": "Mutual friend",
+    "mutualCount": "{count, plural, =1 {1 mutual friend:} other {# mutual friends:}}",
+    "privateListHint": "Only you can see your list.",
+    "privateListLink": "You can turn it on in Settings",
+    "emptySelf": "No friends yet. Send a friend request to people you meet on Discover.",
+    "emptyOther": "No friends to show.",
+    "backToProfile": "Back to {name}'s profile",
+    "backToDiscover": "Back to Discover",
+    "notFoundTitle": "This list can't be shown",
+    "yourList": "Your list",
+    "listTitle": "Friends",
+    "incomingTitle": "Incoming requests ({count})",
+    "outgoingTitle": "Requests you sent ({count})",
+    "countTitle": "{count, plural, =0 {No friends} =1 {1 friend} other {# friends}}",
+    "hiddenList": "{name} keeps their friend list private."
+  },
+  "notifications": {
+    "metaTitle": "Notifications",
+    "title": "Notifications",
+    "intro": "Friend and message requests and approvals show up here. New messages appear in Chats.",
+    "emptyTitle": "No notifications yet",
+    "emptyBody": "When someone sends you a friend or message request, you'll see it here.",
+    "new": "New",
+    "nowFriends": "You're friends now",
+    "types": {
+      "friend_request": "<b>{name}</b> sent you a friend request.",
+      "friend_accepted": "<b>{name}</b> accepted your friend request.",
+      "message_request": "<b>{name}</b> sent you a message request.",
+      "message_request_accepted": "<b>{name}</b> accepted your message request. Your chat is open.",
+      "anon_request": "<b>Someone anonymous</b> sent you a message.",
+      "student_approved": "<b>Your student card was approved.</b> Your profile now has the \"Verified student\" badge.",
+      "student_rejected": "<b>Your student card wasn't approved.</b> You can see why on the Campus page.",
+      "photo_approved": "<b>Your profile photo was approved.</b> Everyone can see it now.",
+      "photo_rejected": "<b>Your profile photo wasn't approved.</b> You can try a different photo."
+    }
   }
 }

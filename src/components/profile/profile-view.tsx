@@ -10,7 +10,9 @@ import { Tag } from "@/components/ui/chip";
 import { buttonClasses } from "@/components/ui/button";
 import { signOutAction } from "@/lib/auth/actions";
 import { cn } from "@/lib/cn";
-import type { ProfileDetail } from "@/lib/types";
+import type { ProfileDetail, ProfileFriends } from "@/lib/types";
+import { FriendButton } from "@/components/friends/friend-button";
+import { FriendsCard } from "@/components/friends/friends-card";
 import { formatPlace } from "@/lib/location/format";
 import type { CountryCode } from "@/lib/data/countries";
 import { StudentBadge } from "@/components/campus/student-badge";
@@ -19,10 +21,16 @@ import { ProfileGallery } from "@/components/profile/profile-gallery";
 /** Kişi profili (masaüstü: tasarim/07, telefon: tasarim/15). */
 export async function ProfileView({
   p,
+  friends = null,
+  listPublic,
   locale,
   autoCompose = false,
 }: {
   p: ProfileDetail;
+  /** Arkadaşlık durumu ve arkadaş listesi önizlemesi (get_profile_friends). */
+  friends?: ProfileFriends | null;
+  /** Kendi profilim: arkadaş listem başkalarına açık mı? */
+  listPublic?: boolean;
   locale: Locale;
   autoCompose?: boolean;
 }) {
@@ -67,6 +75,19 @@ export async function ProfileView({
           }),
         }
       : null;
+
+  const friendState = friends && friends.state !== "self" ? friends.state : null;
+  const friendButton = (variant: "desktop" | "mobile") =>
+    friendState ? (
+      <FriendButton
+        targetId={p.id}
+        name={p.display_name}
+        state={friendState}
+        incomingRequestId={friends?.incoming_request_id ?? null}
+        variant={variant}
+      />
+    ) : null;
+  const tf = await getTranslations({ locale, namespace: "friends" });
 
   const canCompose = !p.is_self && (p.message_mode === "direct" || p.message_mode === "request") && !p.outgoing_request_pending && !p.incoming_request_id;
   const lookingFor = p.looking_for;
@@ -231,7 +252,12 @@ export async function ProfileView({
                     </span>
                   </>
                 )}
+                <span className="contents md:hidden">{friendButton("mobile")}</span>
+                <span className="hidden md:contents">{friendButton("desktop")}</span>
               </div>
+              {friendState === "incoming" && (
+                <p className="mt-2 text-sm text-lilac">{tf("incomingHint", { name: p.display_name })}</p>
+              )}
               {p.outgoing_request_pending && <p className="mt-2 text-sm text-muted">{t("requestSentHint")}</p>}
               {p.incoming_request_id && <p className="mt-2 text-sm text-muted">{t("incomingRequest")}</p>}
               <div className="mt-6 hidden md:block">
@@ -276,6 +302,7 @@ export async function ProfileView({
               )}
             </Card>
           )}
+          {friends && <FriendsCard list={friends.list} username={p.username} locale={locale} listPublic={listPublic} />}
           {p.languages.length > 0 && (
             <Card title={t("languages")}>
               <div className="flex flex-wrap gap-2">

@@ -41,6 +41,7 @@ export type PhotoSendError =
   | "invalid_image"
   | "disabled"
   | "recipient_off"
+  | "friends_only"
   | "not_accepted"
   | "not_allowed"
   | "rate_limited_photo"
@@ -52,6 +53,7 @@ const SERVER_ERRORS: Record<string, PhotoSendError> = {
   invalid_image: "invalid_image",
   disabled: "disabled",
   recipient_off: "recipient_off",
+  friends_only: "friends_only",
   not_accepted: "not_accepted",
   not_allowed: "not_allowed",
   not_found: "not_allowed",
@@ -71,6 +73,13 @@ export function isRetryable(error: PhotoSendError): boolean {
 /** Gönderim sonrası düğmenin yeni durumu (kural değiştiyse kilitlenir). */
 export function statusAfterError(error: PhotoSendError, current: PhotoStatus): PhotoStatus {
   if (error === "rate_limited_photo") return "rate_limited";
-  if (error === "disabled" || error === "recipient_off" || error === "not_accepted" || error === "not_allowed") return error;
+  if (
+    error === "disabled" ||
+    error === "recipient_off" ||
+    error === "friends_only" ||
+    error === "not_accepted" ||
+    error === "not_allowed"
+  )
+    return error;
   return current;
 }

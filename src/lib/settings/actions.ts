@@ -18,6 +18,7 @@ const settingsSchema = z.object({
   showOnline: z.boolean(),
   showReadReceipts: z.boolean(),
   acceptAnonymous: z.boolean(),
+  showFriends: z.boolean(),
   photoPermission: z.enum(PHOTO_PERMISSIONS),
   locale: z.enum(routing.locales),
 });
@@ -41,6 +42,7 @@ export async function saveSettingsAction(input: SettingsInput): Promise<{ ok: bo
       show_online: d.showOnline,
       show_read_receipts: d.showReadReceipts,
       accept_anonymous: d.acceptAnonymous,
+      show_friends: d.showFriends,
       photo_permission: d.photoPermission,
       preferred_locale: d.locale,
     })

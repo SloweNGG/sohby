@@ -323,7 +323,10 @@ export function ChatRoom({
     }
     // Kilitli: nedenini söyle (tekrar basınca kapanır).
     const key =
-      photoStatus === "not_accepted" || photoStatus === "recipient_off" || photoStatus === "rate_limited"
+      photoStatus === "not_accepted" ||
+      photoStatus === "recipient_off" ||
+      photoStatus === "friends_only" ||
+      photoStatus === "rate_limited"
         ? photoStatus
         : "not_allowed";
     const reason = t(`photo.locked.${key}`);

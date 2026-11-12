@@ -66,6 +66,7 @@ const RULES: Record<string, number> = {
   not_found: 404,
   not_allowed: 403,
   recipient_off: 403,
+  friends_only: 403,
   not_accepted: 403,
   rate_limited: 429,
 };

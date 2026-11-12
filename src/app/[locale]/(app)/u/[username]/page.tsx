@@ -4,8 +4,15 @@ import { resolveLocale } from "@/i18n/locale";
 import { createClient } from "@/lib/supabase/server";
 import { BackLink, ProfileView } from "@/components/profile/profile-view";
 import { BlockedProfile } from "@/components/profile/blocked-profile";
-import type { ProfileDetail } from "@/lib/types";
+import type { ProfileDetail, ProfileFriends } from "@/lib/types";
+import { getMyAccount } from "@/lib/profile";
 import { signPhotoPaths, withPhotoUrls } from "@/lib/photos";
+
+async function loadFriends(username: string) {
+  const supabase = await createClient();
+  const { data } = await supabase.rpc("get_profile_friends", { p_username: username.slice(0, 40) });
+  return (data as ProfileFriends | null) ?? null;
+}
 
 async function loadProfile(username: string) {
   const supabase = await createClient();
@@ -26,7 +33,7 @@ export default async function ProfilePage({ params, searchParams }: PageProps<"/
   const locale = await resolveLocale(params);
   const { username } = await params;
   const sp = await searchParams;
-  const p = await loadProfile(username);
+  const [p, friends] = await Promise.all([loadProfile(username), loadFriends(username)]);
 
   if (!p) {
     const t = await getTranslations({ locale, namespace: "profile" });
@@ -54,5 +61,16 @@ export default async function ProfilePage({ params, searchParams }: PageProps<"/
   // Galeri: onaylı fotoğrafların hepsi için kısa ömürlü bağlantılar (yetki storage RLS'te).
   const urls = await signPhotoPaths(p.photo_paths ?? []);
   const photoUrls = (p.photo_paths ?? []).map((path) => urls.get(path)).filter((u): u is string => Boolean(u));
-  return <ProfileView p={{ ...withPhoto, photo_urls: photoUrls }} locale={locale} autoCompose={sp.compose === "1"} />;
+  // Arkadaş listesi önizlemesi: fotoğraflar için imzalı bağlantılar (yetki storage RLS'te).
+  const friendItems = friends ? await withPhotoUrls(friends.list.items) : [];
+  const listPublic = p.is_self ? ((await getMyAccount())?.profile.show_friends ?? false) : undefined;
+  return (
+    <ProfileView
+      p={{ ...withPhoto, photo_urls: photoUrls }}
+      friends={friends ? { ...friends, list: { ...friends.list, items: friendItems } } : null}
+      listPublic={listPublic}
+      locale={locale}
+      autoCompose={sp.compose === "1"}
+    />
+  );
 }

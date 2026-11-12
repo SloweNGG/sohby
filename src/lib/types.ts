@@ -49,6 +49,7 @@ export type MyProfileRow = {
   accept_anonymous: boolean;
   preferred_locale: "tr" | "en";
   photo_permission: PhotoPermission;
+  show_friends: boolean;
   student_university_id: string | null;
   student_verified_until: string | null;
   show_university: boolean;
@@ -205,11 +206,11 @@ export type Message = {
 };
 
 /** Kimler sana fotoğraf gönderebilir? */
-export const PHOTO_PERMISSIONS = ["accepted_chats", "nobody"] as const;
+export const PHOTO_PERMISSIONS = ["accepted_chats", "friends", "nobody"] as const;
 export type PhotoPermission = (typeof PHOTO_PERMISSIONS)[number];
 
 /** private.chat_photo_status sonucu. */
-export type PhotoStatus = "ok" | "disabled" | "not_found" | "not_allowed" | "recipient_off" | "not_accepted" | "rate_limited";
+export type PhotoStatus = "ok" | "disabled" | "not_found" | "not_allowed" | "recipient_off" | "friends_only" | "not_accepted" | "rate_limited";
 
 export type MessageRequestItem = {
   id: string;
@@ -219,7 +220,72 @@ export type MessageRequestItem = {
   sender: ProfileCard;
 };
 
-export type BadgeCounts = { unread_messages: number; pending_requests: number };
+export type BadgeCounts = { unread_messages: number; pending_requests: number; unread_notifications: number };
+
+/** Arkadaşlık durumu (izleyenin gözünden). */
+export type FriendState = "self" | "friends" | "incoming" | "outgoing" | "none";
+
+/** Listelerdeki küçük kişi kartı (private.friend_card). */
+export type FriendCard = {
+  id: string;
+  username: string;
+  display_name: string;
+  photo_path: string | null;
+  photo_url?: string | null;
+  is_online: boolean;
+};
+
+/** get_friends çıktısı. */
+export type FriendList = {
+  visible: boolean;
+  is_self: boolean;
+  total: number;
+  mutual_count: number;
+  items: Array<FriendCard & { is_mutual: boolean; is_me: boolean; since: string }>;
+};
+
+/** get_profile_friends çıktısı. */
+export type ProfileFriends = {
+  state: FriendState;
+  incoming_request_id: string | null;
+  list: FriendList;
+};
+
+/** get_friend_requests çıktısı. */
+export type FriendRequests = {
+  incoming: Array<{ id: string; created_at: string; user: FriendCard }>;
+  outgoing: Array<{ created_at: string; user: FriendCard }>;
+};
+
+export const NOTIFICATION_TYPES = [
+  "friend_request",
+  "friend_accepted",
+  "message_request",
+  "message_request_accepted",
+  "anon_request",
+  "student_approved",
+  "student_rejected",
+  "photo_approved",
+  "photo_rejected",
+] as const;
+export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
+
+/** get_notifications öğesi. Anonim istekte `actor` her zaman null'dır (kural 10). */
+export type NotificationItem = {
+  id: string;
+  type: NotificationType;
+  created_at: string;
+  read: boolean;
+  actor: FriendCard | null;
+  friend_request_id: string | null;
+  friend_request_status: "pending" | "accepted" | "declined" | "cancelled" | null;
+  friends: boolean;
+  message_request_id: string | null;
+  message_request_status: "pending" | "accepted" | "declined" | null;
+  conversation_id: string | null;
+  anon_conversation_id: string | null;
+  anon_status: "pending" | "active" | "declined" | "revealed" | null;
+};
 
 /** Anonim sohbet (alıcıya gönderen hakkında yalnızca takma ad döner). */
 export type AnonRole = "anonymous" | "recipient";

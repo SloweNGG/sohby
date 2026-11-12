@@ -41,6 +41,7 @@ test("küçültülen fotoğraf özgün türünde kalır", () => {
 
 test("sunucu hataları anlaşılır kodlara çevrilir; yalnızca geçici hatada tekrar denenir", () => {
   assert.equal(toPhotoSendError("recipient_off"), "recipient_off");
+  assert.equal(toPhotoSendError("friends_only"), "friends_only");
   assert.equal(toPhotoSendError("rate_limited"), "rate_limited_photo");
   assert.equal(toPhotoSendError("not_found"), "not_allowed");
   assert.equal(toPhotoSendError("boom"), "generic");
@@ -52,6 +53,7 @@ test("sunucu hataları anlaşılır kodlara çevrilir; yalnızca geçici hatada 
 test("kural değiştiyse fotoğraf düğmesi kilitlenir", () => {
   assert.equal(statusAfterError("rate_limited_photo", "ok"), "rate_limited");
   assert.equal(statusAfterError("recipient_off", "ok"), "recipient_off");
+  assert.equal(statusAfterError("friends_only", "ok"), "friends_only");
   assert.equal(statusAfterError("disabled", "ok"), "disabled");
   assert.equal(statusAfterError("generic", "ok"), "ok");
   assert.equal(statusAfterError("too_large", "ok"), "ok");

@@ -80,6 +80,7 @@ export default async function SettingsPage({ params }: PageProps<"/[locale]/sett
           showOnline: profile.show_online,
           showReadReceipts: profile.show_read_receipts,
           acceptAnonymous: profile.accept_anonymous,
+          showFriends: profile.show_friends ?? false,
           photoPermission: profile.photo_permission ?? "accepted_chats",
           locale: profile.preferred_locale,
         }}

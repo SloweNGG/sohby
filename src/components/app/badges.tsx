@@ -9,6 +9,7 @@ const BADGE_BINDINGS: Binding[] = [
   { event: "INSERT", table: "messages" },
   { event: "*", table: "message_requests" },
   { event: "INSERT", table: "anon_messages" },
+  { event: "*", table: "notifications" },
 ];
 import type { BadgeCounts } from "@/lib/types";
 
@@ -17,11 +18,12 @@ type BadgeContextValue = BadgeCounts & { refresh: () => void };
 const BadgeContext = createContext<BadgeContextValue>({
   unread_messages: 0,
   pending_requests: 0,
+  unread_notifications: 0,
   refresh: () => {},
 });
 
 /**
- * Gezinme rozetleri (okunmamış mesaj + bekleyen istek). Yeni mesaj/istek
+ * Gezinme rozetleri (okunmamış mesaj + bekleyen istek + okunmamış bildirim). Yeni mesaj/istek
  * geldiğinde Supabase Realtime ile tazelenir; kopukluktan sonra yeniden
  * hesaplanır (lib/realtime). Realtime olayları RLS'e tabidir:
  * kullanıcı yalnızca kendi sohbetlerindeki mesajların ve kendisine gelen
@@ -37,7 +39,11 @@ export function BadgeProvider({ initial, userId, children }: { initial: BadgeCou
       if (data) {
         const next = data as BadgeCounts;
         setCounts((prev) =>
-          prev.unread_messages === next.unread_messages && prev.pending_requests === next.pending_requests ? prev : next,
+          prev.unread_messages === next.unread_messages &&
+          prev.pending_requests === next.pending_requests &&
+          prev.unread_notifications === next.unread_notifications
+            ? prev
+            : next,
         );
       }
     } catch {

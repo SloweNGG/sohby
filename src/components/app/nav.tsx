@@ -1,7 +1,19 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { GraduationCap, LogOut, MessageSquare, PencilLine, Settings, User, UserRound, Users, type LucideIcon } from "lucide-react";
+import {
+  Bell,
+  GraduationCap,
+  LogOut,
+  MessageSquare,
+  PencilLine,
+  Settings,
+  User,
+  UserRound,
+  Users,
+  UsersRound,
+  type LucideIcon,
+} from "lucide-react";
 import { Link, usePathname } from "@/i18n/navigation";
 import { Logo, LogoMark } from "@/components/logo";
 import type { ProfileCompletion } from "@/lib/profile-completion";
@@ -17,6 +29,7 @@ const ICONS: Record<NavKey, LucideIcon> = {
   discover: Users,
   campus: GraduationCap,
   chats: MessageSquare,
+  notifications: Bell,
   settings: Settings,
   profile: User,
 };
@@ -51,7 +64,7 @@ export function Sidebar({ me, completion }: { me: Me; completion: ProfileComplet
   const tCommon = useTranslations("common");
   const locale = useLocale();
   const section = useSection(me.username);
-  const { unread_messages, pending_requests } = useBadges();
+  const { unread_messages, pending_requests, unread_notifications } = useBadges();
   const chatCount = unread_messages + pending_requests;
   const itemClass = (active: boolean) =>
     cn(
@@ -82,7 +95,7 @@ export function Sidebar({ me, completion }: { me: Me; completion: ProfileComplet
         {NAV_ITEMS.filter((i) => i.key !== "profile").map((item) => {
           const Icon = ICONS[item.key];
           const active = section === item.key;
-          const count = item.key === "chats" ? chatCount : 0;
+          const count = item.key === "chats" ? chatCount : item.key === "notifications" ? unread_notifications : 0;
           return (
             <Link
               key={item.key}
@@ -120,6 +133,10 @@ export function Sidebar({ me, completion }: { me: Me; completion: ProfileComplet
             <Link href="/profile/edit" className={accountLinkClass}>
               <PencilLine className="h-4 w-4" aria-hidden="true" />
               {t("editProfile")}
+            </Link>
+            <Link href={`/u/${me.username}/friends`} className={accountLinkClass}>
+              <UsersRound className="h-4 w-4" aria-hidden="true" />
+              {t("myFriends")}
             </Link>
             <form action={signOutAction}>
               <button type="submit" className={cn(accountLinkClass, "w-full text-left")}>
@@ -185,6 +202,10 @@ export function Sidebar({ me, completion }: { me: Me; completion: ProfileComplet
               <PencilLine className="h-4 w-4" aria-hidden="true" />
               {t("editProfile")}
             </Link>
+            <Link href={`/u/${me.username}/friends`} className={accountLinkClass}>
+              <UsersRound className="h-4 w-4" aria-hidden="true" />
+              {t("myFriends")}
+            </Link>
             <form action={signOutAction}>
               <button type="submit" className={cn(accountLinkClass, "w-full text-left")}>
                 <LogOut className="h-4 w-4" aria-hidden="true" />
@@ -205,7 +226,7 @@ export function BottomNav({ me }: { me: Me }) {
   const rawSection = useSection(me.username);
   const section = rawSection === "settings" ? "profile" : rawSection;
   const pathname = usePathname();
-  const { unread_messages, pending_requests } = useBadges();
+  const { unread_messages, pending_requests, unread_notifications } = useBadges();
   const chatCount = unread_messages + pending_requests;
   const inConversation = /^\/chats\/(?!requests$)[^/]+/.test(pathname);
   if (inConversation) return null;
@@ -215,7 +236,7 @@ export function BottomNav({ me }: { me: Me }) {
     href: navHref(item.key, me.username),
     icon: ICONS[item.key],
     label: t(item.key),
-    count: item.key === "chats" ? chatCount : 0,
+    count: item.key === "chats" ? chatCount : item.key === "notifications" ? unread_notifications : 0,
   }));
 
   return (

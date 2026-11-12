@@ -17,7 +17,7 @@ test("her menü öğesi var olan bir sayfaya gider", () => {
 
 test("henüz yapılmamış sayfalar menüde yok", () => {
   const keys = NAV_ITEMS.map((i) => i.key);
-  assert.ok(!keys.includes("map") && !keys.includes("notifications"));
+  assert.ok(!keys.includes("map"));
 });
 
 test("başkasının profili Keşfet'e, kendi profilin Profil'e sayılır", () => {
@@ -27,4 +27,9 @@ test("başkasının profili Keşfet'e, kendi profilin Profil'e sayılır", () =>
   assert.equal(activeSection("/chats/anon/x", "selin"), "chats");
   assert.equal(activeSection("/settings", "selin"), "settings");
   assert.equal(activeSection("/campus", "selin"), "campus");
+  assert.equal(activeSection("/notifications", "selin"), "notifications");
+  assert.equal(activeSection("/u/selin/friends", "selin"), "profile");
+  assert.equal(activeSection("/u/elif/friends", "selin"), "discover");
+  // "selinay" kullanıcısının profili, "selin" için kendi profili sayılmaz.
+  assert.equal(activeSection("/u/selinay", "selin"), "discover");
 });

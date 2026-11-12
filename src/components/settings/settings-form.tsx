@@ -27,6 +27,7 @@ export type SettingsInitial = {
   showOnline: boolean;
   showReadReceipts: boolean;
   acceptAnonymous: boolean;
+  showFriends: boolean;
   photoPermission: PhotoPermission;
   locale: Locale;
 };
@@ -38,7 +39,8 @@ type ToggleKey =
   | "showGender"
   | "showOnline"
   | "showReadReceipts"
-  | "acceptAnonymous";
+  | "acceptAnonymous"
+  | "showFriends";
 
 /** Ayarlar > Gizlilik (tasarim/11). Yalnızca çalışan ayarlar gösterilir. */
 export function SettingsForm({
@@ -93,6 +95,7 @@ export function SettingsForm({
     ["showAge", t("showAge"), t("showAgeHint", { name: v.displayName, age: v.age ?? 25 })],
     ["showDistrict", t("showDistrict"), t("showDistrictHint")],
     ["showGender", t("showGender"), t("showGenderHint")],
+    ["showFriends", t("showFriends"), t("showFriendsHint")],
     ["showOnline", t("showOnline"), t("showOnlineHint")],
     ["showReadReceipts", t("showReadReceipts"), t("showReadReceiptsHint")],
     ["acceptAnonymous", t("acceptAnonymous"), t("acceptAnonymousHint")],

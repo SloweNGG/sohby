@@ -61,7 +61,7 @@ export default async function AppLayout({ children, params }: LayoutProps<"/[loc
     // zamanlar sunucu ile aynı çıkar, hydration uyuşmazlığı olmaz); sonra useNow günceller.
     <NextIntlClientProvider timeZone={timeZone} now={new Date()}>
       <TimeZoneSync current={timeZone} />
-      <BadgeProvider initial={(badges as BadgeCounts) ?? { unread_messages: 0, pending_requests: 0 }} userId={me.id}>
+      <BadgeProvider initial={(badges as BadgeCounts) ?? { unread_messages: 0, pending_requests: 0, unread_notifications: 0 }} userId={me.id}>
         <PresenceHeartbeat />
         <Sidebar me={me} completion={completion} />
         <div className="min-h-dvh md:pl-[76px] xl:pl-60">{children}</div>

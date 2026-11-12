@@ -291,7 +291,9 @@
       "hobbies": "hobiler",
       "district": "semt",
       "occupation": "meslek"
-    }
+    },
+    "notifications": "Bildirimler",
+    "myFriends": "Arkadaşlarım"
   },
   "discover": {
     "metaTitle": "Keşfet",
@@ -484,7 +486,8 @@
       "disabled": "Sohbette fotoğraf şu anda kapalı.",
       "recipient_off": "Bu kişi fotoğraf almayı kapatmış.",
       "not_accepted": "Karşı taraf sana cevap verene kadar fotoğraf gönderemezsin.",
-      "rate_limited_photo": "Bugünkü fotoğraf sınırına ulaştın (günde 50)."
+      "rate_limited_photo": "Bugünkü fotoğraf sınırına ulaştın (günde 50).",
+      "friends_only": "Bu kişi yalnızca arkadaşlarından fotoğraf alıyor."
     },
     "read": "Okundu",
     "delete": "Sohbeti sil",
@@ -506,7 +509,8 @@
         "not_accepted": "Karşı taraf sana cevap verene kadar fotoğraf gönderemezsin.",
         "recipient_off": "Bu kişi fotoğraf almayı kapatmış.",
         "rate_limited": "Bugünkü fotoğraf sınırına ulaştın (günde 50). Yarın yeniden gönderebilirsin.",
-        "not_allowed": "Bu sohbete şu anda fotoğraf gönderemezsin."
+        "not_allowed": "Bu sohbete şu anda fotoğraf gönderemezsin.",
+        "friends_only": "Bu kişi yalnızca arkadaşlarından fotoğraf alıyor. Arkadaş olursanız fotoğraf gönderebilirsin."
       },
       "enlarge": "Fotoğrafı büyüt",
       "close": "Kapat"
@@ -773,9 +777,13 @@
       "accepted_chats": "Kabul ettiğim sohbetlerdeki herkes",
       "accepted_chatsHint": "Başlattığın, isteğini kabul ettiğin ya da cevap verdiğin sohbetler.",
       "nobody": "Kimse",
-      "nobodyHint": "Kimse sana fotoğraf gönderemez."
+      "nobodyHint": "Kimse sana fotoğraf gönderemez.",
+      "friends": "Yalnızca arkadaşlarım",
+      "friendsHint": "Yalnızca arkadaş olduğun kişiler sana fotoğraf gönderebilir."
     },
-    "blockedAgo": "{time} engellendi"
+    "blockedAgo": "{time} engellendi",
+    "showFriends": "Arkadaş listem",
+    "showFriendsHint": "Profilinde arkadaşların görünür. Listesini gizleyen arkadaşların yine de gösterilmez."
   },
   "anon": {
     "alias": "{adjective} {animal}",
@@ -1500,5 +1508,76 @@
     "GR": "Yunanistan",
     "ZM": "Zambiya",
     "ZW": "Zimbabve"
+  },
+  "friends": {
+    "metaTitle": "Arkadaşlar",
+    "add": "Arkadaş ekle",
+    "requestSent": "İstek gönderildi",
+    "acceptRequest": "İsteği kabul et",
+    "friends": "Arkadaşsınız",
+    "accept": "Kabul et",
+    "decline": "Reddet",
+    "cancelRequest": "İsteği geri çek",
+    "cancelShort": "Geri çek",
+    "remove": "Arkadaşlıktan çıkar",
+    "removeTitle": "{name} arkadaşlıktan çıkarılsın mı?",
+    "removeBody": "{name} bundan haberdar edilmez. İstersen daha sonra yeniden arkadaşlık isteği gönderebilirsin.",
+    "removeConfirm": "Çıkar",
+    "cancel": "Vazgeç",
+    "acceptFrom": "{name} kişisinin isteğini kabul et",
+    "declineFrom": "{name} kişisinin isteğini reddet",
+    "cancelTo": "{name} kişisine gönderdiğin isteği geri çek",
+    "incomingHint": "{name} sana arkadaşlık isteği gönderdi.",
+    "done": {
+      "accepted": "{name} ile artık arkadaşsınız.",
+      "declined": "İstek reddedildi. {name} bunu öğrenmez.",
+      "cancelled": "İstek geri çekildi."
+    },
+    "errors": {
+      "not_found": "Bu kişiye şu anda ulaşılamıyor.",
+      "not_allowed": "Bu işlem şu anda yapılamıyor.",
+      "rate_limited": "Bugün çok fazla arkadaşlık isteği gönderdin. Yarın yeniden deneyebilirsin.",
+      "email_not_verified": "Arkadaşlık isteği göndermek için önce e-posta adresini doğrula.",
+      "generic": "Bir sorun oldu. Lütfen tekrar dene."
+    },
+    "myFriendsTitle": "Arkadaşların",
+    "theirFriendsTitle": "Arkadaşları",
+    "seeAll": "Tümünü gör ({count})",
+    "you": "Sen",
+    "mutual": "Ortak arkadaş",
+    "mutualCount": "{count, plural, =1 {1 ortak arkadaşınız var:} other {# ortak arkadaşınız var:}}",
+    "privateListHint": "Listen yalnızca sana görünüyor.",
+    "privateListLink": "Ayarlardan açabilirsin",
+    "emptySelf": "Henüz arkadaşın yok. Keşfet'te tanıştığın kişilere arkadaşlık isteği gönderebilirsin.",
+    "emptyOther": "Gösterilecek arkadaş yok.",
+    "backToProfile": "{name} profiline dön",
+    "backToDiscover": "Keşfet'e dön",
+    "notFoundTitle": "Bu liste görüntülenemiyor",
+    "yourList": "Senin listen",
+    "listTitle": "Arkadaşlar",
+    "incomingTitle": "Gelen istekler ({count})",
+    "outgoingTitle": "Gönderdiğin istekler ({count})",
+    "countTitle": "{count, plural, =0 {Arkadaş yok} =1 {1 arkadaş} other {# arkadaş}}",
+    "hiddenList": "{name} arkadaş listesini gizliyor."
+  },
+  "notifications": {
+    "metaTitle": "Bildirimler",
+    "title": "Bildirimler",
+    "intro": "Arkadaşlık ve mesaj istekleri, onaylar burada. Yeni mesajlar Sohbetler'de görünür.",
+    "emptyTitle": "Henüz bildirimin yok",
+    "emptyBody": "Biri sana arkadaşlık ya da mesaj isteği gönderdiğinde burada göreceksin.",
+    "new": "Yeni",
+    "nowFriends": "Artık arkadaşsınız",
+    "types": {
+      "friend_request": "<b>{name}</b> sana arkadaşlık isteği gönderdi.",
+      "friend_accepted": "<b>{name}</b> arkadaşlık isteğini kabul etti.",
+      "message_request": "<b>{name}</b> sana bir mesaj isteği gönderdi.",
+      "message_request_accepted": "<b>{name}</b> mesaj isteğini kabul etti. Sohbet açıldı.",
+      "anon_request": "<b>Anonim biri</b> sana mesaj gönderdi.",
+      "student_approved": "<b>Öğrenci kartın onaylandı.</b> Profilinde artık \"Doğrulanmış öğrenci\" rozeti var.",
+      "student_rejected": "<b>Öğrenci kartın onaylanmadı.</b> Nedenini Kampüs sayfasında görebilirsin.",
+      "photo_approved": "<b>Profil fotoğrafın onaylandı.</b> Artık herkes görebilir.",
+      "photo_rejected": "<b>Profil fotoğrafın onaylanmadı.</b> Başka bir fotoğraf deneyebilirsin."
+    }
   }
 }
