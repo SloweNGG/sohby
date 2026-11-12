@@ -284,5 +284,91 @@
       "rejected": "Reddedildi",
       "expired": "Süresi doldu"
     }
+  },
+  "dashboard": {
+    "period": "Dönem",
+    "days": "{n} gün",
+    "range": "{from} – {to} · Türkiye saati",
+    "vsPrevious": "önceki {days} güne göre",
+    "periodSummary": "Son {days} gün",
+    "pendingStudentDocs": "Bekleyen öğrenci kartı",
+    "waitingMinutes": "En eskisi {n} dakikadır bekliyor",
+    "waitingHours": "En eskisi {n} saattir bekliyor",
+    "waitingDays": "En eskisi {n} gündür bekliyor",
+    "delta": {
+      "flat": "değişmedi",
+      "new": "yeni",
+      "up": "yüzde {pct} arttı",
+      "down": "yüzde {pct} azaldı",
+      "pct": "%{n}"
+    },
+    "series": {
+      "signups": "Yeni kayıt",
+      "active": "Mesaj yazan kişi",
+      "messages": "Mesaj",
+      "conversations": "Yeni sohbet",
+      "reports": "Şikâyet"
+    },
+    "seriesHint": {
+      "signups": "Her gün kaç kişi kayıt oldu",
+      "active": "Her gün en az bir mesaj yazan farklı kişi sayısı",
+      "messages": "Sohbet, anonim sohbet ve mesaj isteklerinde gönderilen mesajlar",
+      "conversations": "Başlayan normal ve anonim sohbetler",
+      "reports": "Gelen şikâyetler"
+    },
+    "daily": "Günlük hareket",
+    "showTable": "Tablo olarak göster",
+    "value": "Sayı",
+    "noData": "Bu dönemde kayıt yok.",
+    "now": "Şu an",
+    "online": "Şu an çevrimiçi",
+    "onlineHint": "Son 5 dakikada uygulamada olanlar",
+    "students": "Doğrulanmış öğrenci",
+    "friendships": "Arkadaşlık",
+    "growth": "Büyüme",
+    "funnelTitle": "Kayıttan sohbete",
+    "funnelHint": "Son {days} günde kayıt olanlar hangi adıma kadar geldi",
+    "funnel": {
+      "signed_up": "Kayıt oldu",
+      "email_verified": "E-postasını doğruladı",
+      "onboarded": "Başlangıç sorularını bitirdi",
+      "messaged": "İlk mesajını gönderdi",
+      "mutual": "Karşılıklı yazıştı"
+    },
+    "retentionTitle": "1 hafta sonra geri gelme",
+    "retentionHint": "Kayıttan en az 7 gün sonra uygulamaya yeniden girenler",
+    "retentionDetail": "{eligible} kişiden {returned} kişi geri geldi",
+    "requestsTitle": "Mesaj istekleri",
+    "requestsHint": "Bu dönemde {sent} istek gönderildi",
+    "acceptRate": "Yanıtlanan isteklerin kabul oranı",
+    "requests": {
+      "accepted": "Kabul edildi",
+      "declined": "Reddedildi",
+      "pending": "Yanıt bekliyor"
+    },
+    "audience": "Kitle",
+    "audienceHint": "Başlangıç sorularını bitirmiş, silinmemiş hesaplar. Flört tercihi (ilgilenilen cinsiyet) burada hiç kullanılmaz.",
+    "lookingFor": "Ne arıyor",
+    "lookingForHint": "Bir kişi birden fazla seçebilir",
+    "cities": "En çok kullanıcı olan şehirler",
+    "ageGroups": "Yaş grupları",
+    "ageBucket": {
+      "18-20": "18–20",
+      "21-24": "21–24",
+      "25-29": "25–29",
+      "30-39": "30–39",
+      "40+": "40 ve üstü"
+    },
+    "gender": "Cinsiyet",
+    "contentSafety": "İçerik ve güvenlik",
+    "contentTitle": "Paylaşılanlar",
+    "content": {
+      "photos": "Fotoğraf mesajı",
+      "voice": "Sesli mesaj",
+      "anon_chats": "Anonim sohbet",
+      "friendships": "Yeni arkadaşlık"
+    },
+    "reasonsTitle": "Şikâyet nedenleri",
+    "inPeriod": "Son {days} gün"
   }
 }

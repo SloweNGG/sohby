@@ -42,3 +42,13 @@ export function ageFrom(birth: string | null | undefined): number | null {
   if (m < 0 || (m === 0 && now.getUTCDate() < b.getUTCDate())) age -= 1;
   return age;
 }
+
+/** Bekleyen en eski kayıt için "En eskisi 3 gündür bekliyor" metni. Boş değer için null. */
+export function fmtWaiting(iso: string | null | undefined): string | null {
+  if (!iso) return null;
+  const { t } = getT();
+  const mins = Math.max(0, Math.floor((Date.now() - new Date(iso).getTime()) / 60_000));
+  if (mins < 60) return t("dashboard.waitingMinutes", { n: Math.max(1, mins) });
+  if (mins < 60 * 24) return t("dashboard.waitingHours", { n: Math.floor(mins / 60) });
+  return t("dashboard.waitingDays", { n: Math.floor(mins / (60 * 24)) });
+}

@@ -284,5 +284,91 @@
       "rejected": "Rejected",
       "expired": "Expired"
     }
+  },
+  "dashboard": {
+    "period": "Period",
+    "days": "{n} days",
+    "range": "{from} – {to} · Turkey time",
+    "vsPrevious": "vs previous {days} days",
+    "periodSummary": "Last {days} days",
+    "pendingStudentDocs": "Pending student IDs",
+    "waitingMinutes": "Oldest waiting {n} min",
+    "waitingHours": "Oldest waiting {n} h",
+    "waitingDays": "Oldest waiting {n} days",
+    "delta": {
+      "flat": "no change",
+      "new": "new",
+      "up": "up {pct} percent",
+      "down": "down {pct} percent",
+      "pct": "{n}%"
+    },
+    "series": {
+      "signups": "Sign-ups",
+      "active": "People messaging",
+      "messages": "Messages",
+      "conversations": "New conversations",
+      "reports": "Reports"
+    },
+    "seriesHint": {
+      "signups": "How many people signed up each day",
+      "active": "Distinct people who sent at least one message each day",
+      "messages": "Messages sent in chats, anonymous chats and message requests",
+      "conversations": "Regular and anonymous conversations started",
+      "reports": "Reports received"
+    },
+    "daily": "Daily activity",
+    "showTable": "Show as table",
+    "value": "Count",
+    "noData": "Nothing in this period.",
+    "now": "Right now",
+    "online": "Online now",
+    "onlineHint": "Active in the last 5 minutes",
+    "students": "Verified students",
+    "friendships": "Friendships",
+    "growth": "Growth",
+    "funnelTitle": "From sign-up to conversation",
+    "funnelHint": "How far people who signed up in the last {days} days got",
+    "funnel": {
+      "signed_up": "Signed up",
+      "email_verified": "Verified email",
+      "onboarded": "Finished onboarding",
+      "messaged": "Sent a first message",
+      "mutual": "Had a two-way chat"
+    },
+    "retentionTitle": "Came back after a week",
+    "retentionHint": "Opened the app again at least 7 days after signing up",
+    "retentionDetail": "{returned} of {eligible} people came back",
+    "requestsTitle": "Message requests",
+    "requestsHint": "{sent} requests sent in this period",
+    "acceptRate": "Acceptance rate of answered requests",
+    "requests": {
+      "accepted": "Accepted",
+      "declined": "Declined",
+      "pending": "Awaiting reply"
+    },
+    "audience": "Audience",
+    "audienceHint": "Accounts that finished onboarding and are not deleted. Dating preference (gender of interest) is never used here.",
+    "lookingFor": "Looking for",
+    "lookingForHint": "One person can pick several",
+    "cities": "Top cities",
+    "ageGroups": "Age groups",
+    "ageBucket": {
+      "18-20": "18–20",
+      "21-24": "21–24",
+      "25-29": "25–29",
+      "30-39": "30–39",
+      "40+": "40 and over"
+    },
+    "gender": "Gender",
+    "contentSafety": "Content and safety",
+    "contentTitle": "Shared",
+    "content": {
+      "photos": "Photo messages",
+      "voice": "Voice messages",
+      "anon_chats": "Anonymous chats",
+      "friendships": "New friendships"
+    },
+    "reasonsTitle": "Report reasons",
+    "inPeriod": "Last {days} days"
   }
 }
