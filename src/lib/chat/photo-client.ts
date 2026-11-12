@@ -4,6 +4,7 @@
 import { createClient } from "@/lib/supabase/client";
 import { getSupabaseEnv } from "@/lib/supabase/env";
 import type { Message } from "@/lib/types";
+import { createSigner } from "./signed-urls";
 import {
   MAX_PHOTO_BYTES,
   PHOTO_QUALITY,
@@ -91,49 +92,14 @@ export async function sendChatPhoto(conversationId: string, id: string, blob: Bl
   }
 }
 
-// ---------------------------------------------------------------------------
-// İmzalı bağlantılar: aynı anda istenenler tek istekte üretilir, süresi
-// dolmadan önbellekten verilir. Storage RLS yalnızca sohbetin taraflarına izin verir.
-// ---------------------------------------------------------------------------
-const cache = new Map<string, { url: string; expires: number }>();
-let pending: Map<string, Array<(url: string | null) => void>> | null = null;
-
-async function flush() {
-  const batch = pending;
-  pending = null;
-  if (!batch) return;
-  const paths = [...batch.keys()];
-  let signed: Array<{ path: string | null; signedUrl: string; error: string | null }> = [];
-  try {
-    const { data } = await createClient().storage.from(CHAT_PHOTO_BUCKET).createSignedUrls(paths, CHAT_PHOTO_URL_TTL);
-    signed = data ?? [];
-  } catch {
-    signed = [];
-  }
-  const byPath = new Map(signed.filter((s) => s.path && s.signedUrl && !s.error).map((s) => [s.path as string, s.signedUrl]));
-  const expires = Date.now() + CHAT_PHOTO_URL_TTL * 1000;
-  for (const [path, resolvers] of batch) {
-    const url = byPath.get(path) ?? null;
-    if (url) cache.set(path, { url, expires });
-    for (const resolve of resolvers) resolve(url);
-  }
-}
+// İmzalı bağlantılar (ortak önbellek ve toplu imzalama: signed-urls.ts).
+const signer = createSigner(CHAT_PHOTO_BUCKET, CHAT_PHOTO_URL_TTL);
 
 export function signedChatPhotoUrl(path: string): Promise<string | null> {
-  const hit = cache.get(path);
-  if (hit && hit.expires - Date.now() > 30_000) return Promise.resolve(hit.url);
-  return new Promise((resolve) => {
-    if (!pending) {
-      pending = new Map();
-      setTimeout(() => void flush(), 0);
-    }
-    const list = pending.get(path) ?? [];
-    list.push(resolve);
-    pending.set(path, list);
-  });
+  return signer.sign(path);
 }
 
 /** Bağlantı açılamadıysa (ör. süresi doldu) önbellekten çıkarılır. */
 export function forgetChatPhotoUrl(path: string) {
-  cache.delete(path);
+  signer.forget(path);
 }

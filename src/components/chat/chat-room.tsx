@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { ArrowUp, ChevronLeft, ImagePlus, Lock, RotateCw } from "lucide-react";
+import { ArrowUp, ChevronLeft, ImagePlus, Lock, Mic, RotateCw, Trash2 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useRealtime } from "@/lib/realtime/use-realtime";
@@ -13,19 +13,23 @@ import { useBadges } from "@/components/app/badges";
 import { useChats } from "./chats-shell";
 import { useClock, useDayKey, useDayLabel } from "./time";
 import { ChatPhoto } from "./chat-photo";
+import { VoiceMessage } from "./voice-message";
+import { useVoiceRecorder, type RecorderProblem } from "./use-voice-recorder";
 import { PHOTO_ACCEPT, checkPhotoFile, isRetryable, statusAfterError, type PhotoSendError } from "@/lib/chat/photo";
 import { resizePhoto, sendChatPhoto } from "@/lib/chat/photo-client";
-import type { ConversationHeader, Message, PhotoStatus } from "@/lib/types";
+import { MAX_VOICE_MS, formatVoiceTime, isVoiceRetryable, voiceStatusAfterError, type VoiceSendError } from "@/lib/chat/voice";
+import { sendChatVoice, type VoiceRecording } from "@/lib/chat/voice-client";
+import type { ConversationHeader, Message, PhotoStatus, VoiceStatus } from "@/lib/types";
 import { formatPlace } from "@/lib/location/format";
 import type { CountryCode } from "@/lib/data/countries";
 
 const PAGE = 50;
 const RESYNC_PAGE = 200;
-const SELECT = "id, conversation_id, sender_id, body, created_at, kind, photo_path";
+const SELECT = "id, conversation_id, sender_id, body, created_at, kind, photo_path, voice_path, voice_duration_ms, voice_peaks";
 const MAX_LENGTH = 2000;
 
 type UiMessage = Message & { status?: "sending" | "failed"; error?: SendError; localUrl?: string };
-type SendError = "rate_limited" | "not_allowed" | "too_long" | "generic" | PhotoSendError;
+type SendError = "rate_limited" | "not_allowed" | "too_long" | "generic" | PhotoSendError | VoiceSendError;
 
 function toSendError(error: { message?: string; code?: string } | null): SendError {
   if (!error) return "generic";
@@ -86,10 +90,13 @@ export function ChatRoom({
   const [loadingOlder, setLoadingOlder] = useState(false);
   const [draft, setDraft] = useState("");
   const [photoStatus, setPhotoStatus] = useState<PhotoStatus>(header.photo ?? "disabled");
+  const [voiceStatus, setVoiceStatus] = useState<VoiceStatus>(header.voice ?? "disabled");
+  // Fotoğraf ve ses düğmelerinin açıklama satırı (kilit nedeni, mikrofon sorunu).
   const [photoNotice, setPhotoNotice] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   // Gönderilen fotoğrafların "tekrar dene" için dosyası ve bırakılacak yerel önizlemeler.
   const photoBlobs = useRef(new Map<string, Blob>());
+  const voiceRecordings = useRef(new Map<string, VoiceRecording>());
   const previewUrls = useRef(new Set<string>());
   const listRef = useRef<HTMLDivElement>(null);
   const stickToBottom = useRef(true);
@@ -124,6 +131,7 @@ export function ChatRoom({
       const h = data as ConversationHeader;
       setOtherReadAt(h.other_read_at ?? null);
       setPhotoStatus(h.photo ?? "disabled");
+      setVoiceStatus(h.voice ?? "disabled");
     } catch {
       /* sessizce geç */
     }
@@ -333,7 +341,80 @@ export function ChatRoom({
     setPhotoNotice((cur) => (cur === reason ? null : reason));
   }
 
+  /** Sesli mesaj gönder (yeni ya da "tekrar dene" ile aynı kimlik ve kayıt). */
+  async function sendVoice(rec: VoiceRecording, retryId?: string) {
+    const id = retryId ?? crypto.randomUUID();
+    const existing = retryId ? messagesRef.current.find((m) => m.id === retryId)?.localUrl : undefined;
+    const localUrl = existing ?? URL.createObjectURL(rec.blob);
+    previewUrls.current.add(localUrl);
+    voiceRecordings.current.set(id, rec);
+    const optimistic: UiMessage = {
+      id,
+      conversation_id: conversationId,
+      sender_id: me,
+      body: "",
+      kind: "voice",
+      voice_path: null,
+      voice_duration_ms: Math.round(rec.durationMs),
+      voice_peaks: rec.peaks,
+      created_at: new Date().toISOString(),
+      status: "sending",
+      localUrl,
+    };
+    stickToBottom.current = true;
+    setMessages((prev) => (retryId ? prev.map((m) => (m.id === retryId ? optimistic : m)) : [...prev, optimistic]));
+
+    const result = await sendChatVoice(conversationId, id, rec);
+    if (!result.ok) {
+      setMessages((prev) => markFailed(prev, id, result.error as SendError));
+      setVoiceStatus((s) => voiceStatusAfterError(result.error, s));
+      return;
+    }
+    voiceRecordings.current.delete(id);
+    setMessages((prev) => keepPreviews(prev, mergeById(prev, [result.message])));
+    refreshList();
+  }
+
+  const recorder = useVoiceRecorder({ onLimit: () => void finishRecording() });
+
+  async function finishRecording() {
+    const result = await recorder.finish();
+    if (result === null) return;
+    if (typeof result === "string") {
+      showRecorderProblem(result);
+      return;
+    }
+    await sendVoice(result);
+  }
+
+  function showRecorderProblem(problem: RecorderProblem) {
+    setPhotoNotice(t(`voice.problems.${problem}`));
+  }
+
+  async function onMicButton() {
+    if (voiceStatus !== "ok") {
+      const key =
+        voiceStatus === "not_accepted" ||
+        voiceStatus === "recipient_off" ||
+        voiceStatus === "friends_only" ||
+        voiceStatus === "rate_limited"
+          ? voiceStatus
+          : "not_allowed";
+      const reason = t(`voice.locked.${key}`);
+      setPhotoNotice((cur) => (cur === reason ? null : reason));
+      return;
+    }
+    setPhotoNotice(null);
+    const problem = await recorder.start();
+    if (problem) showRecorderProblem(problem);
+  }
+
   function retry(m: UiMessage) {
+    if (m.kind === "voice") {
+      const rec = voiceRecordings.current.get(m.id);
+      if (rec) void sendVoice(rec, m.id);
+      return;
+    }
     if (m.kind === "photo") {
       const blob = photoBlobs.current.get(m.id);
       if (blob) void sendPhoto(blob, m.id);
@@ -363,6 +444,8 @@ export function ChatRoom({
   const tooLong = draft.trim().length > MAX_LENGTH;
   const showPhotoButton = photoStatus !== "disabled" && photoStatus !== "not_found";
   const photoLocked = photoStatus !== "ok";
+  const showMicButton = voiceStatus !== "disabled" && voiceStatus !== "not_found";
+  const micLocked = voiceStatus !== "ok";
 
   return (
     <div className="flex h-dvh flex-col">
@@ -428,7 +511,21 @@ export function ChatRoom({
                   </p>
                 )}
                 <div className={cn("flex", mine ? "justify-end" : "justify-start")}>
-                  {m.kind === "photo" ? (
+                  {m.kind === "voice" ? (
+                    <div
+                      className={cn("max-w-[85%] rounded-[22px] md:max-w-[65%]", m.status === "failed" && "ring-2 ring-coral/60")}
+                      title={clock(m.created_at)}
+                    >
+                      <VoiceMessage
+                        path={m.voice_path}
+                        localUrl={m.localUrl}
+                        durationMs={m.voice_duration_ms ?? 0}
+                        peaks={m.voice_peaks ?? []}
+                        mine={mine}
+                        sending={m.status === "sending"}
+                      />
+                    </div>
+                  ) : m.kind === "photo" ? (
                     <div
                       className={cn("max-w-[85%] rounded-[22px] md:max-w-[65%]", m.status === "failed" && "ring-2 ring-coral/60")}
                       title={clock(m.created_at)}
@@ -457,10 +554,12 @@ export function ChatRoom({
                 {showRead && <p className="mt-1 text-right text-xs text-muted">{t("read")}</p>}
                 {m.status === "failed" && (
                   <p className="mt-1 flex items-center justify-end gap-2 text-xs text-coral-text">
-                    {t(`errors.${m.error ?? "generic"}`)}
-                    {(m.kind === "photo"
-                      ? isRetryable((m.error ?? "generic") as PhotoSendError)
-                      : m.error !== "not_allowed") && (
+                    {m.kind === "voice" ? t(`voice.errors.${(m.error ?? "generic") as VoiceSendError}`) : t(`errors.${(m.error ?? "generic") as Exclude<SendError, VoiceSendError>}`)}
+                    {(m.kind === "voice"
+                      ? isVoiceRetryable((m.error ?? "generic") as VoiceSendError)
+                      : m.kind === "photo"
+                        ? isRetryable((m.error ?? "generic") as PhotoSendError)
+                        : m.error !== "not_allowed") && (
                       <button
                         type="button"
                         onClick={() => retry(m)}
@@ -480,7 +579,38 @@ export function ChatRoom({
 
       {/* Yazma alanı */}
       <div className="border-t border-line px-3 pb-[max(12px,env(safe-area-inset-bottom))] pt-3 md:border-t-0 md:px-7 md:pb-6">
-        {header.can_send ? (
+        {header.can_send && recorder.recording ? (
+          <div className="mx-auto flex max-w-[920px] items-center gap-2.5" role="group" aria-label={t("voice.recording")}>
+            <button
+              type="button"
+              onClick={() => recorder.cancel()}
+              aria-label={t("voice.cancel")}
+              className="grid h-[52px] w-[52px] shrink-0 place-items-center rounded-full border border-edge text-moon transition-colors hover:bg-surface"
+            >
+              <Trash2 className="h-5 w-5" aria-hidden="true" />
+            </button>
+            <div className="flex h-[52px] min-w-0 flex-1 items-center gap-3 rounded-2xl border border-edge bg-surface px-4">
+              <span className="h-2.5 w-2.5 shrink-0 animate-pulse rounded-full bg-coral" aria-hidden="true" />
+              <span className="shrink-0 text-[15px] font-semibold tabular-nums" role="timer" aria-live="off">
+                {formatVoiceTime(recorder.elapsed)}
+              </span>
+              <span className="flex h-7 min-w-0 flex-1 items-center justify-end gap-[3px] overflow-hidden" aria-hidden="true">
+                {recorder.live.map((l, i) => (
+                  <span key={i} className="w-[3px] shrink-0 rounded-full bg-lilac" style={{ height: `${Math.max(12, Math.min(100, l * 100))}%` }} />
+                ))}
+              </span>
+              <span className="shrink-0 text-[13px] text-muted tabular-nums">{formatVoiceTime(MAX_VOICE_MS)}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => void finishRecording()}
+              className="grid h-[52px] w-[52px] shrink-0 place-items-center rounded-full bg-coral text-ink transition-colors hover:bg-coral/90"
+              aria-label={t("voice.send")}
+            >
+              <ArrowUp className="h-5 w-5" strokeWidth={2.5} aria-hidden="true" />
+            </button>
+          </div>
+        ) : header.can_send ? (
           <form
             className="mx-auto flex max-w-[920px] items-end gap-2.5"
             onSubmit={(e) => {
@@ -517,6 +647,26 @@ export function ChatRoom({
                   onChange={(e) => void onPhotoChosen(e.target.files?.[0])}
                 />
               </>
+            )}
+            {showMicButton && (
+              <button
+                type="button"
+                onClick={() => void onMicButton()}
+                disabled={recorder.starting}
+                aria-disabled={micLocked}
+                aria-label={micLocked ? t("voice.buttonLocked") : t("voice.button")}
+                className={cn(
+                  "relative grid h-[52px] w-[52px] shrink-0 place-items-center rounded-full border border-edge text-moon transition-colors hover:bg-surface disabled:opacity-60",
+                  micLocked && "text-muted",
+                )}
+              >
+                <Mic className="h-5 w-5" aria-hidden="true" />
+                {micLocked && (
+                  <span className="absolute -bottom-0.5 -right-0.5 grid h-5 w-5 place-items-center rounded-full border border-edge bg-night-deep">
+                    <Lock className="h-3 w-3" aria-hidden="true" />
+                  </span>
+                )}
+              </button>
             )}
             <label className="flex-1">
               <span className="sr-only">{t("placeholder")}</span>

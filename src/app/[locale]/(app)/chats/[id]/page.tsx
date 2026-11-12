@@ -50,7 +50,7 @@ export default async function ConversationPage({ params }: PageProps<"/[locale]/
   const supabase = await createClient();
   const { data } = await supabase
     .from("messages")
-    .select("id, conversation_id, sender_id, body, created_at, kind, photo_path")
+    .select("id, conversation_id, sender_id, body, created_at, kind, photo_path, voice_path, voice_duration_ms, voice_peaks")
     .eq("conversation_id", id)
     .order("created_at", { ascending: false })
     .limit(PAGE);

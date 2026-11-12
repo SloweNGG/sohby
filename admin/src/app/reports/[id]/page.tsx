@@ -9,7 +9,7 @@ type Brief = { id: string; username: string; display_name: string | null; accoun
 type Report = {
   id: string; reason: string; note: string | null; status: string; created_at: string; is_anonymous: boolean;
   reporter: Brief; reported: Brief;
-  messages: Array<{ sender_id: string; body: string; created_at: string; kind?: "text" | "photo"; photo_path?: string | null }>;
+  messages: Array<{ sender_id: string; body: string; created_at: string; kind?: "text" | "photo" | "voice"; photo_path?: string | null; voice_path?: string | null; voice_duration_ms?: number | null }>;
 };
 
 export default async function ReportPage({ params }: { params: Promise<{ id: string }> }) {
@@ -20,6 +20,12 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
       <ReportDetail report={report} />
     </AdminShell>
   );
+}
+
+/** 14000 → "0:14" */
+function fmtDuration(ms: number) {
+  const total = Math.round(ms / 1000);
+  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
 }
 
 async function loadReport(id: string) {
@@ -35,14 +41,20 @@ async function loadReport(id: string) {
     ? await supabase.storage.from("chat-photos").createSignedUrls(photoPaths, 300)
     : { data: [] };
   const photoUrl = new Map((signed ?? []).filter((x) => x.signedUrl && !x.error).map((x) => [x.path, x.signedUrl]));
-  return { r, photoUrl };
+  // Sesli mesajlar: aynı kural (gizli bucket, 5 dakika, yalnızca kayda geçen inceleme).
+  const voicePaths = r.messages.filter((m) => m.kind === "voice" && m.voice_path).map((m) => m.voice_path as string);
+  const { data: signedVoice } = voicePaths.length
+    ? await supabase.storage.from("chat-voice").createSignedUrls(voicePaths, 300)
+    : { data: [] };
+  const voiceUrl = new Map((signedVoice ?? []).filter((x) => x.signedUrl && !x.error).map((x) => [x.path, x.signedUrl]));
+  return { r, photoUrl, voiceUrl };
 }
 
 async function ReportDetail({ report }: { report: ReturnType<typeof loadReport> }) {
   const { t } = getT();
   const loaded = await report;
   if (!loaded) return <p className="text-muted">{t("common.none")}</p>;
-  const { r, photoUrl } = loaded;
+  const { r, photoUrl, voiceUrl } = loaded;
   const who = (senderId: string) =>
     senderId === r.reported?.id ? `@${r.reported.username}` : senderId === r.reporter?.id ? `@${r.reporter.username}` : senderId;
 
@@ -69,7 +81,22 @@ async function ReportDetail({ report }: { report: ReturnType<typeof loadReport> 
             {r.messages.map((m, i) => (
               <li key={i}>
                 <span className="text-muted">{fmtDateTime(m.created_at)} · {who(m.sender_id)}:</span>{" "}
-                {m.kind === "photo" ? (
+                {m.kind === "voice" ? (
+                  m.voice_path && voiceUrl.get(m.voice_path) ? (
+                    <span className="mt-1 flex flex-wrap items-center gap-2">
+                      <audio
+                        controls
+                        preload="none"
+                        src={voiceUrl.get(m.voice_path)!}
+                        aria-label={`${t("reports.voice")} · ${who(m.sender_id)}`}
+                        className="h-9 max-w-full"
+                      />
+                      <span className="text-xs text-muted">{fmtDuration(m.voice_duration_ms ?? 0)}</span>
+                    </span>
+                  ) : (
+                    <span className="text-muted">[{t("reports.voiceUnavailable")}]</span>
+                  )
+                ) : m.kind === "photo" ? (
                   m.photo_path && photoUrl.get(m.photo_path) ? (
                     <a href={photoUrl.get(m.photo_path)!} target="_blank" rel="noopener noreferrer" className="mt-1 block w-fit">
                       {/* eslint-disable-next-line @next/next/no-img-element */}

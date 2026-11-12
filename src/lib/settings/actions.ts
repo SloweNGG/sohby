@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentUserId } from "@/lib/auth/session";
-import { MESSAGE_POLICIES, PHOTO_PERMISSIONS } from "@/lib/types";
+import { MESSAGE_POLICIES, PHOTO_PERMISSIONS, VOICE_PERMISSIONS } from "@/lib/types";
 import { routing } from "@/i18n/routing";
 import { SESSION_ONLY_COOKIE } from "@/lib/supabase/cookie-policy";
 
@@ -20,6 +20,7 @@ const settingsSchema = z.object({
   acceptAnonymous: z.boolean(),
   showFriends: z.boolean(),
   photoPermission: z.enum(PHOTO_PERMISSIONS),
+  voicePermission: z.enum(VOICE_PERMISSIONS),
   locale: z.enum(routing.locales),
 });
 
@@ -44,6 +45,7 @@ export async function saveSettingsAction(input: SettingsInput): Promise<{ ok: bo
       accept_anonymous: d.acceptAnonymous,
       show_friends: d.showFriends,
       photo_permission: d.photoPermission,
+      voice_permission: d.voicePermission,
       preferred_locale: d.locale,
     })
     .eq("id", userId);

@@ -72,6 +72,10 @@ export async function setChatPhotosAction(form: FormData) {
   await rpc("admin_set_chat_photos", { p_enabled: form.get("enabled") === "1" }, "/settings");
 }
 
+export async function setChatVoiceAction(form: FormData) {
+  await rpc("admin_set_chat_voice", { p_enabled: form.get("enabled") === "1" }, "/settings");
+}
+
 export async function reviewAppealAction(form: FormData) {
   await rpc("admin_review_appeal", { p_appeal: id.parse(form.get("id")), p_accept: form.get("accept") === "1" }, "/appeals");
 }

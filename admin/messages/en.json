@@ -54,7 +54,9 @@
     "close": "Close account",
     "viewLogged": "This conversation view was written to the audit log.",
     "photo": "Photo",
-    "photoUnavailable": "Couldn't open photo"
+    "photoUnavailable": "Couldn't open photo",
+    "voice": "Voice message",
+    "voiceUnavailable": "voice message unavailable"
   },
   "reasons": {
     "spam": "Spam",
@@ -83,7 +85,9 @@
     "empty": "No photos waiting for review.",
     "chatPhotos": "Photos in chat",
     "chatPhotosHint": "When on, users can send photos in accepted chats. When off, the photo button is hidden and the server rejects uploads.",
-    "changeInSettings": "Change in Settings"
+    "changeInSettings": "Change in Settings",
+    "chatVoice": "Voice messages in chat",
+    "chatVoiceHint": "When on, users can send voice messages of up to 1 minute in accepted chats. When off, the microphone button is hidden and the server rejects uploads."
   },
   "users": {
     "title": "Users",

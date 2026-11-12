@@ -33,8 +33,10 @@ const nextConfig: NextConfig = {
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           {
+            // Mikrofon yalnızca sitenin kendisine (sesli mesaj); gömülü sayfalara kapalı.
+            // Kamera ve konum hiç kullanılmaz (konum yalnızca semt düzeyinde, elle seçilir).
             key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=()",
+            value: "camera=(), microphone=(self), geolocation=()",
           },
         ],
       },

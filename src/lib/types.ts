@@ -49,6 +49,7 @@ export type MyProfileRow = {
   accept_anonymous: boolean;
   preferred_locale: "tr" | "en";
   photo_permission: PhotoPermission;
+  voice_permission: VoicePermission;
   show_friends: boolean;
   student_university_id: string | null;
   student_verified_until: string | null;
@@ -152,6 +153,8 @@ export type ConversationHeader = {
   can_send: boolean;
   /** Fotoğraf düğmesinin durumu ('disabled' → düğme hiç görünmez). */
   photo?: PhotoStatus;
+  /** Mikrofon düğmesinin durumu ('disabled' → düğme hiç görünmez). */
+  voice?: VoiceStatus;
   /** Karşı tarafın okuma zamanı — yalnızca iki taraf da okundu bilgisini açtıysa. */
   other_read_at?: string | null;
 };
@@ -192,7 +195,7 @@ export type DeclinedRequest =
       declined_at: string | null;
     };
 
-export type MessageKind = "text" | "photo";
+export type MessageKind = "text" | "photo" | "voice";
 
 export type Message = {
   id: string;
@@ -203,6 +206,11 @@ export type Message = {
   /** Eski kayıtlarda/Realtime'da yoksa 'text' sayılır. */
   kind?: MessageKind;
   photo_path?: string | null;
+  voice_path?: string | null;
+  /** Sesli mesajın süresi (ms, en çok 60 sn). */
+  voice_duration_ms?: number | null;
+  /** Ses dalgası çubukları (0–100). */
+  voice_peaks?: number[] | null;
 };
 
 /** Kimler sana fotoğraf gönderebilir? */
@@ -211,6 +219,13 @@ export type PhotoPermission = (typeof PHOTO_PERMISSIONS)[number];
 
 /** private.chat_photo_status sonucu. */
 export type PhotoStatus = "ok" | "disabled" | "not_found" | "not_allowed" | "recipient_off" | "friends_only" | "not_accepted" | "rate_limited";
+
+/** Kimler sana sesli mesaj gönderebilir? (fotoğraftan bağımsız) */
+export const VOICE_PERMISSIONS = PHOTO_PERMISSIONS;
+export type VoicePermission = PhotoPermission;
+
+/** private.chat_voice_status sonucu (fotoğrafla aynı değerler). */
+export type VoiceStatus = PhotoStatus;
 
 export type MessageRequestItem = {
   id: string;

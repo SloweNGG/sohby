@@ -8,7 +8,7 @@ import { UnblockButton } from "@/components/safety/unblock-button";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { deleteAccountAction, saveSettingsAction } from "@/lib/settings/actions";
 import { useAlias } from "@/components/anon/alias";
-import { MESSAGE_POLICIES, PHOTO_PERMISSIONS, type BlockedUser, type MessagePolicy, type PhotoPermission } from "@/lib/types";
+import { MESSAGE_POLICIES, PHOTO_PERMISSIONS, VOICE_PERMISSIONS, type BlockedUser, type MessagePolicy, type PhotoPermission, type VoicePermission } from "@/lib/types";
 import type { Locale } from "@/i18n/routing";
 import { Button } from "@/components/ui/button";
 import { FormAlert } from "@/components/ui/field";
@@ -29,6 +29,7 @@ export type SettingsInitial = {
   acceptAnonymous: boolean;
   showFriends: boolean;
   photoPermission: PhotoPermission;
+  voicePermission: VoicePermission;
   locale: Locale;
 };
 
@@ -49,11 +50,14 @@ export function SettingsForm({
   flirtSection,
   declinedSection,
   photosEnabled = false,
+  voiceEnabled = false,
 }: {
   initial: SettingsInitial;
   blocked: BlockedUser[];
   /** Sohbette fotoğraf özelliği açık mı? Kapalıyken seçenek gösterilmez. */
   photosEnabled?: boolean;
+  /** Sohbette sesli mesaj açık mı? Kapalıyken seçenek gösterilmez. */
+  voiceEnabled?: boolean;
   flirtSection?: React.ReactNode;
   declinedSection?: React.ReactNode;
 }) {
@@ -156,6 +160,33 @@ export function SettingsForm({
                   <span>
                     <span className="block font-semibold">{t(`photoPermission.${p}`)}</span>
                     <span className="block text-[13px] text-muted">{t(`photoPermission.${p}Hint`)}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {voiceEnabled && (
+          <section>
+            <h2 className="text-xl">{t("voiceTitle")}</h2>
+            <p className="mb-4 mt-1 text-sm text-muted">{t("voiceHint")}</p>
+            <div className="space-y-2.5" role="radiogroup" aria-label={t("voiceTitle")}>
+              {VOICE_PERMISSIONS.map((p) => (
+                <label key={p} className={card(v.voicePermission === p)}>
+                  <input
+                    type="radio"
+                    name="voicePermission"
+                    className="sr-only"
+                    checked={v.voicePermission === p}
+                    onChange={() => set("voicePermission", p)}
+                  />
+                  <span className="mt-0.5">
+                    <RadioDot checked={v.voicePermission === p} />
+                  </span>
+                  <span>
+                    <span className="block font-semibold">{t(`voicePermission.${p}`)}</span>
+                    <span className="block text-[13px] text-muted">{t(`voicePermission.${p}Hint`)}</span>
                   </span>
                 </label>
               ))}

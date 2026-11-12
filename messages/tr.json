@@ -456,7 +456,8 @@
     "deleteAllBody": "Sohbetler yalnızca senin görünümünden silinir; karşı taraf mesajları görmeye devam eder. Yeni mesaj gelirse sohbet yeniden görünür.",
     "confirmDelete": "Sil",
     "cancel": "Vazgeç",
-    "photoPreview": "Fotoğraf"
+    "photoPreview": "Fotoğraf",
+    "voicePreview": "Sesli mesaj"
   },
   "chat": {
     "back": "Sohbetlere dön",
@@ -514,6 +515,42 @@
       },
       "enlarge": "Fotoğrafı büyüt",
       "close": "Kapat"
+    },
+    "voice": {
+      "button": "Sesli mesaj kaydet",
+      "buttonLocked": "Sesli mesaj gönderilemiyor, nedenini gör",
+      "recording": "Sesli mesaj kaydediliyor",
+      "cancel": "Kaydı sil",
+      "send": "Sesli mesajı gönder",
+      "play": "Sesli mesajı oynat ({duration})",
+      "pause": "Duraklat",
+      "unavailable": "Sesli mesaj açılamadı",
+      "locked": {
+        "not_accepted": "Karşı taraf sana cevap verene kadar sesli mesaj gönderemezsin.",
+        "recipient_off": "Bu kişi sesli mesaj almayı kapatmış.",
+        "friends_only": "Bu kişi yalnızca arkadaşlarından sesli mesaj alıyor. Arkadaş olursanız gönderebilirsin.",
+        "rate_limited": "Bugünkü sesli mesaj sınırına ulaştın (günde 100). Yarın yeniden gönderebilirsin.",
+        "not_allowed": "Bu sohbete şu anda sesli mesaj gönderemezsin."
+      },
+      "problems": {
+        "unsupported": "Bu tarayıcı ses kaydını desteklemiyor.",
+        "denied": "Mikrofon izni verilmedi. Tarayıcı ayarlarından Sohby'ye mikrofon izni verip tekrar dene.",
+        "unavailable": "Mikrofon açılamadı. Başka bir uygulama kullanıyor olabilir.",
+        "too_short": "Kayıt çok kısa. Konuşurken basılı tutmana gerek yok: mikrofona bas, konuş, sonra gönder."
+      },
+      "errors": {
+        "too_large": "Sesli mesaj çok büyük.",
+        "too_short": "Kayıt çok kısa.",
+        "too_long": "Sesli mesaj en fazla 1 dakika olabilir.",
+        "unsupported_audio": "Bu ses kaydı gönderilemedi. Başka bir tarayıcı dene.",
+        "disabled": "Sohbette sesli mesaj şu anda kapalı.",
+        "recipient_off": "Bu kişi sesli mesaj almayı kapatmış.",
+        "friends_only": "Bu kişi yalnızca arkadaşlarından sesli mesaj alıyor.",
+        "not_accepted": "Karşı taraf sana cevap verene kadar sesli mesaj gönderemezsin.",
+        "not_allowed": "Bu sohbete sesli mesaj gönderemezsin.",
+        "rate_limited": "Bugünkü sesli mesaj sınırına ulaştın (günde 100).",
+        "generic": "Sesli mesaj gönderilemedi."
+      }
     }
   },
   "requests": {
@@ -783,7 +820,17 @@
     },
     "blockedAgo": "{time} engellendi",
     "showFriends": "Arkadaş listem",
-    "showFriendsHint": "Profilinde arkadaşların görünür. Listesini gizleyen arkadaşların yine de gösterilmez."
+    "showFriendsHint": "Profilinde arkadaşların görünür. Listesini gizleyen arkadaşların yine de gösterilmez.",
+    "voiceTitle": "Kimler sana sesli mesaj gönderebilir?",
+    "voiceHint": "Sesli mesajlar en fazla 1 dakikadır; mesaj isteklerinde ve anonim sohbetlerde gönderilemez.",
+    "voicePermission": {
+      "accepted_chats": "Kabul ettiğim sohbetlerdeki herkes",
+      "accepted_chatsHint": "Başlattığın, isteğini kabul ettiğin ya da cevap verdiğin sohbetler.",
+      "friends": "Yalnızca arkadaşlarım",
+      "friendsHint": "Yalnızca arkadaş olduğun kişiler sana sesli mesaj gönderebilir.",
+      "nobody": "Kimse",
+      "nobodyHint": "Kimse sana sesli mesaj gönderemez."
+    }
   },
   "anon": {
     "alias": "{adjective} {animal}",

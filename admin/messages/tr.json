@@ -54,7 +54,9 @@
     "close": "Hesabı kapat",
     "viewLogged": "Bu sohbet görüntülemesi kayda yazıldı.",
     "photo": "Fotoğraf",
-    "photoUnavailable": "Fotoğraf açılamadı"
+    "photoUnavailable": "Fotoğraf açılamadı",
+    "voice": "Sesli mesaj",
+    "voiceUnavailable": "sesli mesaj açılamadı"
   },
   "reasons": {
     "spam": "Spam",
@@ -83,7 +85,9 @@
     "empty": "Onay bekleyen fotoğraf yok.",
     "chatPhotos": "Sohbette fotoğraf",
     "chatPhotosHint": "Açıkken kullanıcılar kabul edilmiş sohbetlerde fotoğraf gönderebilir. Kapalıyken fotoğraf düğmesi görünmez ve sunucu yüklemeyi reddeder.",
-    "changeInSettings": "Ayarlar'dan değiştir"
+    "changeInSettings": "Ayarlar'dan değiştir",
+    "chatVoice": "Sohbette sesli mesaj",
+    "chatVoiceHint": "Açıkken kullanıcılar kabul edilmiş sohbetlerde en çok 1 dakikalık sesli mesaj gönderebilir. Kapalıyken mikrofon düğmesi görünmez ve sunucu yüklemeyi reddeder."
   },
   "users": {
     "title": "Kullanıcılar",

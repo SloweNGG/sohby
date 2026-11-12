@@ -456,7 +456,8 @@
     "deleteAllBody": "Chats are only removed from your view; the other person can still see the messages. A chat reappears if a new message arrives.",
     "confirmDelete": "Delete",
     "cancel": "Cancel",
-    "photoPreview": "Photo"
+    "photoPreview": "Photo",
+    "voicePreview": "Voice message"
   },
   "chat": {
     "back": "Back to chats",
@@ -514,6 +515,42 @@
       },
       "enlarge": "Enlarge photo",
       "close": "Close"
+    },
+    "voice": {
+      "button": "Record a voice message",
+      "buttonLocked": "Can't send voice messages, see why",
+      "recording": "Recording voice message",
+      "cancel": "Delete recording",
+      "send": "Send voice message",
+      "play": "Play voice message ({duration})",
+      "pause": "Pause",
+      "unavailable": "Couldn't open voice message",
+      "locked": {
+        "not_accepted": "You can send voice messages once they reply to you.",
+        "recipient_off": "This person has turned off voice messages.",
+        "friends_only": "This person only accepts voice messages from friends. Once you're friends, you can send one.",
+        "rate_limited": "You've reached today's voice message limit (100 a day). You can send more tomorrow.",
+        "not_allowed": "You can't send voice messages in this chat right now."
+      },
+      "problems": {
+        "unsupported": "This browser doesn't support audio recording.",
+        "denied": "Microphone access was blocked. Allow Sohby to use the microphone in your browser settings and try again.",
+        "unavailable": "Couldn't turn on the microphone. Another app may be using it.",
+        "too_short": "That recording was too short. No need to hold: tap the microphone, talk, then send."
+      },
+      "errors": {
+        "too_large": "Voice message is too large.",
+        "too_short": "Recording is too short.",
+        "too_long": "Voice messages can be up to 1 minute long.",
+        "unsupported_audio": "This recording couldn't be sent. Try another browser.",
+        "disabled": "Voice messages are currently turned off.",
+        "recipient_off": "This person has turned off voice messages.",
+        "friends_only": "This person only accepts voice messages from friends.",
+        "not_accepted": "You can send voice messages once they reply to you.",
+        "not_allowed": "You can't send voice messages in this chat.",
+        "rate_limited": "You've reached today's voice message limit (100 a day).",
+        "generic": "Voice message couldn't be sent."
+      }
     }
   },
   "requests": {
@@ -783,7 +820,17 @@
     },
     "blockedAgo": "blocked {time}",
     "showFriends": "My friend list",
-    "showFriendsHint": "Your friends appear on your profile. Friends who hide their own list are still not shown."
+    "showFriendsHint": "Your friends appear on your profile. Friends who hide their own list are still not shown.",
+    "voiceTitle": "Who can send you voice messages?",
+    "voiceHint": "Voice messages are up to 1 minute long and can't be sent in message requests or anonymous chats.",
+    "voicePermission": {
+      "accepted_chats": "Anyone in chats I've accepted",
+      "accepted_chatsHint": "Chats you started, requests you accepted, or chats you replied to.",
+      "friends": "Only my friends",
+      "friendsHint": "Only people you're friends with can send you voice messages.",
+      "nobody": "No one",
+      "nobodyHint": "No one can send you voice messages."
+    }
   },
   "anon": {
     "alias": "{adjective} {animal}",

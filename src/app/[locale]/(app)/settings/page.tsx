@@ -28,10 +28,11 @@ export default async function SettingsPage({ params }: PageProps<"/[locale]/sett
   }
   const { profile, private: priv } = account;
   const supabase = await createClient();
-  const [{ data: blocked }, { data: declined }, { data: photosEnabled }] = await Promise.all([
+  const [{ data: blocked }, { data: declined }, { data: photosEnabled }, { data: voiceEnabled }] = await Promise.all([
     supabase.rpc("get_blocked_users"),
     supabase.rpc("get_declined_requests"),
     supabase.rpc("chat_photos_enabled"),
+    supabase.rpc("chat_voice_enabled"),
   ]);
   // Engellenenlerin ana fotoğrafları (tanımak için); anonim engellerde fotoğraf yok.
   const blockedWithPhotos = await withPhotoUrls((blocked ?? []) as BlockedUser[]);
@@ -68,6 +69,7 @@ export default async function SettingsPage({ params }: PageProps<"/[locale]/sett
         flirtSection={<FlirtSettings enabled={profile.looking_for.includes("flirt")} />}
         blocked={blockedWithPhotos}
         photosEnabled={photosEnabled === true}
+        voiceEnabled={voiceEnabled === true}
         declinedSection={<DeclinedRequests initial={(declined ?? []) as DeclinedRequest[]} />}
         initial={{
           displayName: profile.display_name ?? profile.username,
@@ -82,6 +84,7 @@ export default async function SettingsPage({ params }: PageProps<"/[locale]/sett
           acceptAnonymous: profile.accept_anonymous,
           showFriends: profile.show_friends ?? false,
           photoPermission: profile.photo_permission ?? "accepted_chats",
+          voicePermission: profile.voice_permission ?? "accepted_chats",
           locale: profile.preferred_locale,
         }}
       />
