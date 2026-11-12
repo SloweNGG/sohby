@@ -492,7 +492,7 @@ test("anon/authenticated'ın beklenmedik fonksiyon yetkisi yok", async () => {
       "admin_list_pending_photos", "admin_review_photo", "admin_get_settings", "admin_set_photo_auto_approve",
       "admin_list_users", "admin_set_user_status", "admin_list_appeals", "admin_review_appeal", "admin_list_audit",
       "chat_photos_enabled", "admin_set_chat_photos", "chat_voice_enabled", "admin_set_chat_voice",
-      "admin_shell", "admin_overview", "admin_get_user",
+      "admin_shell", "admin_overview", "admin_dashboard", "admin_get_user",
       "search_cities", "discover_places",
       "get_my_campus", "start_student_verification", "admin_list_student_documents",
       "admin_open_student_document", "admin_review_student_document", "admin_revoke_student",
