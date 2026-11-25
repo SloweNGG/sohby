@@ -6,6 +6,8 @@ import { ArrowUp, ChevronLeft, ImagePlus, Lock, Mic, RotateCw, Trash2 } from "lu
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useRealtime } from "@/lib/realtime/use-realtime";
+import { useTyping } from "@/lib/realtime/use-typing";
+import { typingTopic } from "@/lib/realtime/typing";
 import { isDuplicateKey, markFailed, mergeById, resyncCursor } from "@/lib/realtime/messages";
 import { cn } from "@/lib/cn";
 import { InitialAvatar } from "@/components/profile/avatar";
@@ -13,6 +15,7 @@ import { useBadges } from "@/components/app/badges";
 import { useChats } from "./chats-shell";
 import { useClock, useDayKey, useDayLabel } from "./time";
 import { ChatPhoto } from "./chat-photo";
+import { TypingBubble } from "./typing-bubble";
 import { VoiceMessage } from "./voice-message";
 import { useVoiceRecorder, type RecorderProblem } from "./use-voice-recorder";
 import { PHOTO_ACCEPT, checkPhotoFile, isRetryable, statusAfterError, type PhotoSendError } from "@/lib/chat/photo";
@@ -106,6 +109,11 @@ export function ChatRoom({
   const dayLabel = useDayLabel();
   const conversationId = header.id;
   const other = header.other;
+  // "Yazıyor…": yalnızca bu sohbetin iki tarafı (veritabanı kuralı); yük yalnızca tarafı taşır.
+  const { typing: otherTyping, onDraftChange, onSent, onOtherMessage } = useTyping({
+    topic: typingTopic("conversation", conversationId),
+    side: me,
+  });
   const messagesRef = useRef(messages);
   useEffect(() => {
     messagesRef.current = messages;
@@ -167,12 +175,13 @@ export function ChatRoom({
       setMessages((prev) => keepPreviews(prev, mergeById(prev, incoming)));
       const known = new Set(messagesRef.current.map((m) => m.id));
       if (incoming.some((m) => m.sender_id !== me && !known.has(m.id))) {
+        onOtherMessage();
         void markRead();
         // Karşı taraf yazdı: sohbeti kabul etmiş sayılır, fotoğraf düğmesi açılabilir.
         void refreshHeader();
       }
     },
-    [me, markRead, refreshHeader],
+    [me, markRead, refreshHeader, onOtherMessage],
   );
 
   // Eksik tamamlama: son onaylı mesajdan (küçük bir payla) sonrasını çek.
@@ -202,7 +211,7 @@ export function ChatRoom({
   useLayoutEffect(() => {
     const el = listRef.current;
     if (el && stickToBottom.current) el.scrollTop = el.scrollHeight;
-  }, [messages]);
+  }, [messages, otherTyping]);
 
   const onScroll = () => {
     const el = listRef.current;
@@ -427,6 +436,7 @@ export function ChatRoom({
     const text = draft;
     if (!text.trim()) return;
     setDraft("");
+    onSent();
     void send(text);
     textareaRef.current?.focus();
   }
@@ -462,14 +472,23 @@ export function ChatRoom({
           <InitialAvatar id={other.id} name={other.display_name} locale={locale} size={46} />
           <span className="min-w-0">
             <span className="block truncate text-lg font-bold leading-tight tracking-[-0.02em]">{other.display_name}</span>
-            {other.is_online ? (
-              <span className="block text-[13px] font-semibold text-online md:hidden">{t("online")}</span>
-            ) : null}
-            <span className={cn("truncate text-[13px] text-muted", other.is_online ? "hidden md:block" : "block")}>
-              {place}
-            </span>
+            {otherTyping ? (
+              <span className="block truncate text-[13px] font-semibold text-lilac">{t("typing")}</span>
+            ) : (
+              <>
+                {other.is_online ? (
+                  <span className="block text-[13px] font-semibold text-online md:hidden">{t("online")}</span>
+                ) : null}
+                <span className={cn("truncate text-[13px] text-muted", other.is_online ? "hidden md:block" : "block")}>
+                  {place}
+                </span>
+              </>
+            )}
           </span>
         </Link>
+        <span className="sr-only" role="status">
+          {otherTyping ? t("typingSr", { name: other.display_name }) : ""}
+        </span>
         {headerActions ? <div className="hidden shrink-0 items-center gap-2 md:flex">{headerActions}</div> : null}
         {mobileMenu ? <div className="md:hidden">{mobileMenu}</div> : null}
       </header>
@@ -574,6 +593,7 @@ export function ChatRoom({
               </div>
             );
           })}
+          {otherTyping && <TypingBubble />}
         </div>
       </div>
 
@@ -674,7 +694,10 @@ export function ChatRoom({
                 ref={textareaRef}
                 rows={1}
                 value={draft}
-                onChange={(e) => setDraft(e.target.value)}
+                onChange={(e) => {
+                  setDraft(e.target.value);
+                  onDraftChange(e.target.value);
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
                     e.preventDefault();

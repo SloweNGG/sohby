@@ -475,6 +475,9 @@ test("anon/authenticated'ın beklenmedik fonksiyon yetkisi yok", async () => {
     "private.anon_blocked:authenticated",
     // RLS politikasında kullanılır; yalnızca sohbetin tarafına anlamlı değer döner.
     "private.anon_cleared_for:authenticated",
+    // "Yazıyor…": Realtime özel kanal politikası çağırır; yalnızca çağıranın kendi
+    // sohbeti için true döner (başkası hakkında bilgi vermez).
+    "private.typing_allowed:authenticated",
     ...[
       "set_birth_date", "touch_presence", "discover_profiles", "get_profile",
       "start_conversation", "respond_message_request", "get_conversations",

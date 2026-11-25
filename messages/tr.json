@@ -551,7 +551,9 @@
         "rate_limited": "Bugünkü sesli mesaj sınırına ulaştın (günde 100).",
         "generic": "Sesli mesaj gönderilemedi."
       }
-    }
+    },
+    "typing": "yazıyor…",
+    "typingSr": "{name} yazıyor"
   },
   "requests": {
     "metaTitle": "Mesaj istekleri",

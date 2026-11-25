@@ -6,6 +6,9 @@ import { ArrowUp, ChevronLeft, Lock, RotateCw, VenetianMask } from "lucide-react
 import { Link, useRouter } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { useRealtime } from "@/lib/realtime/use-realtime";
+import { useTyping } from "@/lib/realtime/use-typing";
+import { typingTopic } from "@/lib/realtime/typing";
+import { TypingBubble } from "@/components/chat/typing-bubble";
 import { isDuplicateKey, markFailed, mergeById, resyncCursor } from "@/lib/realtime/messages";
 import { requestRevealAction, respondAnonymousAction, revealIdentityAction } from "@/lib/anon/actions";
 import { Button } from "@/components/ui/button";
@@ -66,6 +69,12 @@ export function AnonRoom({
   const mine = (m: UiAnonMessage) => m.from_anonymous === isAnon;
   // Alıcı için bekleyen istek bir sohbet değildir (kabul/ret ile yanıtlanır).
   const canDelete = isAnon ? header.status === "pending" || header.status === "active" : header.status === "active";
+  // "Yazıyor…": yük yalnızca tarafı taşır ("anon" / "recipient"), kimlik yok (kural 10).
+  const { typing: otherTyping, onDraftChange, onSent, onOtherMessage } = useTyping({
+    topic: typingTopic("anon", header.id),
+    side: isAnon ? "anon" : "recipient",
+    enabled: header.status === "active",
+  });
 
   const markRead = useCallback(async () => {
     if (document.visibilityState !== "visible") return;
@@ -87,9 +96,12 @@ export function AnonRoom({
       if (incoming.length === 0) return;
       setMessages((prev) => mergeById(prev, incoming));
       const known = new Set(messagesRef.current.map((m) => m.id));
-      if (incoming.some((m) => m.from_anonymous !== isAnon && !known.has(m.id))) void markRead();
+      if (incoming.some((m) => m.from_anonymous !== isAnon && !known.has(m.id))) {
+        onOtherMessage();
+        void markRead();
+      }
     },
-    [isAnon, markRead],
+    [isAnon, markRead, onOtherMessage],
   );
 
   const resync = useCallback(async () => {
@@ -116,7 +128,7 @@ export function AnonRoom({
   useLayoutEffect(() => {
     const el = listRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [messages]);
+  }, [messages, otherTyping]);
 
   const send = async (body: string, retryId?: string) => {
     const text = body.trim();
@@ -148,6 +160,7 @@ export function AnonRoom({
     const text = draft;
     if (!text.trim()) return;
     setDraft("");
+    onSent();
     void send(text);
   };
 
@@ -193,7 +206,14 @@ export function AnonRoom({
               <span className="shrink-0 rounded-full border border-lilac px-2 py-px text-[11px] font-semibold text-lilac">{t("badge")}</span>
             )}
           </span>
-          {isAnon && <span className="block truncate text-[13px] text-lilac">{t("youAreAnon", { alias: myAlias })}</span>}
+          {otherTyping ? (
+            <span className="block truncate text-[13px] font-semibold text-lilac">{tc("typing")}</span>
+          ) : (
+            isAnon && <span className="block truncate text-[13px] text-lilac">{t("youAreAnon", { alias: myAlias })}</span>
+          )}
+        </span>
+        <span className="sr-only" role="status">
+          {otherTyping ? tc("typingSr", { name: title }) : ""}
         </span>
         {header.status === "active" && isAnon && (
           <Button variant="outline" size="sm" onClick={() => revealRef.current?.showModal()}>
@@ -259,6 +279,7 @@ export function AnonRoom({
               )}
             </div>
           ))}
+          {otherTyping && <TypingBubble />}
           {header.status === "pending" && isAnon && <p className="mt-3 text-center text-sm text-muted">{t("waiting")}</p>}
         </div>
       </div>
@@ -292,7 +313,10 @@ export function AnonRoom({
                 rows={1}
                 value={draft}
                 maxLength={2000}
-                onChange={(e) => setDraft(e.target.value)}
+                onChange={(e) => {
+                  setDraft(e.target.value);
+                  onDraftChange(e.target.value);
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
                     e.preventDefault();

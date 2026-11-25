@@ -325,6 +325,32 @@ test("4. iki yönlü mesajlaşma: her mesaj yenilemeden 3 saniye içinde karşı
   await shot(B.page, "mesajlasma-b");
 });
 
+test("4b. yazıyor…: karşıda görünür, kendinde görünmez; silince ve mesaj gelince kaybolur", async () => {
+  await waitSubscribed(A, `typing:c:${convAB}`, 0);
+  await waitSubscribed(B, `typing:c:${convAB}`, 0);
+  const box = A.page.getByRole("textbox", { name: T("chat.placeholder") });
+  const typingAtB = B.page.getByText(T("chat.typing"), { exact: true });
+  const typingAtA = A.page.getByText(T("chat.typing"), { exact: true });
+
+  const t0 = Date.now();
+  await box.pressSequentially("yazıyorum", { delay: 40 });
+  await expect(typingAtB).toBeVisible({ timeout: 3_000 });
+  notes.push(`4b: "yazıyor…" karşıda ${Date.now() - t0} ms'de göründü`);
+  await expect(typingAtA).toHaveCount(0);
+  await shot(B.page, "yaziyor-b");
+
+  await box.fill("");
+  await expect(typingAtB).toHaveCount(0, { timeout: 3_000 });
+
+  const text = `A→B yazıp gönderdi ${RUN}`;
+  await box.pressSequentially("yaz", { delay: 40 });
+  await expect(typingAtB).toBeVisible({ timeout: 3_000 });
+  await box.fill(text);
+  await box.press("Enter");
+  await expect(bubble(B.page, text)).toHaveCount(1, { timeout: 3_000 });
+  await expect(typingAtB).toHaveCount(0);
+});
+
 test("5. çevrimdışı alıcı: 3 mesaj çevrimiçi olunca yenilemeden ve birer kez gelir", async () => {
   const before = A.logs.length;
   await goOffline(A);

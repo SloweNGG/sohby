@@ -551,7 +551,9 @@
         "rate_limited": "You've reached today's voice message limit (100 a day).",
         "generic": "Voice message couldn't be sent."
       }
-    }
+    },
+    "typing": "typing…",
+    "typingSr": "{name} is typing"
   },
   "requests": {
     "metaTitle": "Message requests",

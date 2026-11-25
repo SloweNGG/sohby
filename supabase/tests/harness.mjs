@@ -57,6 +57,28 @@ const SUPABASE_STUB = `
   grant usage on schema storage to anon, authenticated, service_role;
   grant select, insert, update, delete on storage.objects to anon, authenticated, service_role;
   grant select on storage.buckets to anon, authenticated, service_role;
+
+  -- Supabase Realtime yetkilendirmesi (sadeleştirilmiş): özel kanala katılma
+  -- ve gönderme, realtime.messages üzerindeki RLS ile kontrol edilir;
+  -- realtime.topic() o an kontrol edilen kanalın adını döndürür.
+  create schema realtime;
+  create table realtime.messages (
+    id bigserial primary key,
+    topic text not null,
+    extension text not null,
+    event text,
+    payload jsonb,
+    private boolean not null default true,
+    inserted_at timestamptz not null default now()
+  );
+  alter table realtime.messages enable row level security;
+  create function realtime.topic() returns text language sql stable as $$
+    select nullif(current_setting('realtime.topic', true), '')
+  $$;
+  grant usage on schema realtime to anon, authenticated, service_role;
+  grant select, insert on realtime.messages to anon, authenticated;
+  grant usage on all sequences in schema realtime to anon, authenticated;
+  grant execute on function realtime.topic() to anon, authenticated, service_role;
 `;
 
 export async function createDb() {
@@ -104,6 +126,37 @@ class TestDb {
       await tx.exec(`set local role service_role`);
       return (await tx.query(sql, params)).rows;
     });
+  }
+
+  /**
+   * Realtime'ın özel kanal kontrolünü taklit eder: kullanıcı bu kanalı
+   * dinleyebilir mi (`read`), kanala gönderebilir mi (`write`)? Realtime gibi
+   * deneme kaydı yazar ve işlemi geri alır.
+   */
+  async realtimeAccess(userId, topic, extension = "broadcast") {
+    const claims = JSON.stringify(userId ? { sub: userId, role: "authenticated" } : { role: "anon" });
+    const role = userId ? "authenticated" : "anon";
+    let result;
+    await this.db.transaction(async (tx) => {
+      await tx.query(`insert into realtime.messages (topic, extension) values ($1, $2)`, [topic, extension]);
+      await tx.query(`select set_config('request.jwt.claims', $1, true)`, [claims]);
+      await tx.query(`select set_config('realtime.topic', $1, true)`, [topic]);
+      await tx.exec(`set local role ${role}`);
+      const read =
+        (await tx.query(`select 1 from realtime.messages where topic = $1 and extension = $2`, [topic, extension])).rows
+          .length > 0;
+      let write = true;
+      await tx.exec(`savepoint w`);
+      try {
+        await tx.query(`insert into realtime.messages (topic, extension) values ($1, $2)`, [topic, extension]);
+      } catch {
+        write = false;
+        await tx.exec(`rollback to savepoint w`);
+      }
+      result = { read, write };
+      await tx.rollback();
+    });
+    return result;
   }
 
   /** auth.users'a kayıt ekler (Supabase signUp'ın yaptığı gibi). */
