@@ -553,7 +553,59 @@
       }
     },
     "typing": "yazıyor…",
-    "typingSr": "{name} yazıyor"
+    "typingSr": "{name} yazıyor",
+    "reactions": {
+      "open": "Mesaj seçenekleri ve tepki",
+      "title": "Mesaj seçenekleri",
+      "quick": "Tepki ver",
+      "react": "{emoji} ile tepki ver",
+      "remove": "{emoji} tepkini kaldır",
+      "more": "Daha fazla emoji",
+      "copy": "Kopyala",
+      "summary": "Tepkiler: {list}",
+      "byYou": "sen {emoji}",
+      "byOther": "{name} {emoji}",
+      "photo": "Fotoğraf",
+      "voice": "Sesli mesaj",
+      "errors": {
+        "rate_limited": "Çok hızlı tepki veriyorsun. Biraz bekle.",
+        "not_allowed": "Bu sohbette artık tepki veremezsin.",
+        "invalid_reaction": "Bu emoji tepki olarak kullanılamıyor.",
+        "not_found": "Bu mesaj artık yok.",
+        "generic": "Tepki gönderilemedi. Tekrar dene."
+      },
+      "picker": {
+        "back": "Hızlı tepkilere dön",
+        "search": "Emoji ara",
+        "searchPlaceholder": "Emoji ara…",
+        "categories": "Kategoriler",
+        "skinTone": "Ten rengi",
+        "tones": {
+          "0": "Varsayılan ten rengi",
+          "1": "Açık ten rengi",
+          "2": "Orta açık ten rengi",
+          "3": "Orta ten rengi",
+          "4": "Orta koyu ten rengi",
+          "5": "Koyu ten rengi"
+        },
+        "loading": "Emojiler yükleniyor…",
+        "loadError": "Emojiler yüklenemedi.",
+        "retry": "Tekrar dene",
+        "noResults": "Bu aramaya uyan emoji yok.",
+        "resultCount": "{count, plural, one {# emoji bulundu} other {# emoji bulundu}}",
+        "groups": {
+          "smileys-emotion": "Yüzler ve duygular",
+          "people-body": "İnsanlar ve vücut",
+          "animals-nature": "Hayvanlar ve doğa",
+          "food-drink": "Yiyecek ve içecek",
+          "travel-places": "Seyahat ve yerler",
+          "activities": "Etkinlikler",
+          "objects": "Nesneler",
+          "symbols": "Semboller",
+          "flags": "Bayraklar"
+        }
+      }
+    }
   },
   "requests": {
     "metaTitle": "Mesaj istekleri",

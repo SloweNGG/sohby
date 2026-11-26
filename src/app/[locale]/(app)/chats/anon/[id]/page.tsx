@@ -5,6 +5,7 @@ import { redirect } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AnonRoom } from "@/components/anon/anon-room";
 import { SafetyActions } from "@/components/safety/safety-actions";
+import { ANON_MESSAGE_SELECT } from "@/lib/chat/select";
 import type { AnonConversationHeader, AnonMessage } from "@/lib/types";
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -38,7 +39,7 @@ export default async function AnonConversationPage({ params }: PageProps<"/[loca
 
   const { data: rows } = await supabase
     .from("anon_messages")
-    .select("id, conversation_id, from_anonymous, body, created_at")
+    .select(ANON_MESSAGE_SELECT)
     .eq("conversation_id", id)
     .order("created_at", { ascending: true })
     .limit(200);

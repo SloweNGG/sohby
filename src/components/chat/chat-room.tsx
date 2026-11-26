@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useRealtime } from "@/lib/realtime/use-realtime";
 import { useTyping } from "@/lib/realtime/use-typing";
 import { typingTopic } from "@/lib/realtime/typing";
-import { isDuplicateKey, markFailed, mergeById, resyncCursor } from "@/lib/realtime/messages";
+import { isDuplicateKey, liveFilter, markFailed, mergeById, mergeLive, resyncCursor } from "@/lib/realtime/messages";
 import { cn } from "@/lib/cn";
 import { InitialAvatar } from "@/components/profile/avatar";
 import { useBadges } from "@/components/app/badges";
@@ -16,19 +16,22 @@ import { useChats } from "./chats-shell";
 import { useClock, useDayKey, useDayLabel } from "./time";
 import { ChatPhoto } from "./chat-photo";
 import { TypingBubble } from "./typing-bubble";
+import { MessageActionsDialog, MessageRow, type ActionTarget } from "./message-actions";
 import { VoiceMessage } from "./voice-message";
 import { useVoiceRecorder, type RecorderProblem } from "./use-voice-recorder";
 import { PHOTO_ACCEPT, checkPhotoFile, isRetryable, statusAfterError, type PhotoSendError } from "@/lib/chat/photo";
 import { resizePhoto, sendChatPhoto } from "@/lib/chat/photo-client";
 import { MAX_VOICE_MS, formatVoiceTime, isVoiceRetryable, voiceStatusAfterError, type VoiceSendError } from "@/lib/chat/voice";
 import { sendChatVoice, type VoiceRecording } from "@/lib/chat/voice-client";
+import { myField, reactionError, reactionsOf, withReaction } from "@/lib/chat/reactions";
+import { MESSAGE_SELECT } from "@/lib/chat/select";
 import type { ConversationHeader, Message, PhotoStatus, VoiceStatus } from "@/lib/types";
 import { formatPlace } from "@/lib/location/format";
 import type { CountryCode } from "@/lib/data/countries";
 
 const PAGE = 50;
 const RESYNC_PAGE = 200;
-const SELECT = "id, conversation_id, sender_id, body, created_at, kind, photo_path, voice_path, voice_duration_ms, voice_peaks";
+const SELECT = MESSAGE_SELECT;
 const MAX_LENGTH = 2000;
 
 type UiMessage = Message & { status?: "sending" | "failed"; error?: SendError; localUrl?: string };
@@ -96,6 +99,8 @@ export function ChatRoom({
   const [voiceStatus, setVoiceStatus] = useState<VoiceStatus>(header.voice ?? "disabled");
   // Fotoğraf ve ses düğmelerinin açıklama satırı (kilit nedeni, mikrofon sorunu).
   const [photoNotice, setPhotoNotice] = useState<string | null>(null);
+  // Mesaj menüsü (tepki, kopyala) açık olan mesaj.
+  const [actionTarget, setActionTarget] = useState<ActionTarget | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   // Gönderilen fotoğrafların "tekrar dene" için dosyası ve bırakılacak yerel önizlemeler.
   const photoBlobs = useRef(new Map<string, Blob>());
@@ -168,13 +173,15 @@ export function ChatRoom({
     return () => document.removeEventListener("visibilitychange", onVisible);
   }, [markRead]);
 
-  // Realtime: bu sohbete gelen yeni mesajlar (kimliğe göre tekilleştirilir).
+  // Realtime: bu sohbete gelen yeni ve değişen (tepki) mesajlar (kimliğe göre
+  // tekilleştirilir; yüklenmemiş geçmişteki değişiklikler alınmaz).
   const receive = useCallback(
     (incoming: Message[]) => {
-      if (incoming.length === 0) return;
-      setMessages((prev) => keepPreviews(prev, mergeById(prev, incoming)));
+      const accepted = liveFilter(messagesRef.current, incoming);
+      if (accepted.length === 0) return;
+      setMessages((prev) => keepPreviews(prev, mergeLive(prev, incoming)));
       const known = new Set(messagesRef.current.map((m) => m.id));
-      if (incoming.some((m) => m.sender_id !== me && !known.has(m.id))) {
+      if (accepted.some((m) => m.sender_id !== me && !known.has(m.id))) {
         onOtherMessage();
         void markRead();
         // Karşı taraf yazdı: sohbeti kabul etmiş sayılır, fotoğraf düğmesi açılabilir.
@@ -184,25 +191,29 @@ export function ChatRoom({
     [me, markRead, refreshHeader, onOtherMessage],
   );
 
-  // Eksik tamamlama: son onaylı mesajdan (küçük bir payla) sonrasını çek.
+  // Eksik tamamlama: son değişiklikten (küçük bir payla) sonra yazılan ya da
+  // değişen (tepki) mesajları çek.
   const resync = useCallback(async () => {
     const cursor = resyncCursor(messagesRef.current);
     const supabase = createClient();
     let from = cursor;
     for (let page = 0; page < 5; page += 1) {
       let q = supabase.from("messages").select(SELECT).eq("conversation_id", conversationId);
-      if (from) q = q.gte("created_at", from);
-      const { data, error } = await q.order("created_at", { ascending: true }).limit(RESYNC_PAGE);
+      if (from) q = q.gte("updated_at", from);
+      const { data, error } = await q.order("updated_at", { ascending: true }).limit(RESYNC_PAGE);
       if (error || !data) return;
       receive(data as Message[]);
       if (data.length < RESYNC_PAGE) return;
-      from = (data[data.length - 1] as Message).created_at;
+      from = (data[data.length - 1] as Message).updated_at ?? null;
     }
   }, [conversationId, receive]);
 
   useRealtime({
     name: `conversation:${conversationId}`,
-    bindings: [{ event: "INSERT", table: "messages", filter: `conversation_id=eq.${conversationId}` }],
+    bindings: [
+      { event: "INSERT", table: "messages", filter: `conversation_id=eq.${conversationId}` },
+      { event: "UPDATE", table: "messages", filter: `conversation_id=eq.${conversationId}` },
+    ],
     onEvent: (payload) => receive([payload.new as unknown as Message]),
     onResync: () => void resync().catch(() => {}),
   });
@@ -418,6 +429,35 @@ export function ChatRoom({
     if (problem) showRecorderProblem(problem);
   }
 
+  function openActions(m: UiMessage) {
+    const mine = m.sender_id === me;
+    const kind = m.kind ?? "text";
+    setActionTarget({
+      id: m.id,
+      preview: kind === "photo" ? t("reactions.photo") : kind === "voice" ? t("reactions.voice") : m.body,
+      myReaction: reactionsOf(m, mine).me,
+      canReact: header.can_send,
+      copyText: kind === "text" ? m.body : undefined,
+    });
+  }
+
+  /** Tepki bırak / değiştir / kaldır (iyimser; hata olursa geri alınır). */
+  async function react(id: string, emoji: string | null) {
+    const m = messagesRef.current.find((x) => x.id === id);
+    if (!m || m.status) return;
+    const field = myField(m.sender_id === me);
+    const before = m[field] ?? null;
+    setPhotoNotice(null);
+    setMessages((prev) => withReaction(prev, id, field, emoji));
+    const { data, error } = await createClient().rpc("react_to_message", { p_message: id, p_reaction: emoji });
+    if (error || !data) {
+      setMessages((prev) => prev.map((x) => (x.id === id && (x[field] ?? null) === emoji ? { ...x, [field]: before } : x)));
+      setPhotoNotice(t(`reactions.errors.${reactionError(error)}`));
+      return;
+    }
+    setMessages((prev) => mergeById(prev, [data as Message]));
+  }
+
   function retry(m: UiMessage) {
     if (m.kind === "voice") {
       const rec = voiceRecordings.current.get(m.id);
@@ -529,10 +569,16 @@ export function ChatRoom({
                     {dayLabel(m.created_at)}
                   </p>
                 )}
-                <div className={cn("flex", mine ? "justify-end" : "justify-start")}>
+                <MessageRow
+                  message={m}
+                  mine={mine}
+                  otherName={other.display_name}
+                  canOpen={!m.status}
+                  onOpen={() => openActions(m)}
+                >
                   {m.kind === "voice" ? (
                     <div
-                      className={cn("max-w-[85%] rounded-[22px] md:max-w-[65%]", m.status === "failed" && "ring-2 ring-coral/60")}
+                      className={cn("rounded-[22px]", m.status === "failed" && "ring-2 ring-coral/60")}
                       title={clock(m.created_at)}
                     >
                       <VoiceMessage
@@ -546,7 +592,7 @@ export function ChatRoom({
                     </div>
                   ) : m.kind === "photo" ? (
                     <div
-                      className={cn("max-w-[85%] rounded-[22px] md:max-w-[65%]", m.status === "failed" && "ring-2 ring-coral/60")}
+                      className={cn("rounded-[22px]", m.status === "failed" && "ring-2 ring-coral/60")}
                       title={clock(m.created_at)}
                     >
                       <ChatPhoto
@@ -559,7 +605,7 @@ export function ChatRoom({
                   ) : (
                     <div
                       className={cn(
-                        "max-w-[85%] rounded-[22px] px-[18px] py-3 text-[15px] leading-snug md:max-w-[65%] md:text-base",
+                        "rounded-[22px] px-[18px] py-3 text-[15px] leading-snug md:text-base",
                         mine ? "bg-coral text-ink" : "bg-surface text-moon",
                         m.status === "sending" && "opacity-70",
                         m.status === "failed" && "ring-2 ring-coral/60",
@@ -569,7 +615,7 @@ export function ChatRoom({
                       <p className="whitespace-pre-wrap break-words">{m.body}</p>
                     </div>
                   )}
-                </div>
+                </MessageRow>
                 {showRead && <p className="mt-1 text-right text-xs text-muted">{t("read")}</p>}
                 {m.status === "failed" && (
                   <p className="mt-1 flex items-center justify-end gap-2 text-xs text-coral-text">
@@ -733,6 +779,8 @@ export function ChatRoom({
           </p>
         )}
       </div>
+
+      <MessageActionsDialog target={actionTarget} onClose={() => setActionTarget(null)} onReact={(id, emoji) => void react(id, emoji)} />
     </div>
   );
 }

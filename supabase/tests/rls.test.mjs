@@ -488,6 +488,7 @@ test("anon/authenticated'ın beklenmedik fonksiyon yetkisi yok", async () => {
       "start_anonymous", "respond_anonymous", "send_anon_message", "mark_anon_read", "request_reveal",
       "reveal_identity", "block_anonymous", "unblock_anonymous", "report_anonymous",
       "get_anon_conversations", "get_anon_conversation",
+      "react_to_message", "react_to_anon_message",
       "hide_conversation", "hide_all_conversations", "mark_all_read", "submit_appeal",
       "hide_anon_conversation", "get_declined_requests", "undo_decline", "undo_anon_decline",
       "get_my_age_verification", "e2e_delete_my_test_account", "admin_list_age_documents", "admin_open_age_document", "admin_review_age_document",

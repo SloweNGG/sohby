@@ -351,6 +351,43 @@ test("4b. yazıyor…: karşıda görünür, kendinde görünmez; silince ve mes
   await expect(typingAtB).toHaveCount(0);
 });
 
+test("4c. tepki: hızlı tepki ve seçiciden emoji karşıda anında görünür; kaldırılınca kaybolur", async () => {
+  const text = `B→A nasılsın ${RUN}`;
+  /** Mesaj satırındaki menü düğmesi (masaüstünde üzerine gelince görünür). */
+  const openMenu = async (p: Page) => {
+    const row = bubble(p, text).locator("xpath=ancestor::div[contains(concat(' ', @class, ' '), ' group ')][1]");
+    await row.hover();
+    await row.getByRole("button", { name: T("chat.reactions.open") }).click();
+    return p.getByRole("dialog", { name: T("chat.reactions.title") });
+  };
+  const summary = (list: string) => T("chat.reactions.summary", { list });
+  const you = (emoji: string) => T("chat.reactions.byYou", { emoji });
+  const by = (name: string, emoji: string) => T("chat.reactions.byOther", { name, emoji });
+
+  // A, B'nin mesajına hızlı tepki bırakır.
+  let dialog = await openMenu(A.page);
+  const t0 = Date.now();
+  await dialog.getByRole("button", { name: T("chat.reactions.react", { emoji: "❤️" }) }).click();
+  await expect(B.page.getByRole("button", { name: summary(by(A.displayName, "❤️")) })).toBeVisible({ timeout: 3_000 });
+  notes.push(`4c: tepki karşıda ${Date.now() - t0} ms'de göründü`);
+
+  // B, kendi mesajına seçiciden Türkçe aramayla tepki bırakır.
+  dialog = await openMenu(B.page);
+  await dialog.getByRole("button", { name: T("chat.reactions.more") }).click();
+  await dialog.getByRole("searchbox", { name: T("chat.reactions.picker.search") }).fill("kahve");
+  await dialog.getByRole("button", { name: "sıcak içecek" }).click();
+  await expect(A.page.getByRole("button", { name: summary(`${you("❤️")}, ${by(B.displayName, "☕")}`) })).toBeVisible({
+    timeout: 3_000,
+  });
+  await shot(A.page, "tepki-a");
+
+  // A tepkisini rozetten kaldırır.
+  await A.page.getByRole("button", { name: summary(`${you("❤️")}, ${by(B.displayName, "☕")}`) }).click();
+  dialog = A.page.getByRole("dialog", { name: T("chat.reactions.title") });
+  await dialog.getByRole("button", { name: T("chat.reactions.remove", { emoji: "❤️" }) }).click();
+  await expect(B.page.getByRole("button", { name: summary(you("☕")) })).toBeVisible({ timeout: 3_000 });
+});
+
 test("5. çevrimdışı alıcı: 3 mesaj çevrimiçi olunca yenilemeden ve birer kez gelir", async () => {
   const before = A.logs.length;
   await goOffline(A);

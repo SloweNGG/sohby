@@ -58,7 +58,11 @@ test("Kural 10: gönderen eşlemesi API'den hiçbir şekilde okunamaz", async ()
   await rejects(db.as(recipient, `select private.anon_sender_of(id) from public.anon_conversations`), /permission denied/);
   // Realtime'a yayınlanan anonim tablo yalnızca anon_messages; sütunlarında kişi kimliği yok.
   const cols = (await db.admin(`select column_name from information_schema.columns where table_schema='public' and table_name='anon_messages'`)).map((r) => r.column_name);
-  assert.deepEqual(cols.sort(), ["body", "conversation_id", "created_at", "from_anonymous", "id"]);
+  assert.deepEqual(cols.sort(), [
+    "body", "conversation_id", "created_at", "from_anonymous", "id",
+    // Tepkiler tarafa göre ("gönderen" / "karşı taraf") tutulur, kimlikle değil.
+    "recipient_reaction", "sender_reaction", "updated_at",
+  ]);
   const pub = (await db.admin(`select tablename from pg_publication_tables where pubname='supabase_realtime'`)).map((r) => r.tablename);
   assert.ok(!pub.includes("anon_conversations"));
 });

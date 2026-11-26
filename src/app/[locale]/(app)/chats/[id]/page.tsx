@@ -8,6 +8,7 @@ import { getCurrentUserId } from "@/lib/auth/session";
 import { ChatRoom } from "@/components/chat/chat-room";
 import { SafetyActions } from "@/components/safety/safety-actions";
 import { DeleteConversationButton } from "@/components/chat/chat-menus";
+import { MESSAGE_SELECT } from "@/lib/chat/select";
 import type { ConversationHeader, Message } from "@/lib/types";
 
 const PAGE = 50;
@@ -50,7 +51,7 @@ export default async function ConversationPage({ params }: PageProps<"/[locale]/
   const supabase = await createClient();
   const { data } = await supabase
     .from("messages")
-    .select("id, conversation_id, sender_id, body, created_at, kind, photo_path, voice_path, voice_duration_ms, voice_peaks")
+    .select(MESSAGE_SELECT)
     .eq("conversation_id", id)
     .order("created_at", { ascending: false })
     .limit(PAGE);

@@ -9,7 +9,7 @@ import { useRealtime } from "@/lib/realtime/use-realtime";
 import { useTyping } from "@/lib/realtime/use-typing";
 import { typingTopic } from "@/lib/realtime/typing";
 import { TypingBubble } from "@/components/chat/typing-bubble";
-import { isDuplicateKey, markFailed, mergeById, resyncCursor } from "@/lib/realtime/messages";
+import { isDuplicateKey, liveFilter, markFailed, mergeById, mergeLive, resyncCursor } from "@/lib/realtime/messages";
 import { requestRevealAction, respondAnonymousAction, revealIdentityAction } from "@/lib/anon/actions";
 import { Button } from "@/components/ui/button";
 import { FormAlert } from "@/components/ui/field";
@@ -19,12 +19,15 @@ import { useBadges } from "@/components/app/badges";
 import { useClock } from "@/components/chat/time";
 import { cn } from "@/lib/cn";
 import { DeleteConversationButton } from "@/components/chat/chat-menus";
+import { MessageActionsDialog, MessageRow, type ActionTarget } from "@/components/chat/message-actions";
+import { myField, reactionError, reactionsOf, withReaction } from "@/lib/chat/reactions";
+import { ANON_MESSAGE_SELECT } from "@/lib/chat/select";
 import { useAlias } from "./alias";
 import type { AnonConversationHeader, AnonMessage } from "@/lib/types";
 
 type SendError = "rate_limited" | "not_allowed" | "generic";
 type UiAnonMessage = AnonMessage & { status?: "sending" | "failed"; error?: SendError };
-const SELECT = "id, conversation_id, from_anonymous, body, created_at";
+const SELECT = ANON_MESSAGE_SELECT;
 const RESYNC_PAGE = 200;
 
 /**
@@ -59,6 +62,8 @@ export function AnonRoom({
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [revealRequested, setRevealRequested] = useState(header.reveal_requested);
+  // Mesaj menüsü (tepki, kopyala) açık olan mesaj.
+  const [actionTarget, setActionTarget] = useState<ActionTarget | null>(null);
   const [pending, startTransition] = useTransition();
   const listRef = useRef<HTMLDivElement>(null);
   const revealRef = useRef<HTMLDialogElement>(null);
@@ -93,10 +98,11 @@ export function AnonRoom({
 
   const receive = useCallback(
     (incoming: AnonMessage[]) => {
-      if (incoming.length === 0) return;
-      setMessages((prev) => mergeById(prev, incoming));
+      const accepted = liveFilter(messagesRef.current, incoming);
+      if (accepted.length === 0) return;
+      setMessages((prev) => mergeLive(prev, incoming));
       const known = new Set(messagesRef.current.map((m) => m.id));
-      if (incoming.some((m) => m.from_anonymous !== isAnon && !known.has(m.id))) {
+      if (accepted.some((m) => m.from_anonymous !== isAnon && !known.has(m.id))) {
         onOtherMessage();
         void markRead();
       }
@@ -109,18 +115,21 @@ export function AnonRoom({
     let from = resyncCursor(messagesRef.current);
     for (let page = 0; page < 5; page += 1) {
       let q = supabase.from("anon_messages").select(SELECT).eq("conversation_id", header.id);
-      if (from) q = q.gte("created_at", from);
-      const { data, error } = await q.order("created_at", { ascending: true }).limit(RESYNC_PAGE);
+      if (from) q = q.gte("updated_at", from);
+      const { data, error } = await q.order("updated_at", { ascending: true }).limit(RESYNC_PAGE);
       if (error || !data) return;
       receive(data as AnonMessage[]);
       if (data.length < RESYNC_PAGE) return;
-      from = (data[data.length - 1] as AnonMessage).created_at;
+      from = (data[data.length - 1] as AnonMessage).updated_at ?? null;
     }
   }, [header.id, receive]);
 
   useRealtime({
     name: `anon:${header.id}`,
-    bindings: [{ event: "INSERT", table: "anon_messages", filter: `conversation_id=eq.${header.id}` }],
+    bindings: [
+      { event: "INSERT", table: "anon_messages", filter: `conversation_id=eq.${header.id}` },
+      { event: "UPDATE", table: "anon_messages", filter: `conversation_id=eq.${header.id}` },
+    ],
     onEvent: (payload) => receive([payload.new as unknown as AnonMessage]),
     onResync: () => void resync().catch(() => {}),
   });
@@ -154,6 +163,28 @@ export function AnonRoom({
     if (data) setMessages((prev) => mergeById(prev, [data as AnonMessage]));
     else void resync();
     refresh();
+  };
+
+  const canReact = header.status === "active" && header.can_send;
+
+  const openActions = (m: UiAnonMessage) =>
+    setActionTarget({ id: m.id, preview: m.body, myReaction: reactionsOf(m, mine(m)).me, canReact, copyText: m.body });
+
+  /** Tepki bırak / değiştir / kaldır (iyimser; hata olursa geri alınır). */
+  const react = async (id: string, emoji: string | null) => {
+    const m = messagesRef.current.find((x) => x.id === id);
+    if (!m || m.status) return;
+    const field = myField(mine(m));
+    const before = m[field] ?? null;
+    setError(null);
+    setMessages((prev) => withReaction(prev, id, field, emoji));
+    const { data, error: e } = await createClient().rpc("react_to_anon_message", { p_message: id, p_reaction: emoji });
+    if (e || !data) {
+      setMessages((prev) => prev.map((x) => (x.id === id && (x[field] ?? null) === emoji ? { ...x, [field]: before } : x)));
+      setError(tc(`reactions.errors.${reactionError(e)}`));
+      return;
+    }
+    setMessages((prev) => mergeById(prev, [data as AnonMessage]));
   };
 
   const submit = () => {
@@ -249,11 +280,11 @@ export function AnonRoom({
           )}
           {messages.map((m) => (
             <div key={m.id} className="flex flex-col">
-              <div className={cn("flex", mine(m) ? "justify-end" : "justify-start")}>
+              <MessageRow message={m} mine={mine(m)} otherName={title} canOpen={!m.status} onOpen={() => openActions(m)}>
                 <p
                   title={clock(m.created_at)}
                   className={cn(
-                    "max-w-[85%] whitespace-pre-wrap break-words rounded-[22px] px-[18px] py-3 text-[15px] md:max-w-[65%] md:text-base",
+                    "whitespace-pre-wrap break-words rounded-[22px] px-[18px] py-3 text-[15px] md:text-base",
                     mine(m) ? "bg-coral text-ink" : "bg-surface",
                     m.status === "sending" && "opacity-70",
                     m.status === "failed" && "ring-2 ring-coral/60",
@@ -261,7 +292,7 @@ export function AnonRoom({
                 >
                   {m.body}
                 </p>
-              </div>
+              </MessageRow>
               {m.status === "failed" && (
                 <p className="mt-1 flex items-center justify-end gap-2 text-xs text-coral-text">
                   {tc(`errors.${m.error ?? "generic"}`)}
@@ -342,6 +373,8 @@ export function AnonRoom({
           </p>
         ) : null}
       </div>
+
+      <MessageActionsDialog target={actionTarget} onClose={() => setActionTarget(null)} onReact={(id, emoji) => void react(id, emoji)} />
 
       <dialog
         ref={revealRef}

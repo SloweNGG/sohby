@@ -211,6 +211,11 @@ export type Message = {
   voice_duration_ms?: number | null;
   /** Ses dalgası çubukları (0–100). */
   voice_peaks?: number[] | null;
+  /** Tepkiler: mesajı gönderenin ve karşı tarafın (kimlik yok). */
+  sender_reaction?: string | null;
+  recipient_reaction?: string | null;
+  /** Sunucudaki son değişiklik (tepki vb.); eksik tamamlama buna göre yapılır. */
+  updated_at?: string;
 };
 
 /** Kimler sana fotoğraf gönderebilir? */
@@ -320,4 +325,13 @@ export type AnonConversationHeader = Omit<AnonConversationItem, "last_message" |
   can_send: boolean;
   revealed_conversation_id: string | null;
 };
-export type AnonMessage = { id: string; conversation_id: string; from_anonymous: boolean; body: string; created_at: string };
+export type AnonMessage = {
+  id: string;
+  conversation_id: string;
+  from_anonymous: boolean;
+  body: string;
+  created_at: string;
+  sender_reaction?: string | null;
+  recipient_reaction?: string | null;
+  updated_at?: string;
+};

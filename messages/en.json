@@ -553,7 +553,59 @@
       }
     },
     "typing": "typing…",
-    "typingSr": "{name} is typing"
+    "typingSr": "{name} is typing",
+    "reactions": {
+      "open": "Message options and reactions",
+      "title": "Message options",
+      "quick": "React",
+      "react": "React with {emoji}",
+      "remove": "Remove your {emoji} reaction",
+      "more": "More emoji",
+      "copy": "Copy",
+      "summary": "Reactions: {list}",
+      "byYou": "you {emoji}",
+      "byOther": "{name} {emoji}",
+      "photo": "Photo",
+      "voice": "Voice message",
+      "errors": {
+        "rate_limited": "You're reacting too fast. Wait a moment.",
+        "not_allowed": "You can no longer react in this chat.",
+        "invalid_reaction": "This emoji can't be used as a reaction.",
+        "not_found": "This message no longer exists.",
+        "generic": "Couldn't send your reaction. Try again."
+      },
+      "picker": {
+        "back": "Back to quick reactions",
+        "search": "Search emoji",
+        "searchPlaceholder": "Search emoji…",
+        "categories": "Categories",
+        "skinTone": "Skin tone",
+        "tones": {
+          "0": "Default skin tone",
+          "1": "Light skin tone",
+          "2": "Medium-light skin tone",
+          "3": "Medium skin tone",
+          "4": "Medium-dark skin tone",
+          "5": "Dark skin tone"
+        },
+        "loading": "Loading emoji…",
+        "loadError": "Couldn't load emoji.",
+        "retry": "Try again",
+        "noResults": "No emoji match this search.",
+        "resultCount": "{count, plural, one {# emoji found} other {# emoji found}}",
+        "groups": {
+          "smileys-emotion": "Smileys & emotion",
+          "people-body": "People & body",
+          "animals-nature": "Animals & nature",
+          "food-drink": "Food & drink",
+          "travel-places": "Travel & places",
+          "activities": "Activities",
+          "objects": "Objects",
+          "symbols": "Symbols",
+          "flags": "Flags"
+        }
+      }
+    }
   },
   "requests": {
     "metaTitle": "Message requests",
